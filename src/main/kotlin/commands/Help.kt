@@ -1,9 +1,21 @@
 package commands
 
-fun helpHelp() = ""
+fun helpHelp(args: List<String>) = ""
 fun help(args: List<String> = listOf()) {
-    //TODO - help per specific command
-    println(Command.entries.filterNot { it == Command.HELP }.joinToString("\n") {
-        "${it.name.lowercase()}: ${it.help()}"
+    if (args.isEmpty()) {
+        printGeneralHelp()
+    } else {
+        val helpCommand = getCommand(args.first())
+        if (helpCommand != null) {
+            println(helpCommand.help(args.subList(1, args.size)))
+        } else {
+            printGeneralHelp()
+        }
+    }
+}
+
+private fun printGeneralHelp() {
+    println(CommandType.entries.filterNot { it == CommandType.HELP }.joinToString("\n") {
+        "${it.name.lowercase()}: ${it.description}"
     })
 }

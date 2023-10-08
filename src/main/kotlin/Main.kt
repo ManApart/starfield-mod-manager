@@ -1,25 +1,50 @@
-import commands.Command
-import commands.help
+import commands.CommandType
+import commands.getCommand
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import java.io.File
 import java.nio.file.Files
 import kotlin.io.path.Path
 
+lateinit var state: State
+lateinit var config: Config
+
+val jsonMapper = kotlinx.serialization.json.Json {
+    ignoreUnknownKeys = true
+    prettyPrint = true
+}
+
 fun main(args: Array<String>) {
     println("Starfield Mod Manager")
+    loadData()
     while (true){
         readLine(readlnOrNull())
     }
 }
 
+private fun loadData(){
+    File("./config.json").takeIf { it.exists() }?.let {
+        config = jsonMapper.decodeFromString(it.readText())
+    }
+    File("./data.json").takeIf { it.exists() }?.let {
+        state = jsonMapper.decodeFromString(it.readText())
+    }
+}
+
+fun save(){
+    File("./config.json").writeText(jsonMapper.encodeToString(config))
+    File("./data.json").writeText(jsonMapper.encodeToString(state))
+}
+
 private fun readLine(line: String?) {
     val parts = line?.split(" ") ?: return
     if (parts.isEmpty()) {
-        help()
+        CommandType.HELP.help(listOf())
     } else {
         val commandString = parts.first().lowercase()
         val args = parts.subList(1, parts.size)
 
-        val command = Command.entries.firstOrNull { commandString == it.name.lowercase() || it.aliases.contains(commandString) }
+        val command = getCommand(commandString)
         if (command != null){
             command.apply(args)
         } else {
