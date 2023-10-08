@@ -10,7 +10,8 @@ data class State(
 data class Mod(
     var name: String,
     var filePath: String,
-    var id: Int? =null,
+    var loadOrder: Int,
+    var id: Int? = null,
     var url: String? = null,
     var enabled: Boolean = false,
 )

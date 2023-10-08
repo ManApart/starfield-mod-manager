@@ -13,7 +13,7 @@ enum class CommandType(
     val apply: (List<String>) -> Unit,
     vararg val aliases: String = arrayOf(),
 ) {
-    ADD_MOD("Add a new mod", ::addModHelp, ::addMod),
+    ADD("Add a new mod", ::addModHelp, ::addMod),
     CONFIG("Edit Configuration", ::configHelp, ::config),
     HELP("Explain commands", ::helpHelp, ::help),
     LIST("List Mods", ::listHelp, ::list, "ls"),

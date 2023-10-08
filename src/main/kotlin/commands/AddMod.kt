@@ -27,7 +27,8 @@ fun addMod(args: List<String>) {
 //    println("Add by url")
 //}
 private fun addModByFile(name: String, filePath: String) {
-    toolState.mods.add(Mod(name, filePath))
+    val loadOrder = toolState.mods.maxOfOrNull { it.loadOrder } ?: 0
+    toolState.mods.add(Mod(name, filePath, loadOrder + 1))
     save()
     println("Added $name")
 }
