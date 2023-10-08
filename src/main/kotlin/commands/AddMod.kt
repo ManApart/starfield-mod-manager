@@ -41,7 +41,7 @@ private fun addModByFile(filePath: String, nameOverride: String?) {
             println("Updated $name")
         } else {
             val loadOrder = toolState.mods.maxOfOrNull { it.loadOrder } ?: 0
-            toolState.mods.add(Mod(name, sourceFile.path, loadOrder + 1))
+            toolState.mods.add(Mod(name, stageFile.path, loadOrder + 1))
             save()
             println("Added $name")
         }

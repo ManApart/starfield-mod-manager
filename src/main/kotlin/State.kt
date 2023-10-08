@@ -6,12 +6,3 @@ data class State(
 )
 
 
-@Serializable
-data class Mod(
-    var name: String,
-    var filePath: String,
-    var loadOrder: Int,
-    var id: Int? = null,
-    var url: String? = null,
-    var enabled: Boolean = false,
-)

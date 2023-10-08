@@ -1,5 +1,6 @@
 package commands
 
+import save
 import toolState
 
 fun enableHelp(args: List<String>) = """
@@ -20,6 +21,7 @@ fun enableMod(enable: Boolean = true, args: List<String>) {
             println("Invalid Mod index $i")
         } else {
             toolState.mods[i].enabled = enable
+            save()
             CommandType.LIST.apply(listOf())
         }
     }
