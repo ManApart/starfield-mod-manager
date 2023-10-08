@@ -38,22 +38,9 @@ fun save() {
     File("./data.json").writeText(jsonMapper.encodeToString(toolState))
 }
 
-private fun readLine(line: String?) {
-    val parts = line?.split(" ") ?: return
-    if (parts.isEmpty()) {
-        CommandType.HELP.help(listOf())
-    } else {
-        val commandString = parts.first().lowercase()
-        val args = parts.subList(1, parts.size)
 
-        val command = getCommand(commandString)
-        if (command != null) {
-            command.apply(args)
-        } else {
-            println("Unknown Command $commandString")
-        }
-
-    }
+fun verbose(message: String){
+    if (toolConfig.verbose) println(message)
 }
 
 private fun modTest() {

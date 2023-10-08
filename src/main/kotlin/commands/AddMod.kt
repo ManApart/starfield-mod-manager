@@ -27,8 +27,16 @@ fun addMod(args: List<String>) {
 //    println("Add by url")
 //}
 private fun addModByFile(name: String, filePath: String) {
-    val loadOrder = toolState.mods.maxOfOrNull { it.loadOrder } ?: 0
-    toolState.mods.add(Mod(name, filePath, loadOrder + 1))
-    save()
-    println("Added $name")
+    if (stageMod(name, filePath)) {
+        val loadOrder = toolState.mods.maxOfOrNull { it.loadOrder } ?: 0
+        toolState.mods.add(Mod(name, filePath, loadOrder + 1))
+        save()
+        println("Added $name")
+    } else {
+        println("Failed to add mod $name")
+    }
+}
+
+private fun stageMod(name: String, filePath: String): Boolean{
+    return true
 }
