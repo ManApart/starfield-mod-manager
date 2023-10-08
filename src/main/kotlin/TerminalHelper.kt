@@ -3,8 +3,11 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 fun File.runCommand(command: String): String? {
+    val parts = command.split("\\s".toRegex())
+    return runCommand(parts)
+}
+fun File.runCommand(parts: List<String>): String? {
     return try {
-        val parts = command.split("\\s".toRegex())
         val proc = ProcessBuilder(*parts.toTypedArray())
             .directory(this)
             .redirectOutput(ProcessBuilder.Redirect.INHERIT)

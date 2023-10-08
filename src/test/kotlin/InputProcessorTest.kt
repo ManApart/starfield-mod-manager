@@ -22,9 +22,18 @@ class InputProcessorTest {
     @Test
     fun multipleArgsWithStrings(){
         val actual = "add \"flashy weapons\" \"weapons and stuff.zip\"".parseArgs()
-        val expected = listOf("add", "flashy weapons", "weapons.zip")
+        val expected = listOf("add", "flashy weapons", "weapons and stuff.zip")
 
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun endsWithStrings(){
+        val actual = "add \"flashy weapons\"".parseArgs()
+        val expected = listOf("add", "flashy weapons")
+
+        assertEquals(expected, actual)
+    }
+
 
 }

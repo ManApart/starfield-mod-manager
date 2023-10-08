@@ -34,10 +34,14 @@ fun addMod(args: List<String>) {
 private fun addModByFile(filePath: String, nameOverride: String?) {
     val name = nameOverride ?: File(filePath).nameWithoutExtension
     val sourceFile = File(filePath.replace("~", HOME))
+    if (!sourceFile.exists()){
+        println("Could not find ${sourceFile.absolutePath}")
+        return
+    }
     val stageFile = File(modFolder.path + "/$name")
     val stageExists = stageFile.exists()
     if (stageMod(sourceFile, stageFile)) {
-        if (stageExists){
+        if (stageExists) {
             println("Updated $name")
         } else {
             val loadOrder = toolState.mods.maxOfOrNull { it.loadOrder } ?: 0
@@ -55,7 +59,7 @@ private fun stageMod(sourceFile: File, stageFolder: File): Boolean {
     if (sourceFile.isDirectory) {
         sourceFile.copyRecursively(stageFolder, overwrite = true)
     } else {
-        stageFolder.runCommand("unzip -q -o ${sourceFile.absolutePath}")
+        stageFolder.runCommand(listOf("unzip", "-q", "-o", sourceFile.absolutePath))
     }
     return true
 }
