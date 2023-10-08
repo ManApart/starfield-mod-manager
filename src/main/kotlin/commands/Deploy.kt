@@ -11,15 +11,17 @@ fun deploy(args: List<String>) {
     if (files.isEmpty()) {
         println("No mod files found")
     } else {
-        println("Found Mod Files: ${files.joinToString("\n") { it.absolutePath }}")
+        println("Found Mod Files:\n${files.entries.joinToString("\n") { (key, file) -> "$key: ${file.path}" }}")
     }
 }
 
-private fun getAllModFiles(): List<File> {
-    val paths = mutableSetOf<File>()
-    //TODO -test priority / load order
-    toolState.mods.filter { it.enabled }.sortedByDescending { it.loadOrder }.forEach { mod ->
-        paths.addAll(mod.getModFiles())
+private fun getAllModFiles(): Map<String, File> {
+    val mappings = mutableMapOf<String, File>()
+    toolState.mods.filter { it.enabled }.sortedBy { it.loadOrder }.forEach { mod ->
+        val modRoot = File(mod.filePath).absolutePath + "/"
+        mod.getModFiles().forEach { file ->
+            mappings[file.absolutePath.replace(modRoot, "")] = file
+        }
     }
-    return paths.toList()
+    return mappings
 }
