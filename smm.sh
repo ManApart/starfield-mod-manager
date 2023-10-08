@@ -1,0 +1,1 @@
+java -jar ./starfield-mod-manager.jar $@

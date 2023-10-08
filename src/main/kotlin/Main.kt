@@ -19,9 +19,13 @@ fun main(args: Array<String>) {
     println("Starfield Mod Manager")
     modFolder = File("mods")
     loadData()
-    CommandType.LIST.apply(listOf())
-    while (true) {
-        readLine(readlnOrNull())
+    if (args.isEmpty()) {
+        CommandType.LIST.apply(listOf())
+        while (true) {
+            readLine(readlnOrNull())
+        }
+    } else {
+        readLine(args.joinToString(" "))
     }
 }
 
@@ -40,7 +44,7 @@ fun save() {
 }
 
 
-fun verbose(message: String){
+fun verbose(message: String) {
     if (toolConfig.verbose) println(message)
 }
 

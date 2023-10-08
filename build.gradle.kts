@@ -4,8 +4,8 @@ plugins {
     application
 }
 
-group = "me.austin"
-version = "1.0-SNAPSHOT"
+group = "rak.manapart"
+version = ""
 
 repositories {
     mavenCentral()
@@ -26,4 +26,16 @@ kotlin {
 
 application {
     mainClass.set("MainKt")
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "MainKt"
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from(sourceSets.main.get().output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
 }
