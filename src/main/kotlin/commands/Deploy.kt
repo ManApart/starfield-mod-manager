@@ -10,12 +10,22 @@ fun deployHelp(args: List<String>) = """
 
 fun deploy(args: List<String>) {
     val files = getAllModFiles()
+    getDisabledModPaths().forEach { deleteLink(it, files) }
     if (files.isEmpty()) {
         println("No mod files found")
     } else {
 //        println("Found Mod Files:\n${files.entries.joinToString("\n") { (key, file) -> "$key: ${file.path}" }}")
         files.entries.forEach { (gamePath, modFile) -> makeLink(gamePath, modFile) }
         println("Deployed ${files.size} files")
+    }
+}
+
+private fun getDisabledModPaths(): List<String> {
+    return toolState.mods.filter { !it.enabled }.flatMap { mod ->
+        val modRoot = File(mod.filePath).absolutePath + "/"
+        mod.getModFiles().map { file ->
+            file.absolutePath.replace(modRoot, "")
+        }
     }
 }
 
@@ -46,4 +56,12 @@ fun makeLink(gamePath: String, modFile: File) {
     } else {
         Files.createSymbolicLink(gameFile.toPath(), modFile.canonicalFile.toPath())
     }
+}
+
+fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
+    val gameFile = File(toolConfig.gamePath + "/$gamePath")
+    if (!modFiles.contains(gamePath) && Files.isSymbolicLink(gameFile.toPath())) {
+        gameFile.delete()
+    }
+
 }
