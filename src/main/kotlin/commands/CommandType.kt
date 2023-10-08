@@ -15,6 +15,8 @@ enum class CommandType(
 ) {
     ADD("Add a new mod", ::addModHelp, ::addMod),
     CONFIG("Edit Configuration", ::configHelp, ::config),
+    ENABLE("Enable Mod", ::enableHelp, ::enable),
+    DISABLE("Enable Mod", ::enableHelp, ::disable),
     HELP("Explain commands", ::helpHelp, ::help),
     LIST("List Mods", ::listHelp, ::list, "ls"),
     EXIT(
