@@ -1,20 +1,25 @@
 package commands
 
+import HOME
 import Mod
+import modFolder
+import runCommand
 import save
 import toolState
+import java.io.File
+import java.util.zip.ZipFile
 
 fun addModHelp(args: List<String> = listOf()) = """
-   add-mod file <name-of-mod> <path-to-mod-zip>
+   add-mod file <path-to-mod-zip> <name-of-mod>*
 """.trimIndent()
 
 fun addMod(args: List<String>) {
     val subCommand = args.firstOrNull()
     when {
-        args.size < 3 -> println(addModHelp())
+        args.size < 2 -> println(addModHelp())
 //        subCommand == "id" -> addModById(args[1], args[2])
 //        subCommand == "url" -> addModByUrl(args[1], args[2])
-        subCommand == "file" -> addModByFile(args[1], args[2])
+        subCommand == "file" -> addModByFile(args[1], args.getOrNull(2))
 
         else -> println("Unknown args: ${args.joinToString(" ")}")
     }
@@ -26,17 +31,31 @@ fun addMod(args: List<String>) {
 //private fun addModByUrl(url: String, name: String){
 //    println("Add by url")
 //}
-private fun addModByFile(name: String, filePath: String) {
-    if (stageMod(name, filePath)) {
-        val loadOrder = toolState.mods.maxOfOrNull { it.loadOrder } ?: 0
-        toolState.mods.add(Mod(name, filePath, loadOrder + 1))
-        save()
-        println("Added $name")
+private fun addModByFile(filePath: String, nameOverride: String?) {
+    val name = nameOverride ?: File(filePath).nameWithoutExtension
+    val sourceFile = File(filePath.replace("~", HOME))
+    val stageFile = File(modFolder.path + "/$name")
+    val stageExists = stageFile.exists()
+    if (stageMod(sourceFile, stageFile)) {
+        if (stageExists){
+            println("Updated $name")
+        } else {
+            val loadOrder = toolState.mods.maxOfOrNull { it.loadOrder } ?: 0
+            toolState.mods.add(Mod(name, sourceFile.path, loadOrder + 1))
+            save()
+            println("Added $name")
+        }
     } else {
         println("Failed to add mod $name")
     }
 }
 
-private fun stageMod(name: String, filePath: String): Boolean{
+private fun stageMod(sourceFile: File, stageFolder: File): Boolean {
+    stageFolder.mkdirs()
+    if (sourceFile.isDirectory) {
+        sourceFile.copyRecursively(stageFolder, overwrite = true)
+    } else {
+        stageFolder.runCommand("unzip -q -o ${sourceFile.absolutePath}")
+    }
     return true
 }

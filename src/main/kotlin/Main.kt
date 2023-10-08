@@ -1,6 +1,4 @@
 import commands.CommandType
-import commands.getCommand
-import commands.list
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import java.io.File
@@ -9,6 +7,8 @@ import kotlin.io.path.Path
 
 lateinit var toolState: State
 lateinit var toolConfig: Config
+lateinit var modFolder: File
+val HOME = System.getProperty("user.home")
 
 val jsonMapper = kotlinx.serialization.json.Json {
     ignoreUnknownKeys = true
@@ -17,6 +17,7 @@ val jsonMapper = kotlinx.serialization.json.Json {
 
 fun main(args: Array<String>) {
     println("Starfield Mod Manager")
+    modFolder = File("mods")
     loadData()
     CommandType.LIST.apply(listOf())
     while (true) {
