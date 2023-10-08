@@ -5,21 +5,21 @@ import java.nio.file.Files
 import kotlin.io.path.Path
 
 fun main(args: Array<String>) {
-    println("Hello World!")
-    do {
-
-    } while (readLine(readlnOrNull()))
+    println("Starfield Mod Manager")
+    while (true){
+        readLine(readlnOrNull())
+    }
 }
 
-private fun readLine(line: String?): Boolean {
-    val parts = line?.split(" ") ?: return false
+private fun readLine(line: String?) {
+    val parts = line?.split(" ") ?: return
     if (parts.isEmpty()) {
         help()
     } else {
         val commandString = parts.first().lowercase()
         val args = parts.subList(1, parts.size)
 
-        val command = Command.entries.firstOrNull { commandString == it.name.lowercase() }
+        val command = Command.entries.firstOrNull { commandString == it.name.lowercase() || it.aliases.contains(commandString) }
         if (command != null){
             command.apply(args)
         } else {
@@ -27,8 +27,6 @@ private fun readLine(line: String?): Boolean {
         }
 
     }
-
-    return true
 }
 
 private fun modTest() {
