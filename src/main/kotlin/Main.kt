@@ -1,5 +1,6 @@
 import commands.CommandType
 import commands.getCommand
+import commands.list
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import java.io.File
@@ -17,6 +18,7 @@ val jsonMapper = kotlinx.serialization.json.Json {
 fun main(args: Array<String>) {
     println("Starfield Mod Manager")
     loadData()
+    CommandType.LIST.apply(listOf())
     while (true) {
         readLine(readlnOrNull())
     }

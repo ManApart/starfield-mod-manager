@@ -16,6 +16,6 @@ fun help(args: List<String> = listOf()) {
 
 private fun printGeneralHelp() {
     println(CommandType.entries.filterNot { it == CommandType.HELP }.joinToString("\n") {
-        "${it.name.lowercase()}: ${it.description}"
+        "${it.cleanName}: ${it.description}"
     })
 }

@@ -13,14 +13,21 @@ enum class CommandType(
     val apply: (List<String>) -> Unit,
     vararg val aliases: String = arrayOf(),
 ) {
-    HELP("Explain commands", ::helpHelp, ::help),
+    ADD_MOD("Add a new mod", ::addModHelp, ::addMod),
     CONFIG("Edit Configuration", ::configHelp, ::config),
+    HELP("Explain commands", ::helpHelp, ::help),
     LIST("List Mods", ::listHelp, ::list, "ls"),
     EXIT(
         "Exit Program",
         { "Exit the process" },
         { kotlin.system.exitProcess(0) }
     ),
+    ;
+
+    val cleanName = name.lowercase().replace("_", "-")
 }
 
-fun getCommand(commandString: String) =CommandType.entries.firstOrNull { commandString == it.name.lowercase() || it.aliases.contains(commandString) }
+fun getCommand(commandString: String) =
+    CommandType.entries.firstOrNull {
+        commandString == it.cleanName || it.aliases.contains(commandString)
+    }
