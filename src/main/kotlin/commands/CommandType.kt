@@ -18,6 +18,7 @@ enum class CommandType(
     ENABLE("Enable Mod", ::enableHelp, ::enable),
     DISABLE("Enable Mod", ::enableHelp, ::disable),
     DEPLOY("Deploy enabled mods", ::deployHelp, ::deploy),
+    PURGE("Purge all sym links", ::purgeHelp, ::purge),
     HELP("Explain commands", ::helpHelp, ::help),
     LIST("List Mods", ::listHelp, ::list, "ls"),
     EXIT(
