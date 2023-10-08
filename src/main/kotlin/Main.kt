@@ -6,8 +6,8 @@ import java.io.File
 import java.nio.file.Files
 import kotlin.io.path.Path
 
-lateinit var state: State
-lateinit var config: Config
+lateinit var toolState: State
+lateinit var toolConfig: Config
 
 val jsonMapper = kotlinx.serialization.json.Json {
     ignoreUnknownKeys = true
@@ -17,23 +17,23 @@ val jsonMapper = kotlinx.serialization.json.Json {
 fun main(args: Array<String>) {
     println("Starfield Mod Manager")
     loadData()
-    while (true){
+    while (true) {
         readLine(readlnOrNull())
     }
 }
 
-private fun loadData(){
-    File("./config.json").takeIf { it.exists() }?.let {
-        config = jsonMapper.decodeFromString(it.readText())
-    }
-    File("./data.json").takeIf { it.exists() }?.let {
-        state = jsonMapper.decodeFromString(it.readText())
-    }
+private fun loadData() {
+    toolConfig = File("./config.json").takeIf { it.exists() }?.let {
+        jsonMapper.decodeFromString(it.readText())
+    } ?: Config()
+    toolState = File("./data.json").takeIf { it.exists() }?.let {
+        jsonMapper.decodeFromString(it.readText())
+    } ?: State()
 }
 
-fun save(){
-    File("./config.json").writeText(jsonMapper.encodeToString(config))
-    File("./data.json").writeText(jsonMapper.encodeToString(state))
+fun save() {
+    File("./config.json").writeText(jsonMapper.encodeToString(toolConfig))
+    File("./data.json").writeText(jsonMapper.encodeToString(toolState))
 }
 
 private fun readLine(line: String?) {
@@ -45,7 +45,7 @@ private fun readLine(line: String?) {
         val args = parts.subList(1, parts.size)
 
         val command = getCommand(commandString)
-        if (command != null){
+        if (command != null) {
             command.apply(args)
         } else {
             println("Unknown Command $commandString")

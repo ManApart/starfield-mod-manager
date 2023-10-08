@@ -14,6 +14,7 @@ enum class CommandType(
     vararg val aliases: String = arrayOf(),
 ) {
     HELP("Explain commands", ::helpHelp, ::help),
+    CONFIG("Edit Configuration", ::configHelp, ::config),
     LIST("List Mods", ::listHelp, ::list, "ls"),
     EXIT(
         "Exit Program",
