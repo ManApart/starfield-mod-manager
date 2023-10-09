@@ -6,6 +6,7 @@ plugins {
 
 group = "rak.manapart"
 version = ""
+private val ktor_version = "2.2.4"
 
 repositories {
     mavenCentral()
@@ -13,6 +14,12 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+    implementation("io.ktor:ktor-serialization:$ktor_version")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
     testImplementation(kotlin("test"))
 }
 

@@ -1,4 +1,6 @@
+## Configuration
 
+Get a personal API key at https://www.nexusmods.com/users/myaccount?tab=api%20access
 
 
 ## Setup Vortex Links

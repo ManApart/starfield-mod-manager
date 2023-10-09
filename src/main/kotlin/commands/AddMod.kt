@@ -3,8 +3,12 @@ package commands
 import HOME
 import Mod
 import modFolder
+import nexus.DownloadRequest
+import nexus.getDownloadUrl
+import nexus.parseDownloadRequest
 import runCommand
 import save
+import toolConfig
 import toolState
 import java.io.File
 import java.util.zip.ZipFile
@@ -31,6 +35,14 @@ fun addMod(args: List<String>) {
 //private fun addModByUrl(url: String, name: String){
 //    println("Add by url")
 //}
+
+fun addModByNexusProtocol(url: String){
+    val request = parseDownloadRequest(url)
+    println(request)
+    val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, request)
+    println(downloadUrl)
+}
+
 private fun addModByFile(filePath: String, nameOverride: String?) {
     val name = nameOverride ?: File(filePath).nameWithoutExtension
     val sourceFile = File(filePath.replace("~", HOME))
