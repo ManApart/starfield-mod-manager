@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=smm
+Comment=Manage Starfield Mods
+Exec=java -jar starfield-mod-manager.jar
+Icon=steam_icon_1716740
+Terminal=true
+Type=Application
