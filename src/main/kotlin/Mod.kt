@@ -7,12 +7,15 @@ data class Mod(
     var filePath: String,
     var loadOrder: Int,
     var id: Int? = null,
-    var url: String? = null,
+    var fileId: Int? = null,
+    var version: String? = null,
     var enabled: Boolean = false,
 ) {
     fun getModFiles(): List<File> {
         return File(filePath).getFiles()
     }
+
+    fun url() = "https://www.nexusmods.com/starfield/mods/$id"
 }
 
 fun File.getFiles(filter: (File) -> Boolean = {true}): List<File> {

@@ -3,15 +3,15 @@ package commands
 import HOME
 import Mod
 import modFolder
-import nexus.DownloadRequest
+import nexus.downloadMod
 import nexus.getDownloadUrl
+import nexus.getModDetails
 import nexus.parseDownloadRequest
 import runCommand
 import save
 import toolConfig
 import toolState
 import java.io.File
-import java.util.zip.ZipFile
 
 fun addModHelp(args: List<String> = listOf()) = """
    add-mod file <path-to-mod-zip> <name-of-mod>*
@@ -36,33 +36,52 @@ fun addMod(args: List<String>) {
 //    println("Add by url")
 //}
 
-fun addModByNexusProtocol(url: String){
+fun addModByNexusProtocol(url: String) {
     val request = parseDownloadRequest(url)
-    println(request)
+    val modInfo = getModDetails(toolConfig.apiKey!!, request.modId)
+    val modName = modInfo.name.lowercase()
+    val filePath = modFolder.path + "/" + modName.replace(" ", "-")
+    toolState.createOrUpdate(modInfo.mod_id, modName, filePath)
+    toolState.update(modInfo, request.fileId)
+    val mod = toolState.byId(modInfo.mod_id)!!
+    save()
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, request)
-    println(downloadUrl)
+    val downloaded = downloadMod(downloadUrl)
+    addModFile(mod, downloaded)
 }
 
 private fun addModByFile(filePath: String, nameOverride: String?) {
     val name = nameOverride ?: File(filePath).nameWithoutExtension
     val sourceFile = File(filePath.replace("~", HOME))
-    if (!sourceFile.exists()){
+
+    val existing = toolState.byName(name)
+    val mod = if (existing != null) existing else {
+        val loadOrder = toolState.nextLoadOrder()
+        val stagePath = modFolder.path + "/" + name.replace(" ", "-")
+        Mod(name, stagePath, loadOrder + 1).also {
+            toolState.mods.add(it)
+            save()
+        }
+    }
+
+    addModFile(mod, sourceFile)
+}
+
+private fun addModFile(mod: Mod, sourceFile: File) {
+    if (!sourceFile.exists()) {
         println("Could not find ${sourceFile.absolutePath}")
         return
     }
-    val stageFile = File(modFolder.path + "/$name")
+    val stageFile = File(mod.filePath)
     val stageExists = stageFile.exists()
     if (stageMod(sourceFile, stageFile)) {
         if (stageExists) {
-            println("Updated $name")
+            println("Updated ${mod.name}")
         } else {
-            val loadOrder = toolState.mods.maxOfOrNull { it.loadOrder } ?: 0
-            toolState.mods.add(Mod(name, stageFile.path, loadOrder + 1))
-            save()
-            println("Added $name")
+            println("Added ${mod.name}")
         }
     } else {
-        println("Failed to add mod $name")
+        println("Failed to add mod ${mod.name}")
     }
 }
 
