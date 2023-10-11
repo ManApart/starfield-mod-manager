@@ -3,10 +3,7 @@ package commands
 import HOME
 import Mod
 import modFolder
-import nexus.downloadMod
-import nexus.getDownloadUrl
-import nexus.getModDetails
-import nexus.parseDownloadRequest
+import nexus.*
 import runCommand
 import save
 import toolConfig
@@ -40,13 +37,16 @@ fun addModByNexusProtocol(url: String) {
     val request = parseDownloadRequest(url)
     val modInfo = getModDetails(toolConfig.apiKey!!, request.modId)
     val modName = modInfo.name.lowercase()
-    val filePath = modFolder.path + "/" + modName.replace(" ", "-")
+    val cleanName = modName.replace(" ", "-")
+    val filePath = modFolder.path + "/" + cleanName
     toolState.createOrUpdate(modInfo.mod_id, modName, filePath)
     toolState.update(modInfo, request.fileId)
     val mod = toolState.byId(modInfo.mod_id)!!
     save()
+    println("Downloading $modName")
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, request)
-    val downloaded = downloadMod(downloadUrl)
+    val destination = "$HOME/Downloads/$cleanName${parseFileExtension(downloadUrl)}"
+    val downloaded = downloadMod(downloadUrl, destination)
     addModFile(mod, downloaded)
 }
 

@@ -52,12 +52,21 @@ fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String {
             }.body()
         }
     }
-
     return links.first().URI
 }
 
+fun parseFileExtension(url: String): String {
+    val namePart = url.split("/").last()
+    val start = namePart.indexOf(".")
+    val end = namePart.indexOf("?", start)
+    return namePart.substring(start, end)
+}
+
 fun downloadMod(url: String, destination: String): File {
-    val result = File(destination)
+    val result = File(destination).also {
+        if (it.exists()) it.delete()
+        it.createNewFile()
+    }
     runBlocking {
         client.get(url) {
         }.bodyAsChannel().copyAndClose(result.writeChannel())
