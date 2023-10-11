@@ -41,6 +41,10 @@ fun getModDetails(apiKey: String, id: Int): ModInfo {
     }
 }
 
+fun getModFiles(apiKey: String, id: String): ModFileInfo{
+    throw NotImplementedError()
+}
+
 fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String {
     val links: List<DownloadLink> = runBlocking {
         with(downloadRequest) {
