@@ -67,15 +67,20 @@ fun downloadMod(initialUrl: String, destination: String): File {
         it.createNewFile()
     }
     runBlocking {
-        client.prepareGet(url){
+        client.prepareGet(url) {
         }.execute { httpResponse ->
             val channel: ByteReadChannel = httpResponse.body()
+            var iterations = 0
             while (!channel.isClosedForRead) {
                 val packet = channel.readRemaining(DEFAULT_BUFFER_SIZE.toLong())
                 while (!packet.isEmpty) {
                     val bytes = packet.readBytes()
                     result.appendBytes(bytes)
-                    println("${result.length()} / ${httpResponse.contentLength()}")
+                    iterations++
+                    if (iterations > 100) {
+                        iterations = 0
+                        println("Progress: ${result.length()} / ${httpResponse.contentLength()}")
+                    }
                 }
             }
         }
