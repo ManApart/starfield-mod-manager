@@ -4,13 +4,11 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.util.cio.*
 import io.ktor.utils.io.*
-import jsonMapper
+import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.File
 
@@ -62,14 +60,25 @@ fun parseFileExtension(url: String): String {
     return namePart.substring(start, end)
 }
 
-fun downloadMod(url: String, destination: String): File {
+fun downloadMod(initialUrl: String, destination: String): File {
+    val url = initialUrl.replace(" ", "%20")
     val result = File(destination).also {
         if (it.exists()) it.delete()
         it.createNewFile()
     }
     runBlocking {
-        client.get(url) {
-        }.bodyAsChannel().copyAndClose(result.writeChannel())
+        client.prepareGet(url){
+        }.execute { httpResponse ->
+            val channel: ByteReadChannel = httpResponse.body()
+            while (!channel.isClosedForRead) {
+                val packet = channel.readRemaining(DEFAULT_BUFFER_SIZE.toLong())
+                while (!packet.isEmpty) {
+                    val bytes = packet.readBytes()
+                    result.appendBytes(bytes)
+                    println("${result.length()} / ${httpResponse.contentLength()}")
+                }
+            }
+        }
     }
     return result
 }
