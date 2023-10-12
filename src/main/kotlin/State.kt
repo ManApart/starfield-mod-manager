@@ -7,7 +7,7 @@ data class State(
 ) {
     fun byId(id: Int) = mods.firstOrNull { it.id == id }
     fun byName(name: String) = mods.firstOrNull { it.name == name }
-    fun nextLoadOrder() = mods.maxOfOrNull { it.loadOrder } ?: 0
+    fun nextLoadOrder() = (mods.maxOfOrNull { it.loadOrder } ?: -1) + 1
 
     fun createOrUpdate(id: Int, name: String, filePath: String) {
         byId(id)?.also {
