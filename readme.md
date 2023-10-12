@@ -25,12 +25,6 @@ disable 2
 enable 1 2 4
 enable 1-4
 
-add nexus nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
-#Get primary mod file and download it
-add url https://www.nexusmods.com/starfield/mods/4183?tab=files
-add id 4183
-add file ~/Downloads/sleepy-time.zip
-
 # Delete mod
 # Should require confirmation
 rm 1
@@ -46,16 +40,6 @@ upgrade
 mod 1 id 123 
 #Delete stage and add new file
 mod 2 file ~/Downloads/sleepy-time.zip
-
-# Move mod in index 1 to 10th in load order
-order 1 10
-
-#Place mod at top or bottom of load order
-order 1 top
-order 1 bottom
-order 1 up 5
-order 1 down
-order 1 set 4
 
 sort order
 sort name

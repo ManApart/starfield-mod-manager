@@ -11,6 +11,10 @@ import toolState
 import java.io.File
 
 fun addModHelp(args: List<String> = listOf()) = """
+   add nexus nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
+   add url https://www.nexusmods.com/starfield/mods/4183?tab=files
+   add id 4183
+   add id 4183 4182 4181 - Add multiple by id
    add-mod file <path-to-mod-zip> <name-of-mod>*
 """.trimIndent()
 
@@ -18,20 +22,29 @@ fun addMod(args: List<String>) {
     val subCommand = args.firstOrNull()
     when {
         args.size < 2 -> println(addModHelp())
-//        subCommand == "id" -> addModById(args[1], args[2])
-//        subCommand == "url" -> addModByUrl(args[1], args[2])
+        subCommand == "nexus" -> addModByNexusProtocol(args[1])
+        subCommand == "id" && args.size > 2 -> addModByIds(args.drop(1))
+        subCommand == "id" -> addModById(args[1])
+        subCommand == "url" -> addModByUrl(args[1])
         subCommand == "file" -> addModByFile(args[1], args.getOrNull(2))
 
         else -> println("Unknown args: ${args.joinToString(" ")}")
     }
 }
 
-//private fun addModById(id: String, name: String){
-//    println("Add by id $id $name")
-//}
-//private fun addModByUrl(url: String, name: String){
-//    println("Add by url")
-//}
+private fun addModByUrl(url: String) {
+    val id = url.replace("https://www.nexusmods.com/starfield/mods/", "").let {
+        it.substring(0, it.indexOf("?"))
+    }
+    addModById(id)
+}
+
+private fun addModByIds(ids: List<String>) = ids.forEach { addModById(it) }
+private fun addModById(id: String) {
+    println("Adding $id")
+    //TODO 
+}
+
 
 fun addModByNexusProtocol(url: String) {
     val request = parseDownloadRequest(url)
