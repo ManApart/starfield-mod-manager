@@ -41,8 +41,13 @@ fun getModDetails(apiKey: String, id: Int): ModInfo {
     }
 }
 
-fun getModFiles(apiKey: String, id: String): ModFileInfo{
-    throw NotImplementedError()
+fun getModFiles(apiKey: String, id: Int): ModFileInfo {
+    return runBlocking {
+        client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id/files.json") {
+            header("accept", "application/json")
+            header("apikey", apiKey)
+        }.body()
+    }
 }
 
 fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String {
@@ -53,6 +58,16 @@ fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String {
                 header("apikey", apiKey)
             }.body()
         }
+    }
+    return links.first().URI
+}
+
+fun getDownloadUrl(apiKey: String, modId: Int, fileId: Int): String {
+    val links: List<DownloadLink> = runBlocking {
+        client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json") {
+            header("accept", "application/json")
+            header("apikey", apiKey)
+        }.body()
     }
     return links.first().URI
 }

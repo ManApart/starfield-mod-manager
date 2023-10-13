@@ -9,6 +9,7 @@ import save
 import toolConfig
 import toolState
 import java.io.File
+import java.lang.IllegalStateException
 
 fun addModHelp(args: List<String> = listOf()) = """
    add nexus nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
@@ -23,8 +24,8 @@ fun addMod(args: List<String>) {
     when {
         args.size < 2 -> println(addModHelp())
         subCommand == "nexus" -> addModByNexusProtocol(args[1])
-        subCommand == "id" && args.size > 2 -> addModByIds(args.drop(1))
-        subCommand == "id" -> addModById(args[1])
+        subCommand == "id" && args.size > 2 -> addModByIds(args.drop(1).map { it.toInt() })
+        subCommand == "id" -> addModById(args[1].toInt())
         subCommand == "url" -> addModByUrl(args[1])
         subCommand == "file" -> addModByFile(args[1], args.getOrNull(2))
 
@@ -33,16 +34,34 @@ fun addMod(args: List<String>) {
 }
 
 private fun addModByUrl(url: String) {
-    val id = url.replace("https://www.nexusmods.com/starfield/mods/", "").let {
+ url.replace("https://www.nexusmods.com/starfield/mods/", "").let {
         it.substring(0, it.indexOf("?"))
-    }
-    addModById(id)
+    }.toIntOrNull()?.let { addModById(it) } ?: println("Could not find id in $url")
 }
 
-private fun addModByIds(ids: List<String>) = ids.forEach { addModById(it) }
-private fun addModById(id: String) {
+private fun addModByIds(ids: List<Int>) = ids.forEach { addModById(it) }
+private fun addModById(id: Int) {
     println("Adding $id")
-    //TODO 
+    val modInfo = getModDetails(toolConfig.apiKey!!, id)
+    val modFileInfo = getModFiles(toolConfig.apiKey!!, id).files.firstOrNull {it.is_primary}
+
+    if (modFileInfo == null){
+        println("Could not find primary file for $id")
+        return
+    }
+
+    val modName = modInfo.name.lowercase()
+    val cleanName = modName.replace(" ", "-")
+    val filePath = modFolder.path + "/" + cleanName
+    toolState.createOrUpdate(modInfo.mod_id, modName, filePath)
+    toolState.update(modInfo, modFileInfo.file_id)
+    val mod = toolState.byId(modInfo.mod_id)!!
+    save()
+    println("Downloading $modName")
+    val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, modInfo.mod_id, modFileInfo.file_id)
+    val destination = "$HOME/Downloads/$cleanName${parseFileExtension(downloadUrl)}"
+    val downloaded = downloadMod(downloadUrl, destination)
+    addModFile(mod, downloaded)
 }
 
 
