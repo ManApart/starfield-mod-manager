@@ -19,12 +19,6 @@ add file ~/Downloads/sleepy-time.zip
 ## Command Concept
 
 ```
-enable <index>
-enable 1
-disable 2
-enable 1 2 4
-enable 1-4
-
 # Delete mod
 # Should require confirmation
 rm 1
@@ -44,9 +38,5 @@ mod 2 file ~/Downloads/sleepy-time.zip
 sort order
 sort name
 sort enabled
-
-config apiKey asfasfdsdfsdaf
-config gamePath
-config
 
 ```
