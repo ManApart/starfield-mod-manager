@@ -3,6 +3,7 @@ package commands
 import Mod
 import toolState
 import java.awt.Desktop
+import java.io.File
 import java.lang.Exception
 import java.net.URI
 
@@ -30,7 +31,6 @@ fun openInWeb(mod: Mod) {
     if (mod.id == null) {
         println("Can't open ${mod.name} because it doesn't have an id.")
     } else {
-        println("Opening ${mod.name}")
         try {
             Desktop.getDesktop().browse(URI(mod.url()))
         } catch (e: Exception) {
@@ -40,5 +40,9 @@ fun openInWeb(mod: Mod) {
 }
 
 fun openLocal(mod: Mod) {
-    TODO("Not yet implemented")
+    try {
+        Desktop.getDesktop().open(File(mod.filePath))
+    } catch (e: Exception) {
+        println("Unable to open ${mod.name} on disk")
+    }
 }
