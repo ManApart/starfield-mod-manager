@@ -130,7 +130,7 @@ private fun stageMod(sourceFile: File, stageFolder: File): Boolean {
             true
         }
         sourceFile.extension in listOf("7z", "rar") -> {
-            stageFolder.runCommand(listOf("7za", "e", "-y", sourceFile.absolutePath), !toolConfig.verbose)
+            stageFolder.runCommand(listOf("7z", "x", "-y", sourceFile.absolutePath), !toolConfig.verbose)
             true
         }
 
