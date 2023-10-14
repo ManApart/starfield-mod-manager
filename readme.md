@@ -39,4 +39,10 @@ sort order
 sort name
 sort enabled
 
+#open mod on nexus
+open 1 
+
+#open mod folder
+local 1
+
 ```

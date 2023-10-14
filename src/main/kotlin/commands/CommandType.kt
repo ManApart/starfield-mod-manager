@@ -19,6 +19,8 @@ enum class CommandType(
     DISABLE("Enable Mod", ::enableHelp, ::disable),
     DEPLOY("Deploy enabled mods", ::deployHelp, ::deploy),
     ORDER("Change Load Order", ::orderHelp, ::order),
+    OPEN("Open mod on web", ::openHelp, ::open),
+    LOCAL("Open local mod folder", ::openHelp, ::local),
     PURGE("Purge all sym links", ::purgeHelp, ::purge),
     HELP("Explain commands", ::helpHelp, ::help),
     LIST("List Mods", ::listHelp, ::list, "ls"),
