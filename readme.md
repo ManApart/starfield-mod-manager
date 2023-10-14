@@ -19,21 +19,12 @@ add file ~/Downloads/sleepy-time.zip
 ## Command Concept
 
 ```
-# Delete mod
-# Should require confirmation
-rm 1
-
 # Check for updates for all mods with an id
 update
 
 # Update a specific mod or all mods
 upgrade 1
 upgrade
-
-# Change mod id
-mod 1 id 123 
-#Delete stage and add new file
-mod 2 file ~/Downloads/sleepy-time.zip
 
 sort order
 sort name

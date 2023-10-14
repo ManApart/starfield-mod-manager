@@ -8,7 +8,8 @@ import kotlin.io.path.Path
 lateinit var toolState: State
 lateinit var toolConfig: Config
 lateinit var modFolder: File
-val HOME = System.getProperty("user.home")
+val HOME = System.getProperty("user.home")!!
+var confirmation: ((List<String>) -> Unit)? = null
 
 val jsonMapper = kotlinx.serialization.json.Json {
     ignoreUnknownKeys = true
@@ -23,6 +24,14 @@ fun main(args: Array<String>) {
         CommandType.LIST.apply(listOf())
         while (true) {
             readLine(readlnOrNull())
+            while (confirmation != null) {
+                confirmation?.let { confirm ->
+                    readlnOrNull()?.parseArgs()?.let {
+                        confirmation = null
+                        confirm(it)
+                    }
+                }
+            }
         }
     } else {
         readLine(args.joinToString(" "))

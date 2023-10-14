@@ -12,7 +12,7 @@ fun changeHelp(args: List<String>) = """
 fun changeMod(args: List<String>) {
     val i = args.firstOrNull()?.toIntOrNull()
     when {
-        args.isEmpty() -> println(enableHelp(listOf()))
+        args.isEmpty() -> println(changeHelp(listOf()))
         args.size == 3 && args[1] == "id" -> updateId(i!!, args.last().toInt())
         args.size == 3 && args[1] == "file" -> updateFile(i!!, args.last())
         else -> println(changeHelp(listOf()))
