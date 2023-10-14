@@ -50,7 +50,7 @@ fun makeLink(gamePath: String, modFile: File) {
             println("Update: ${modFile.path}")
             gameFile.delete()
             Files.createSymbolicLink(gameFile.toPath(), modFile.canonicalFile.toPath())
-        }
+        } else verbose("Skip: ${modFile.path}")
     } else if (gameFile.exists()) {
         //TODO - eventually backup real file and create link
         println("Skipping replacing real file ${modFile.path}")
@@ -62,8 +62,8 @@ fun makeLink(gamePath: String, modFile: File) {
 
 fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
     val gameFile = File(toolConfig.dataPath + "/$gamePath")
-    verbose("Delete: $gamePath")
     if (!modFiles.contains(gamePath) && Files.isSymbolicLink(gameFile.toPath())) {
+        verbose("Delete: $gamePath")
         gameFile.delete()
     }
 

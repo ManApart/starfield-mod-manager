@@ -14,6 +14,7 @@ Get a personal API key at https://www.nexusmods.com/users/myaccount?tab=api%20ac
 ```
 add file ~/Downloads/sleepy-time
 add file ~/Downloads/sleepy-time.zip
+add file ~/Downloads/starfield-script-extender-(sfse).7z
 ```
 
 ## Command Concept
