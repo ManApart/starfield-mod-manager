@@ -2,6 +2,10 @@
 
 Get a personal API key at https://www.nexusmods.com/users/myaccount?tab=api%20access
 
+## Dependencies
+
+- `7z` for installing from rar or 7zip files
+
 
 ## Setup Vortex Links
 - Place `smm.desktop` in `~/.local/share/applications/`.

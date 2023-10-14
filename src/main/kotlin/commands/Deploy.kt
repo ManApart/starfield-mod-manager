@@ -7,6 +7,8 @@ import java.io.File
 import java.nio.file.Files
 
 fun deployHelp(args: List<String>) = """
+    deploy
+    Applies all mods to the game folder by creating the appropriate symlinks
 """.trimIndent()
 
 fun deploy(args: List<String>) {

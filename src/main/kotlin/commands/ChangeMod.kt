@@ -7,6 +7,7 @@ import java.io.File
 fun changeHelp(args: List<String>) = """
     mod <mod index> id 123 - Update mod's id
     mod <mod index> file ~/Downloads/sleepy-time.zip - Delete mod's stage folder and restage from zip
+    
 """.trimIndent()
 
 fun changeMod(args: List<String>) {

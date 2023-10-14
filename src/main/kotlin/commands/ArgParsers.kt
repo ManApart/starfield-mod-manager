@@ -1,7 +1,11 @@
 package commands
 
 fun List<String>.getIndicesOrRange(modSize: Int): List<Int> {
-    return if (first().contains("-")) getRange(modSize) else getIndices(modSize)
+    return when {
+        first() == "all" -> (0..<modSize).toList()
+        first().contains("-") -> getRange(modSize)
+        else -> getIndices(modSize)
+    }
 }
 
 fun List<String>.getIndices(modSize: Int): List<Int> {

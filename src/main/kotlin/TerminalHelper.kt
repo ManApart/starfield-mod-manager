@@ -6,12 +6,18 @@ fun File.runCommand(command: String): String? {
     val parts = command.split("\\s".toRegex())
     return runCommand(parts)
 }
-fun File.runCommand(parts: List<String>): String? {
+
+fun File.runCommand(parts: List<String>, silent: Boolean = false, echo: Boolean = false): String? {
+    if (echo) println(parts.joinToString(" "))
     return try {
         val proc = ProcessBuilder(*parts.toTypedArray())
             .directory(this)
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
+            .apply {
+                if (!silent) {
+                    redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                    redirectError(ProcessBuilder.Redirect.INHERIT)
+                }
+            }
             .start()
 
         proc.waitFor(60, TimeUnit.MINUTES)

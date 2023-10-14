@@ -34,19 +34,18 @@ fun addMod(args: List<String>) {
 }
 
 private fun addModByUrl(url: String) {
- url.replace("https://www.nexusmods.com/starfield/mods/", "").let {idPart ->
-     val end = idPart.indexOf("?").takeIf { it >0 } ?: idPart.length
+    url.replace("https://www.nexusmods.com/starfield/mods/", "").let { idPart ->
+        val end = idPart.indexOf("?").takeIf { it > 0 } ?: idPart.length
         idPart.substring(0, end)
     }.toIntOrNull()?.let { addModById(it) } ?: println("Could not find id in $url")
 }
 
 private fun addModByIds(ids: List<Int>) = ids.forEach { addModById(it) }
-private fun addModById(id: Int) {
-    println("Adding $id")
+fun addModById(id: Int, fileId: Int? = null) {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
-    val modFileInfo = getModFiles(toolConfig.apiKey!!, id).files.firstOrNull {it.is_primary}
+    val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id).files.firstOrNull { it.is_primary }?.file_id
 
-    if (modFileInfo == null){
+    if (modFileId == null) {
         println("Could not find primary file for $id")
         return
     }
@@ -55,11 +54,11 @@ private fun addModById(id: Int) {
     val cleanName = modName.replace(" ", "-")
     val filePath = modFolder.path + "/" + cleanName
     toolState.createOrUpdate(modInfo.mod_id, modName, filePath)
-    toolState.update(modInfo, modFileInfo.file_id)
+    toolState.update(modInfo, modFileId)
     val mod = toolState.byId(modInfo.mod_id)!!
     save()
-    println("Downloading $modName")
-    val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, modInfo.mod_id, modFileInfo.file_id)
+    println("Downloading $id: $modName")
+    val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, modInfo.mod_id, modFileId)
     val destination = "$HOME/Downloads/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
     addModFile(mod, downloaded)
@@ -120,10 +119,24 @@ fun addModFile(mod: Mod, sourceFile: File) {
 
 private fun stageMod(sourceFile: File, stageFolder: File): Boolean {
     stageFolder.mkdirs()
-    if (sourceFile.isDirectory) {
-        sourceFile.copyRecursively(stageFolder, overwrite = true)
-    } else {
-        stageFolder.runCommand(listOf("unzip", "-q", "-o", sourceFile.absolutePath))
+    return when {
+        sourceFile.isDirectory -> {
+            sourceFile.copyRecursively(stageFolder, overwrite = true)
+            true
+        }
+
+        sourceFile.extension == "zip" -> {
+            stageFolder.runCommand(listOf("unzip", "-q", "-o", sourceFile.absolutePath), !toolConfig.verbose)
+            true
+        }
+        sourceFile.extension in listOf("7z", "rar") -> {
+            stageFolder.runCommand(listOf("7za", "e", "-y", sourceFile.absolutePath), !toolConfig.verbose)
+            true
+        }
+
+        else -> {
+            println("Unknown Filetype: ${sourceFile.extension}")
+            false
+        }
     }
-    return true
 }
