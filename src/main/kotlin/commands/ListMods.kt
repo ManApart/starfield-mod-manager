@@ -8,8 +8,8 @@ fun listMods(args: List<String> = listOf()) {
     val columns = listOf(
         Column("Id", 10 ),
         Column("Version", 10),
-        Column("Enabled", 9),
         Column("Load Order", 12, true),
+        Column("Enabled", 9),
         Column("Index", 7, true),
         Column("Name", 22),
     )

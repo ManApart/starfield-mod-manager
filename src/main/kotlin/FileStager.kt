@@ -34,7 +34,7 @@ fun stageMod(sourceFile: File, stageFolder: File, modName: String): Boolean {
 private fun fixFolderPath(modName: String, stageFolder: File) {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
     val stagedNames = stagedFiles.map { it.nameWithoutExtension.lowercase() }
-    val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video")
+    val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse")
     when {
         stagedNames.contains("data") -> {}
         stagedNames.any { dataTopLevelNames.contains(it) } -> nestInData(modName, stageFolder, stagedFiles)
@@ -67,6 +67,12 @@ private fun unNest(stageFolder: File, nested: File, topPath: String) {
     }
 }
 
+//TODO
 private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Nesting files in data for $modName")
+    File(stageFolder.path + "/Data").mkdirs()
+    stagedFiles.forEach { file ->
+        val newPath = Path(file.path.replace(stageFolder.path, "${stageFolder.path}/Data"))
+        Files.copy(file.toPath(), newPath)
+    }
 }
