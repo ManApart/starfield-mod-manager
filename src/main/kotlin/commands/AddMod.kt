@@ -34,8 +34,9 @@ fun addMod(args: List<String>) {
 }
 
 private fun addModByUrl(url: String) {
- url.replace("https://www.nexusmods.com/starfield/mods/", "").let {
-        it.substring(0, it.indexOf("?"))
+ url.replace("https://www.nexusmods.com/starfield/mods/", "").let {idPart ->
+     val end = idPart.indexOf("?").takeIf { it >0 } ?: idPart.length
+        idPart.substring(0, end)
     }.toIntOrNull()?.let { addModById(it) } ?: println("Could not find id in $url")
 }
 

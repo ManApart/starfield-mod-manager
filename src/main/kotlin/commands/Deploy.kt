@@ -2,6 +2,7 @@ package commands
 
 import toolConfig
 import toolState
+import verbose
 import java.io.File
 import java.nio.file.Files
 
@@ -41,12 +42,12 @@ private fun getAllModFiles(): Map<String, File> {
 }
 
 fun makeLink(gamePath: String, modFile: File) {
-    val gameFile = File(toolConfig.gamePath + "/$gamePath")
+    val gameFile = File(toolConfig.dataPath + "/$gamePath")
     gameFile.parentFile.mkdirs()
     if (Files.isSymbolicLink(gameFile.toPath())) {
         val existingLink = Files.readSymbolicLink(gameFile.toPath())
         if (existingLink != modFile.canonicalFile.toPath()) {
-            println("Update link ${modFile.path}")
+            println("Update: ${modFile.path}")
             gameFile.delete()
             Files.createSymbolicLink(gameFile.toPath(), modFile.canonicalFile.toPath())
         }
@@ -54,12 +55,14 @@ fun makeLink(gamePath: String, modFile: File) {
         //TODO - eventually backup real file and create link
         println("Skipping replacing real file ${modFile.path}")
     } else {
+        verbose("Add: ${modFile.path}")
         Files.createSymbolicLink(gameFile.toPath(), modFile.canonicalFile.toPath())
     }
 }
 
 fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
-    val gameFile = File(toolConfig.gamePath + "/$gamePath")
+    val gameFile = File(toolConfig.dataPath + "/$gamePath")
+    verbose("Delete: $gamePath")
     if (!modFiles.contains(gamePath) && Files.isSymbolicLink(gameFile.toPath())) {
         gameFile.delete()
     }

@@ -81,10 +81,13 @@ fun parseFileExtension(url: String): String {
 
 fun downloadMod(initialUrl: String, destination: String): File {
     val url = initialUrl.replace(" ", "%20")
-    val result = File(destination).also {
-        if (it.exists()) it.delete()
-        it.createNewFile()
+    val result = File(destination)
+    if (result.exists()) {
+        println("Skipping download since it already exists")
+        return result
     }
+
+    result.createNewFile()
     runBlocking {
         client.prepareGet(url) {
         }.execute { httpResponse ->
