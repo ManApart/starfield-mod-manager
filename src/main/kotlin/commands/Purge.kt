@@ -9,7 +9,7 @@ fun purgeHelp(args: List<String>) = """
 """.trimIndent()
 
 fun purge(args: List<String>) {
-    toolConfig.dataPath?.let { gamePath ->
+    toolConfig.gamePath?.let { gamePath ->
         File(gamePath).getFiles { Files.isSymbolicLink(it.toPath()) }.forEach { link ->
             println("Deleting ${link.path}")
         }

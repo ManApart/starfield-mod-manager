@@ -44,7 +44,7 @@ private fun getAllModFiles(): Map<String, File> {
 }
 
 fun makeLink(gamePath: String, modFile: File) {
-    val gameFile = File(toolConfig.dataPath + "/$gamePath")
+    val gameFile = File(toolConfig.gamePath + "/$gamePath")
     gameFile.parentFile.mkdirs()
     if (Files.isSymbolicLink(gameFile.toPath())) {
         val existingLink = Files.readSymbolicLink(gameFile.toPath())
@@ -63,7 +63,7 @@ fun makeLink(gamePath: String, modFile: File) {
 }
 
 fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
-    val gameFile = File(toolConfig.dataPath + "/$gamePath")
+    val gameFile = File(toolConfig.gamePath + "/$gamePath")
     if (!modFiles.contains(gamePath) && Files.isSymbolicLink(gameFile.toPath())) {
         verbose("Delete: $gamePath")
         gameFile.delete()

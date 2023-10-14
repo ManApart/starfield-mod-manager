@@ -6,7 +6,7 @@ import save
 import toolConfig
 
 fun configHelp(args: List<String> = listOf()) = """
-    config data-path <path-to-folder> - Sets the path to the folder in my documents containing the starfield Data folder
+    config game-path <path-to-folder> - Sets the path to the folder under steam containing the starfield Data folder and exe
     config api-key <key-from-nexus>
 """.trimIndent()
 
@@ -14,8 +14,8 @@ fun config(args: List<String>) {
     when {
         args.isEmpty() -> println("Config:\n" + jsonMapper.encodeToString(toolConfig))
         args.size == 2 && args.first() == "game-path" -> {
-            toolConfig.dataPath = args.last()
-            println("Updated data path to ${toolConfig.dataPath}")
+            toolConfig.gamePath = args.last()
+            println("Updated game path to ${toolConfig.gamePath}")
             save()
         }
 
