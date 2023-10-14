@@ -6,6 +6,7 @@ data class State(
     val mods: MutableList<Mod> = mutableListOf()
 ) {
     fun byId(id: Int) = mods.firstOrNull { it.id == id }
+    fun byIndex(i: Int) = mods.getOrNull(i).also { if (it == null) println("No Mod found for $i") }
     fun byName(name: String) = mods.firstOrNull { it.name == name }
     fun nextLoadOrder() = (mods.maxOfOrNull { it.loadOrder } ?: -1) + 1
 

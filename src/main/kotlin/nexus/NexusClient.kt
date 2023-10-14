@@ -96,7 +96,7 @@ fun downloadMod(initialUrl: String, destination: String): File {
                     val bytes = packet.readBytes()
                     result.appendBytes(bytes)
                     iterations++
-                    if (iterations > 100) {
+                    if (iterations > 1000) {
                         iterations = 0
                         println("Progress: ${result.length()} / ${httpResponse.contentLength()}")
                     }

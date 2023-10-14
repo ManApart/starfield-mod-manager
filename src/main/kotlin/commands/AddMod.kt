@@ -99,7 +99,7 @@ private fun addModByFile(filePath: String, nameOverride: String?) {
     addModFile(mod, sourceFile)
 }
 
-private fun addModFile(mod: Mod, sourceFile: File) {
+fun addModFile(mod: Mod, sourceFile: File) {
     if (!sourceFile.exists()) {
         println("Could not find ${sourceFile.absolutePath}")
         return

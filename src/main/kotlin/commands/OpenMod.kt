@@ -21,7 +21,7 @@ fun local(args: List<String>) = openMod(false, args)
 private fun openMod(web: Boolean = true, args: List<String>) {
     val mods = args.getIndicesOrRange(toolState.mods.size).mapNotNull { toolState.mods.getOrNull(it) }
     when {
-        mods.isEmpty() -> println(enableHelp(listOf()))
+        mods.isEmpty() -> println(openHelp(listOf()))
         web -> mods.forEach { openInWeb(it) }
         else -> mods.forEach { openLocal(it) }
     }
