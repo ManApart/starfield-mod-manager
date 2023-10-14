@@ -6,6 +6,7 @@ import modFolder
 import nexus.*
 import runCommand
 import save
+import stageMod
 import toolConfig
 import toolState
 import java.io.File
@@ -61,7 +62,7 @@ fun addModById(id: Int, fileId: Int? = null) {
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, modInfo.mod_id, modFileId)
     val destination = "$HOME/Downloads/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
-    addModFile(mod, downloaded)
+    addModFile(mod, downloaded, modName)
 }
 
 
@@ -79,7 +80,7 @@ fun addModByNexusProtocol(url: String) {
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, request)
     val destination = "$HOME/Downloads/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
-    addModFile(mod, downloaded)
+    addModFile(mod, downloaded, modName)
 }
 
 private fun addModByFile(filePath: String, nameOverride: String?) {
@@ -96,17 +97,17 @@ private fun addModByFile(filePath: String, nameOverride: String?) {
         }
     }
 
-    addModFile(mod, sourceFile)
+    addModFile(mod, sourceFile, name)
 }
 
-fun addModFile(mod: Mod, sourceFile: File) {
+fun addModFile(mod: Mod, sourceFile: File, modName: String) {
     if (!sourceFile.exists()) {
         println("Could not find ${sourceFile.absolutePath}")
         return
     }
     val stageFile = File(mod.filePath)
     val stageExists = stageFile.exists()
-    if (stageMod(sourceFile, stageFile)) {
+    if (stageMod(sourceFile, stageFile, modName)) {
         if (stageExists) {
             println("Updated ${mod.name}")
         } else {
@@ -114,29 +115,5 @@ fun addModFile(mod: Mod, sourceFile: File) {
         }
     } else {
         println("Failed to add mod ${mod.name}")
-    }
-}
-
-private fun stageMod(sourceFile: File, stageFolder: File): Boolean {
-    stageFolder.mkdirs()
-    return when {
-        sourceFile.isDirectory -> {
-            sourceFile.copyRecursively(stageFolder, overwrite = true)
-            true
-        }
-
-        sourceFile.extension == "zip" -> {
-            stageFolder.runCommand(listOf("unzip", "-q", "-o", sourceFile.absolutePath), !toolConfig.verbose)
-            true
-        }
-        sourceFile.extension in listOf("7z", "rar") -> {
-            stageFolder.runCommand(listOf("7z", "x", "-y", sourceFile.absolutePath), !toolConfig.verbose)
-            true
-        }
-
-        else -> {
-            println("Unknown Filetype: ${sourceFile.extension}")
-            false
-        }
     }
 }

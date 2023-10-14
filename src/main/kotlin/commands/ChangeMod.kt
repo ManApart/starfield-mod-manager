@@ -49,7 +49,7 @@ private fun updateFile(i: Int, sourceFilePath: String) {
         if (sourceFile.exists()) {
             val existing = File(mod.filePath)
             if (existing.exists()) existing.deleteRecursively()
-            addModFile(mod, sourceFile)
+            addModFile(mod, sourceFile, mod.name)
         } else {
             println("No file found at $sourceFilePath")
         }
