@@ -1,6 +1,7 @@
 package commands
 
 import fetchModInfo
+import urlToId
 
 fun fetchHelp(args: List<String> = listOf()) = """
    fetch <mod id> - Add mod metadata without downloading files
@@ -8,12 +9,19 @@ fun fetchHelp(args: List<String> = listOf()) = """
 """.trimIndent()
 
 fun fetchMod(args: List<String>) {
+    val firstArg = args.firstOrNull() ?: ""
     when {
         args.isEmpty() -> println(addModHelp())
-        else -> args.mapNotNull { it.toIntOrNull() }.forEach {
-            fetchModInfo(it)?.let { mod -> println("Fetched info for ${mod.name}") }
-        }
+        firstArg.toIntOrNull() != null -> fetchModsById(args.mapNotNull { it.toIntOrNull() })
+        firstArg.startsWith("http") -> addModByUrls(args)
+        else -> fetchModsById(args.mapNotNull { it.toIntOrNull() })
     }
 }
 
+private fun fetchModsById(ids: List<Int>) = ids.forEach{fetchModInfo(it)?.let { mod -> println("Fetched info for ${mod.name}") } }
 
+private fun addModByUrls(urls: List<String>) {
+    urls.forEach { url ->
+        url.urlToId()?.let { fetchModInfo(it) }
+    }
+}
