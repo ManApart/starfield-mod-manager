@@ -52,27 +52,35 @@ fun unNestFiles(modName: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Unnesting files in data for $modName")
     val topFolder = stagedFiles.first()
     topFolder.listFiles()?.forEach { nested ->
-        unNest(stageFolder, nested, topFolder.path)
+        unNest(stageFolder.path, nested, topFolder.path)
     }
     topFolder.deleteRecursively()
 }
 
-private fun unNest(stageFolder: File, nested: File, topPath: String) {
-    val newPath = stageFolder.path + nested.path.replace(topPath, "")
+private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
+    val newPath = stageFolderPath + nested.path.replace(topPath, "")
     Files.copy(nested.toPath(), Path(newPath))
-    if (nested.isDirectory){
+    if (nested.isDirectory) {
         nested.listFiles()?.forEach { moreNested ->
-            unNest(stageFolder, moreNested, topPath)
+            unNest(stageFolderPath, moreNested, topPath)
         }
     }
 }
 
-//TODO
 private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Nesting files in data for $modName")
-    File(stageFolder.path + "/Data").mkdirs()
+    val dataFolder = File(stageFolder.path + "/Data").also { it.mkdirs() }
     stagedFiles.forEach { file ->
-        val newPath = Path(file.path.replace(stageFolder.path, "${stageFolder.path}/Data"))
-        Files.copy(file.toPath(), newPath)
+        nest(stageFolder.path, file, dataFolder.path)
+    }
+}
+
+private fun nest(stageFolderPath: String, file: File, dataPath: String) {
+    val newPath = Path(file.path.replace(stageFolderPath, dataPath))
+    Files.move(file.toPath(), newPath)
+    if (file.isDirectory) {
+        file.listFiles()?.forEach { moreNested ->
+            nest(stageFolderPath, moreNested, dataPath)
+        }
     }
 }

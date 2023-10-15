@@ -17,7 +17,7 @@ fun addModHelp(args: List<String> = listOf()) = """
    add url https://www.nexusmods.com/starfield/mods/4183?tab=files
    add id 4183
    add id 4183 4182 4181 - Add multiple by id
-   add-mod file <path-to-mod-zip> <name-of-mod>*
+   add file <path-to-mod-zip> <name-of-mod>*
 """.trimIndent()
 
 fun addMod(args: List<String>) {
