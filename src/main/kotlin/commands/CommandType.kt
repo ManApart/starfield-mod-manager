@@ -19,6 +19,7 @@ enum class CommandType(
     DISABLE("Enable Mod", ::enableHelp, ::disable),
     DEPLOY("Deploy enabled mods", ::deployHelp, ::deploy),
     HELP("Explain commands", ::helpHelp, ::help),
+    FETCH("Fetch Mod Data", ::fetchHelp, ::fetchMod),
     LIST("List Mods", ::listHelp, ::listMods, "ls"),
     ORDER("Change Load Order", ::orderHelp, ::order),
     OPEN("Open mod on web", ::openHelp, ::open),

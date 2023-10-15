@@ -1,6 +1,7 @@
 package commands
 
 import HOME
+import addModFile
 import save
 import toolState
 import java.io.File
