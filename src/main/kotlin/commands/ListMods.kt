@@ -1,6 +1,7 @@
 package commands
 
 import toolData
+import java.io.File
 
 fun listHelp(args: List<String>) = "List Mod details"
 
@@ -9,6 +10,7 @@ fun listMods(args: List<String> = listOf()) {
         Column("Id", 10 ),
         Column("Version", 10),
         Column("Load Order", 12, true),
+        Column("Staged", 9),
         Column("Enabled", 9),
         Column("Index", 7, true),
         Column("Name", 22),
@@ -18,9 +20,10 @@ fun listMods(args: List<String> = listOf()) {
             val enabledCheck = if (enabled) "X" else " "
             val idClean = id?.toString() ?: "?"
             val versionClean = version ?: "?"
-            listOf(i, enabledCheck, loadOrder, idClean, versionClean, name)
+            val staged = if(File(filePath).exists()) "X" else " "
             mapOf(
                 "Index" to i,
+                "Staged" to staged,
                 "Enabled" to enabledCheck,
                 "Load Order" to loadOrder,
                 "Id" to idClean,
