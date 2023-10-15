@@ -4,7 +4,10 @@ Get a personal API key at https://www.nexusmods.com/users/myaccount?tab=api%20ac
 
 ## Dependencies
 
-- `7z` for installing from rar or 7zip files
+You'll need to sudo apt install them
+
+- `7z` for installing from 7zip files
+- `libarchive-tools` for installing rar files
 
 
 ## Setup Vortex Links

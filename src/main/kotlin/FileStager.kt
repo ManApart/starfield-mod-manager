@@ -15,8 +15,13 @@ fun stageMod(sourceFile: File, stageFolder: File, modName: String): Boolean {
             true
         }
 
-        sourceFile.extension in listOf("7z", "rar") -> {
+        sourceFile.extension == "7z" -> {
             stageFolder.runCommand(listOf("7z", "x", "-y", sourceFile.absolutePath), !toolConfig.verbose)
+            true
+        }
+
+        sourceFile.extension == "rar" -> {
+            stageFolder.runCommand(listOf("bsdtar", "-xf", sourceFile.absolutePath), !toolConfig.verbose)
             true
         }
 
@@ -59,7 +64,7 @@ fun unNestFiles(modName: String, stageFolder: File, stagedFiles: Array<File>) {
 
 private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
     val newPath = stageFolderPath + nested.path.replace(topPath, "")
-    Files.copy(nested.toPath(), Path(newPath))
+    Files.move(nested.toPath(), Path(newPath))
     if (nested.isDirectory) {
         nested.listFiles()?.forEach { moreNested ->
             unNest(stageFolderPath, moreNested, topPath)
