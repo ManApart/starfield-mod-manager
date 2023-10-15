@@ -13,7 +13,11 @@ fun addModById(id: Int, fileId: Int? = null) {
 
 fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
-    val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id).files.firstOrNull { it.is_primary }?.file_id
+    val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id).files.let { files ->
+        if (files.size == 1) files.first().file_id else {
+            files.firstOrNull { it.is_primary }?.file_id
+        }
+    }
 
     if (modFileId == null) {
         println("Could not find primary file for $id")
