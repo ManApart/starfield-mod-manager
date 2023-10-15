@@ -1,5 +1,6 @@
 import nexus.*
 import java.io.File
+import kotlin.math.max
 
 fun addModById(id: Int, fileId: Int? = null) {
     val mod = fetchModInfo(id, fileId) ?: return
@@ -13,11 +14,7 @@ fun addModById(id: Int, fileId: Int? = null) {
 
 fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
-    val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id).files.let { files ->
-        if (files.size == 1) files.first().file_id else {
-            files.firstOrNull { it.is_primary }?.file_id
-        }
-    }
+    val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id).getPrimaryFile()
 
     if (modFileId == null) {
         println("Could not find primary file for $id")
@@ -30,6 +27,30 @@ fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     toolData.createOrUpdate(modInfo.mod_id, modName, filePath)
     toolData.update(modInfo, modFileId)
     return toolData.byId(modInfo.mod_id)!!.also { save() }
+}
+
+private val versionComparator = Comparator { fileA: ModFileInfoFile, fileB: ModFileInfoFile ->
+    val versionA = fileA.version.split(".").mapNotNull { it.toIntOrNull() }
+    val versionB = fileB.version.split(".").mapNotNull { it.toIntOrNull() }
+    val max = max(versionA.size, versionB.size)
+    (0..max).forEach { i ->
+        val a = versionA.getOrNull(i) ?: 0
+        val b = versionB.getOrNull(i) ?: 0
+        when {
+            a > b -> return@Comparator -1
+            a < b -> return@Comparator 1
+            else -> {}
+        }
+    }
+    0
+}
+
+fun ModFileInfo.getPrimaryFile(): Int? {
+    return files.let { files ->
+        if (files.size == 1) files.first().file_id else {
+            files.firstOrNull { it.is_primary }?.file_id
+        } ?: files.sortedWith(versionComparator).firstOrNull()?.file_id
+    }
 }
 
 

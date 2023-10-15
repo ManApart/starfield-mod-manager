@@ -56,14 +56,3 @@ fun save() {
 fun verbose(message: String) {
     if (toolConfig.verbose) println(message)
 }
-
-private fun modTest() {
-    val modsDir = File("./mods").also { if (!it.exists()) it.mkdir() }
-    modsDir.listFiles()!!.forEach { Files.delete(it.toPath()) }
-
-    val testSym = Files.createSymbolicLink(Path("mods/test"), Path("src"))
-
-    modsDir.listFiles()!!.filter { Files.isSymbolicLink(it.toPath()) }.forEach {
-        println(it.toPath().toFile().absolutePath + ", " + Files.readSymbolicLink(it.toPath()).toFile().absolutePath)
-    }
-}
