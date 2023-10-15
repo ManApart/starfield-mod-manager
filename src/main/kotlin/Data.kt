@@ -2,7 +2,7 @@ import kotlinx.serialization.Serializable
 import nexus.ModInfo
 
 @Serializable
-data class State(
+data class Data(
     val mods: MutableList<Mod> = mutableListOf()
 ) {
     fun byId(id: Int) = mods.firstOrNull { it.id == id }

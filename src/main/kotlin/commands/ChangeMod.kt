@@ -2,7 +2,7 @@ package commands
 
 import addModFile
 import save
-import toolState
+import toolData
 import java.io.File
 
 fun changeHelp(args: List<String>) = """
@@ -28,7 +28,7 @@ fun changeMod(args: List<String>) {
 }
 
 private fun updateId(i: Int, id: Int) {
-    toolState.byIndex(i)?.let { mod ->
+    toolData.byIndex(i)?.let { mod ->
         println("${mod.name} id updated ${mod.id ?: "?"} -> $id")
         mod.id = id
         save()
@@ -36,7 +36,7 @@ private fun updateId(i: Int, id: Int) {
 }
 
 private fun updateName(i: Int, newName:String) {
-    toolState.byIndex(i)?.let { mod ->
+    toolData.byIndex(i)?.let { mod ->
         println("${mod.name} renamed to $newName")
         mod.name = newName
         save()
@@ -44,7 +44,7 @@ private fun updateName(i: Int, newName:String) {
 }
 
 private fun updateFile(i: Int, sourceFilePath: String) {
-    toolState.byIndex(i)?.let { mod ->
+    toolData.byIndex(i)?.let { mod ->
         val sourceFile = File(sourceFilePath)
         if (sourceFile.exists()) {
             val existing = File(mod.filePath)

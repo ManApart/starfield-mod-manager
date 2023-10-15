@@ -2,7 +2,7 @@ package commands
 
 import Mod
 import addModById
-import toolState
+import toolData
 import java.io.File
 
 fun refreshHelp(args: List<String> = listOf()) = """
@@ -17,12 +17,12 @@ fun refresh(args: List<String>) {
     if (args.isEmpty()) {
         println(refreshHelp())
     } else if (args.first() == "empty"){
-        toolState.mods
+        toolData.mods
             .filter { !File(it.filePath).exists() }
             .refreshMods()
     } else {
-        args.getIndicesOrRange(toolState.mods.size)
-            .mapNotNull { toolState.byIndex(it) }
+        args.getIndicesOrRange(toolData.mods.size)
+            .mapNotNull { toolData.byIndex(it) }
             .refreshMods()
     }
 }

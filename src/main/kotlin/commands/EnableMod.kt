@@ -1,7 +1,7 @@
 package commands
 
 import save
-import toolState
+import toolData
 
 fun enableHelp(args: List<String>) = """
     enable <mod index>
@@ -19,24 +19,24 @@ fun enableMod(enable: Boolean = true, args: List<String>) {
     when {
         args.isEmpty() -> println(enableHelp(listOf()))
         args.size == 1 && args.first().contains("-") -> enableRange(enable, args)
-        args.size == 1 && args.first() == "all" -> enableRange(enable, listOf("0-${toolState.mods.size - 1}"))
+        args.size == 1 && args.first() == "all" -> enableRange(enable, listOf("0-${toolData.mods.size - 1}"))
         else -> enableList(enable, args)
     }
 }
 
 private fun enableList(enable: Boolean, args: List<String>) {
-    args.getIndices(toolState.mods.size).forEach { i ->
-        toolState.mods[i].enabled = enable
+    args.getIndices(toolData.mods.size).forEach { i ->
+        toolData.mods[i].enabled = enable
     }
     save()
     CommandType.LIST.apply(listOf())
 }
 
 private fun enableRange(enable: Boolean, args: List<String>) {
-    val range = args.getRange(toolState.mods.size)
+    val range = args.getRange(toolData.mods.size)
     if (range.isNotEmpty()) {
         range.forEach { i ->
-            toolState.mods[i].enabled = enable
+            toolData.mods[i].enabled = enable
         }
         save()
         CommandType.LIST.apply(listOf())

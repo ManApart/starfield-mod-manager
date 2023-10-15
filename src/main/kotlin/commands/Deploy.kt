@@ -1,7 +1,7 @@
 package commands
 
 import toolConfig
-import toolState
+import toolData
 import verbose
 import java.io.File
 import java.nio.file.Files
@@ -24,7 +24,7 @@ fun deploy(args: List<String>) {
 }
 
 private fun getDisabledModPaths(): List<String> {
-    return toolState.mods.filter { !it.enabled }.flatMap { mod ->
+    return toolData.mods.filter { !it.enabled }.flatMap { mod ->
         val modRoot = File(mod.filePath).absolutePath + "/"
         mod.getModFiles().map { file ->
             file.absolutePath.replace(modRoot, "")
@@ -34,7 +34,7 @@ private fun getDisabledModPaths(): List<String> {
 
 private fun getAllModFiles(): Map<String, File> {
     val mappings = mutableMapOf<String, File>()
-    toolState.mods.filter { it.enabled }.sortedBy { it.loadOrder }.forEach { mod ->
+    toolData.mods.filter { it.enabled }.sortedBy { it.loadOrder }.forEach { mod ->
         val modRoot = File(mod.filePath).absolutePath + "/"
         mod.getModFiles().forEach { file ->
             mappings[file.absolutePath.replace(modRoot, "")] = file

@@ -27,9 +27,9 @@ fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     val modName = modInfo.name.lowercase()
     val cleanName = modName.replace(" ", "-")
     val filePath = modFolder.path + "/" + cleanName
-    toolState.createOrUpdate(modInfo.mod_id, modName, filePath)
-    toolState.update(modInfo, modFileId)
-    return toolState.byId(modInfo.mod_id)!!.also { save() }
+    toolData.createOrUpdate(modInfo.mod_id, modName, filePath)
+    toolData.update(modInfo, modFileId)
+    return toolData.byId(modInfo.mod_id)!!.also { save() }
 }
 
 
@@ -39,9 +39,9 @@ fun addModByNexusProtocol(url: String) {
     val modName = modInfo.name.lowercase()
     val cleanName = modName.replace(" ", "-")
     val filePath = modFolder.path + "/" + cleanName
-    toolState.createOrUpdate(modInfo.mod_id, modName, filePath)
-    toolState.update(modInfo, request.fileId)
-    val mod = toolState.byId(modInfo.mod_id)!!
+    toolData.createOrUpdate(modInfo.mod_id, modName, filePath)
+    toolData.update(modInfo, request.fileId)
+    val mod = toolData.byId(modInfo.mod_id)!!
     save()
     println("Downloading $modName")
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, request)
@@ -54,12 +54,12 @@ fun addModByFile(filePath: String, nameOverride: String?) {
     val name = nameOverride ?: File(filePath).nameWithoutExtension
     val sourceFile = File(filePath)
 
-    val existing = toolState.byName(name)
+    val existing = toolData.byName(name)
     val mod = if (existing != null) existing else {
-        val loadOrder = toolState.nextLoadOrder()
+        val loadOrder = toolData.nextLoadOrder()
         val stagePath = modFolder.path + "/" + name.replace(" ", "-")
         Mod(name, stagePath, loadOrder + 1).also {
-            toolState.mods.add(it)
+            toolData.mods.add(it)
             save()
         }
     }

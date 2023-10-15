@@ -1,6 +1,6 @@
 package commands
 
-import toolState
+import toolData
 
 fun listHelp(args: List<String>) = "List Mod details"
 
@@ -13,7 +13,7 @@ fun listMods(args: List<String> = listOf()) {
         Column("Index", 7, true),
         Column("Name", 22),
     )
-    val data = toolState.mods.mapIndexed { i, mod ->
+    val data = toolData.mods.mapIndexed { i, mod ->
         with(mod) {
             val enabledCheck = if (enabled) "X" else " "
             val idClean = id?.toString() ?: "?"

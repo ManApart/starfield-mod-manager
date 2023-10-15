@@ -1,7 +1,7 @@
 package commands
 
 import Mod
-import toolState
+import toolData
 import java.awt.Desktop
 import java.io.File
 import java.lang.Exception
@@ -19,7 +19,7 @@ fun open(args: List<String>) = openMod(true, args)
 fun local(args: List<String>) = openMod(false, args)
 
 private fun openMod(web: Boolean = true, args: List<String>) {
-    val mods = args.getIndicesOrRange(toolState.mods.size).mapNotNull { toolState.mods.getOrNull(it) }
+    val mods = args.getIndicesOrRange(toolData.mods.size).mapNotNull { toolData.mods.getOrNull(it) }
     when {
         mods.isEmpty() -> println(openHelp(listOf()))
         web -> mods.forEach { openInWeb(it) }

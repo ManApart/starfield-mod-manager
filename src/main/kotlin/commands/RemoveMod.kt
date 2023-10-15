@@ -3,9 +3,8 @@ package commands
 import Mod
 import confirmation
 import save
-import toolState
+import toolData
 import java.io.File
-import java.nio.file.Files.delete
 
 //TODO - require confirmation
 fun removeHelp(args: List<String>) = """
@@ -22,7 +21,7 @@ fun remove(args: List<String>) {
 }
 
 private fun removeMod(index: Int) {
-    toolState.byIndex(index)?.let { mod ->
+    toolData.byIndex(index)?.let { mod ->
         println("Remove ${mod.name}? (y/n)")
         confirmation = { args ->
             if (args.size != 1 || args.first() !in listOf("y","n")){
@@ -37,8 +36,8 @@ private fun removeMod(index: Int) {
 fun delete(mod: Mod) {
     val existing = File(mod.filePath)
     if (existing.exists()) existing.deleteRecursively()
-    toolState.mods.remove(mod)
-    toolState.mods.filter { it.loadOrder > mod.loadOrder }.map { it.loadOrder -= 1 }
+    toolData.mods.remove(mod)
+    toolData.mods.filter { it.loadOrder > mod.loadOrder }.map { it.loadOrder -= 1 }
     save()
     listMods()
 }

@@ -1,7 +1,7 @@
 package commands
 
 import Mod
-import toolState
+import toolData
 
 fun orderHelp(args: List<String> = listOf()) = """
     order 1 first
@@ -21,13 +21,13 @@ fun order(args: List<String>) {
     }
     with(arguments) {
         when {
-            subCommand == "first" -> setModOrder(toolState.mods, index, 0)
-            subCommand == "last" -> setModOrder(toolState.mods, index, toolState.nextLoadOrder())
-            subCommand == "set" && amount != null -> setModOrder(toolState.mods, index, amount)
-            subCommand == "sooner" && amount != null -> setModOrder(toolState.mods, index, index - amount)
-            subCommand == "later" && amount != null -> setModOrder(toolState.mods, index, index + amount)
-            subCommand == "sooner" -> setModOrder(toolState.mods, index, index - 1)
-            subCommand == "later" -> setModOrder(toolState.mods, index, index + 1)
+            subCommand == "first" -> setModOrder(toolData.mods, index, 0)
+            subCommand == "last" -> setModOrder(toolData.mods, index, toolData.nextLoadOrder())
+            subCommand == "set" && amount != null -> setModOrder(toolData.mods, index, amount)
+            subCommand == "sooner" && amount != null -> setModOrder(toolData.mods, index, index - amount)
+            subCommand == "later" && amount != null -> setModOrder(toolData.mods, index, index + amount)
+            subCommand == "sooner" -> setModOrder(toolData.mods, index, index - 1)
+            subCommand == "later" -> setModOrder(toolData.mods, index, index + 1)
             else -> println("Unknown subCommand: ")
         }
     }

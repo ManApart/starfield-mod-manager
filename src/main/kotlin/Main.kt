@@ -5,7 +5,7 @@ import java.io.File
 import java.nio.file.Files
 import kotlin.io.path.Path
 
-lateinit var toolState: State
+lateinit var toolData: Data
 lateinit var toolConfig: Config
 lateinit var modFolder: File
 val HOME = System.getProperty("user.home")!!
@@ -42,14 +42,14 @@ private fun loadData() {
     toolConfig = File("./config.json").takeIf { it.exists() }?.let {
         jsonMapper.decodeFromString(it.readText())
     } ?: Config()
-    toolState = File("./data.json").takeIf { it.exists() }?.let {
+    toolData = File("./data.json").takeIf { it.exists() }?.let {
         jsonMapper.decodeFromString(it.readText())
-    } ?: State()
+    } ?: Data()
 }
 
 fun save() {
     File("./config.json").writeText(jsonMapper.encodeToString(toolConfig))
-    File("./data.json").writeText(jsonMapper.encodeToString(toolState))
+    File("./data.json").writeText(jsonMapper.encodeToString(toolData))
 }
 
 
