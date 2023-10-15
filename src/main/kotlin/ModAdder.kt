@@ -52,7 +52,7 @@ fun addModByNexusProtocol(url: String) {
 
 fun addModByFile(filePath: String, nameOverride: String?) {
     val name = nameOverride ?: File(filePath).nameWithoutExtension
-    val sourceFile = File(filePath.replace("~", HOME))
+    val sourceFile = File(filePath)
 
     val existing = toolState.byName(name)
     val mod = if (existing != null) existing else {

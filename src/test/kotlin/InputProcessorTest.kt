@@ -35,5 +35,13 @@ class InputProcessorTest {
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun replaceHomeDir(){
+        val actual = "add ~/mods/mod.zip".parseArgs("/home/tester")
+        val expected = listOf("add", "/home/tester/mods/mod.zip")
+
+        assertEquals(expected, actual)
+    }
+
 
 }

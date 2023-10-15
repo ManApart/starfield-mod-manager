@@ -1,6 +1,5 @@
 package commands
 
-import HOME
 import addModFile
 import save
 import toolState
@@ -46,7 +45,7 @@ private fun updateName(i: Int, newName:String) {
 
 private fun updateFile(i: Int, sourceFilePath: String) {
     toolState.byIndex(i)?.let { mod ->
-        val sourceFile = File(sourceFilePath.replace("~", HOME))
+        val sourceFile = File(sourceFilePath)
         if (sourceFile.exists()) {
             val existing = File(mod.filePath)
             if (existing.exists()) existing.deleteRecursively()
