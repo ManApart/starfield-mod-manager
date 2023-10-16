@@ -7,7 +7,7 @@ fun addModById(id: Int, fileId: Int? = null) {
     val cleanName = mod.name.replace(" ", "-")
     println("Downloading $id: ${mod.name}")
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, mod.id!!, mod.fileId!!)
-    val destination = "$HOME/Downloads/$cleanName${parseFileExtension(downloadUrl)}"
+    val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
     addModFile(mod, downloaded, mod.name)
 }
@@ -66,7 +66,7 @@ fun addModByNexusProtocol(url: String) {
     save()
     println("Downloading $modName")
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, request)
-    val destination = "$HOME/Downloads/$cleanName${parseFileExtension(downloadUrl)}"
+    val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
     addModFile(mod, downloaded, modName)
 }

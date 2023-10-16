@@ -20,9 +20,9 @@ You'll need to sudo apt install them
 
 ## Test Commands
 ```
-add ~/Downloads/sleepy-time
-add ~/Downloads/sleepy-time.zip
-add ~/Downloads/starfield-script-extender-(sfse).7z
+add ~/Downloads/starfield-mods/sleepy-time
+add ~/Downloads/starfield-mods/sleepy-time.zip
+add ~/Downloads/starfield-mods/starfield-script-extender-(sfse).7z
 ```
 
 ## Command Concept

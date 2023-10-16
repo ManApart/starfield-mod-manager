@@ -81,7 +81,7 @@ fun parseFileExtension(url: String): String {
 
 fun downloadMod(initialUrl: String, destination: String): File {
     val url = initialUrl.replace(" ", "%20")
-    val result = File(destination)
+    val result = File(destination).also { it.parentFile.mkdirs() }
     if (result.exists()) {
         println("Skipping download since it already exists")
         return result
