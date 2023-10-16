@@ -4,6 +4,7 @@ import jsonMapper
 import kotlinx.serialization.encodeToString
 import save
 import toolConfig
+import java.io.File
 
 fun configHelp(args: List<String> = listOf()) = """
     config game-path <path-to-folder> - Sets the path to the folder under steam containing the starfield Data folder and exe
@@ -12,7 +13,11 @@ fun configHelp(args: List<String> = listOf()) = """
 
 fun config(args: List<String>) {
     when {
-        args.isEmpty() -> println("Config:\n" + jsonMapper.encodeToString(toolConfig))
+        args.isEmpty() -> {
+            println("Running in ${File(".").absolutePath}")
+            println("Config:\n" + jsonMapper.encodeToString(toolConfig))
+        }
+
         args.size == 2 && args.first() == "game-path" -> {
             toolConfig.gamePath = args.last()
             println("Updated game path to ${toolConfig.gamePath}")

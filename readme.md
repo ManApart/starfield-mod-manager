@@ -12,7 +12,8 @@ You'll need to sudo apt install them
 
 ## Setup Vortex Links
 - Place `smm.desktop` in `~/.local/share/applications/`.
-- Edit the exec line so it points to your jar install location.
+- Edit the Exec line so it points to your jar install location.
+- Edit the Path line so it potins at the folder of your jar
 - Updated `~/.local/share/applications/mimeapps.list` by adding a line `x-scheme-handler/nxm=smm.desktop`
 - Make the desktop the default handler `xdg-mime default smm.desktop x-scheme-handler/nxm`
 
