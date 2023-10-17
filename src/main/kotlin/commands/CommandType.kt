@@ -29,6 +29,7 @@ enum class CommandType(
     RENAME("Rename a mod", ::changeHelp, ::moveMod, "mv"),
     REFRESH("Refresh mods by id", ::refreshHelp, ::refresh),
     REMOVE("Delete a mod", ::removeHelp, ::remove, "rm"),
+    SEARCH("Search Mods", ::searchHelp, ::searchMods, "grep", "awk"),
     EXIT(
         "Exit Program",
         { "Exit the process" },

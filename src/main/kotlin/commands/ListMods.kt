@@ -1,13 +1,15 @@
 package commands
 
+import Mod
 import toolData
 import java.io.File
 
 fun listHelp(args: List<String>) = "List Mod details"
 
-fun listMods(args: List<String> = listOf()) {
+fun listMods(args: List<String> = listOf()) = display(toolData.mods. map { it to true })
+fun display(mods: List<Pair<Mod, Boolean>>) {
     val columns = listOf(
-        Column("Id", 10 ),
+        Column("Id", 10),
         Column("Version", 10),
         Column("Load Order", 12, true),
         Column("Staged", 9),
@@ -15,12 +17,12 @@ fun listMods(args: List<String> = listOf()) {
         Column("Index", 7, true),
         Column("Name", 22),
     )
-    val data = toolData.mods.mapIndexed { i, mod ->
+    val data = mods.mapIndexed { i, (mod, displayed) ->
         with(mod) {
             val enabledCheck = if (enabled) "X" else " "
             val idClean = id?.toString() ?: "?"
             val versionClean = version ?: "?"
-            val staged = if(File(filePath).exists()) "X" else " "
+            val staged = if (File(filePath).exists()) "X" else " "
             mapOf(
                 "Index" to i,
                 "Staged" to staged,
@@ -30,8 +32,8 @@ fun listMods(args: List<String> = listOf()) {
                 "Version" to versionClean,
                 "Name" to name,
             )
-        }
-    }
+        } to displayed
+    }.filter { it.second }.map { it.first }
     Table(columns, data).print()
 }
 
