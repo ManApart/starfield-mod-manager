@@ -16,6 +16,8 @@ fun deploy(args: List<String>) {
     getDisabledModPaths().forEach { deleteLink(it, files) }
     if (files.isEmpty()) {
         println("No mod files found")
+    } else if (toolConfig.gamePath == null){
+        println("No game path configured")
     } else {
 //        println("Found Mod Files:\n${files.entries.joinToString("\n") { (key, file) -> "$key: ${file.path}" }}")
         files.entries.forEach { (gamePath, modFile) -> makeLink(gamePath, modFile) }

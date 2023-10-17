@@ -23,6 +23,7 @@ You'll need to sudo apt install them
 add ~/Downloads/starfield-mods/sleepy-time
 add ~/Downloads/starfield-mods/sleepy-time.zip
 add ~/Downloads/starfield-mods/starfield-script-extender-(sfse).7z
+mod 1 file ~/Downloads/starfield-mods/interstellar---cinematic-main-menu-edit---music.rar
 ```
 
 ## Command Concept

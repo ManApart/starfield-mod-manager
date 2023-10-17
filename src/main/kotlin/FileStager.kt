@@ -1,5 +1,6 @@
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
 
 fun stageMod(sourceFile: File, stageFolder: File, modName: String): Boolean {
@@ -43,7 +44,7 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
     when {
         stagedNames.contains("data") -> {}
         stagedNames.any { dataTopLevelNames.contains(it) } -> nestInData(modName, stageFolder, stagedFiles)
-        stagedFiles.size == 1 && stagedFiles.firstOrNull()?.isDirectory ?: false -> unNestFiles(
+        stagedFiles.size == 1 && stagedFiles.firstOrNull()?.isDirectory ?: false && stagedFiles.first().listFiles()?.map { it.nameWithoutExtension.lowercase() }?.contains("data") ?: false -> unNestFiles(
             modName,
             stageFolder,
             stagedFiles
@@ -56,15 +57,21 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
 fun unNestFiles(modName: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Unnesting files in data for $modName")
     val topFolder = stagedFiles.first()
-    topFolder.listFiles()?.forEach { nested ->
-        unNest(stageFolder.path, nested, topFolder.path)
+    try {
+        topFolder.listFiles()?.forEach { nested ->
+            unNest(stageFolder.path, nested, topFolder.path)
+        }
+        topFolder.deleteRecursively()
+    } catch (e: Exception) {
+        println("Failed to unnest files. Please fix manually")
+        verbose(e.message ?: "")
+        verbose(e.stackTraceToString())
     }
-    topFolder.deleteRecursively()
 }
 
 private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
     val newPath = stageFolderPath + nested.path.replace(topPath, "")
-    Files.move(nested.toPath(), Path(newPath))
+    Files.move(nested.toPath(), Path(newPath), StandardCopyOption.REPLACE_EXISTING)
     if (nested.isDirectory) {
         nested.listFiles()?.forEach { moreNested ->
             unNest(stageFolderPath, moreNested, topPath)
@@ -74,15 +81,22 @@ private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
 
 private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Nesting files in data for $modName")
+    try {
+
     val dataFolder = File(stageFolder.path + "/Data").also { it.mkdirs() }
     stagedFiles.forEach { file ->
         nest(stageFolder.path, file, dataFolder.path)
+    }
+    } catch (e: Exception){
+        println("Failed to nest files. Please fix manually")
+        verbose(e.message ?: "")
+        verbose(e.stackTraceToString())
     }
 }
 
 private fun nest(stageFolderPath: String, file: File, dataPath: String) {
     val newPath = Path(file.path.replace(stageFolderPath, dataPath))
-    Files.move(file.toPath(), newPath)
+    Files.move(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING)
     if (file.isDirectory) {
         file.listFiles()?.forEach { moreNested ->
             nest(stageFolderPath, moreNested, dataPath)
