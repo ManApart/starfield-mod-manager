@@ -18,11 +18,15 @@ fun fetchMod(args: List<String>) {
     }
 }
 
-private fun fetchModsById(ids: List<Int>) =
+private fun fetchModsById(ids: List<Int>) {
     ids.forEach { fetchModInfo(it)?.let { mod -> println("Fetched info for ${mod.name}") } }
+    println("Done Fetching")
+}
+
 
 private fun addModByUrls(urls: List<String>) {
     urls.forEach { url ->
         url.urlToId()?.let { fetchModInfo(it) }?.let { println("Fetched info for ${it.name}") }
     }
+    println("Done fetching")
 }

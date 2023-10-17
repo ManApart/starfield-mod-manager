@@ -7,6 +7,10 @@ fun addModById(id: Int, fileId: Int? = null) {
     val cleanName = mod.name.replace(" ", "-")
     println("Downloading $id: ${mod.name}")
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, mod.id!!, mod.fileId!!)
+    if (downloadUrl == null){
+        println("Unable to get download url for ${mod.name}")
+        return
+    }
     val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
     addModFile(mod, downloaded, mod.name)
@@ -14,7 +18,8 @@ fun addModById(id: Int, fileId: Int? = null) {
 
 fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
-    val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id).getPrimaryFile()
+        ?: return null.also{ println("Unable to get mod info for $id")}
+    val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id)?.getPrimaryFile()
 
     if (modFileId == null) {
         println("Could not find primary file for $id")
@@ -57,6 +62,10 @@ fun ModFileInfo.getPrimaryFile(): Int? {
 fun addModByNexusProtocol(url: String) {
     val request = parseDownloadRequest(url)
     val modInfo = getModDetails(toolConfig.apiKey!!, request.modId)
+    if (modInfo == null){
+        println("Unable to download $url")
+        return
+    }
     val modName = modInfo.name.lowercase()
     val cleanName = modName.replace(" ", "-")
     val filePath = modFolder.path + "/" + cleanName
@@ -66,6 +75,10 @@ fun addModByNexusProtocol(url: String) {
     save()
     println("Downloading $modName")
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, request)
+    if (downloadUrl == null){
+        println("Unable to get download url for $modName")
+        return
+    }
     val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
     addModFile(mod, downloaded, modName)

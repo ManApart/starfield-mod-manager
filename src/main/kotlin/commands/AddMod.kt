@@ -30,6 +30,10 @@ private fun addModByUrls(urls: List<String>) {
     urls.forEach { url ->
         url.urlToId()?.let { addModById(it) }
     }
+    println("Done adding")
 }
 
-private fun addModByIds(ids: List<Int>) = ids.forEach { addModById(it) }
+private fun addModByIds(ids: List<Int>){
+    ids.forEach { addModById(it) }
+    println("Done adding")
+}

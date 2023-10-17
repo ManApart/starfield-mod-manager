@@ -10,6 +10,7 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import verbose
 import java.io.File
 
 private val client = HttpClient {
@@ -32,44 +33,68 @@ private fun String.between(start: String, end: String): String {
     return this.substring(first, last)
 }
 
-fun getModDetails(apiKey: String, id: Int): ModInfo {
-    return runBlocking {
-        client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id.json") {
-            header("accept", "application/json")
-            header("apikey", apiKey)
-        }.body()
-    }
-}
-
-fun getModFiles(apiKey: String, id: Int): ModFileInfo {
-    return runBlocking {
-        client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id/files.json") {
-            header("accept", "application/json")
-            header("apikey", apiKey)
-        }.body()
-    }
-}
-
-fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String {
-    val links: List<DownloadLink> = runBlocking {
-        with(downloadRequest) {
-            client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json?key=$key&expires=$expires") {
+fun getModDetails(apiKey: String, id: Int): ModInfo? {
+    return try {
+        runBlocking {
+            client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id.json") {
                 header("accept", "application/json")
                 header("apikey", apiKey)
             }.body()
         }
+    } catch (e: Exception) {
+        verbose(e.message ?: "")
+        verbose(e.stackTraceToString())
+        null
     }
-    return links.first().URI
 }
 
-fun getDownloadUrl(apiKey: String, modId: Int, fileId: Int): String {
+fun getModFiles(apiKey: String, id: Int): ModFileInfo? {
+    return try {
+        runBlocking {
+            client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id/files.json") {
+                header("accept", "application/json")
+                header("apikey", apiKey)
+            }.body()
+        }
+    } catch (e: Exception) {
+        verbose(e.message ?: "")
+        verbose(e.stackTraceToString())
+        null
+    }
+}
+
+fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String? {
+    return try {
+        val links: List<DownloadLink> = runBlocking {
+            with(downloadRequest) {
+                client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json?key=$key&expires=$expires") {
+                    header("accept", "application/json")
+                    header("apikey", apiKey)
+                }.body()
+            }
+        }
+        links.first().URI
+    } catch (e: Exception) {
+        verbose(e.message ?: "")
+        verbose(e.stackTraceToString())
+        null
+    }
+}
+
+fun getDownloadUrl(apiKey: String, modId: Int, fileId: Int): String? {
+    return try {
     val links: List<DownloadLink> = runBlocking {
         client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json") {
             header("accept", "application/json")
             header("apikey", apiKey)
         }.body()
     }
-    return links.first().URI
+    links.first().URI
+    } catch (e: Exception) {
+        verbose(e.message ?: "")
+        verbose(e.stackTraceToString())
+        null
+    }
 }
 
 fun parseFileExtension(url: String): String {
