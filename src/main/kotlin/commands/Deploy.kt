@@ -5,6 +5,8 @@ import toolData
 import verbose
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import kotlin.io.path.Path
 
 fun deployHelp(args: List<String>) = """
     deploy
@@ -56,8 +58,10 @@ fun makeLink(gamePath: String, modFile: File) {
             Files.createSymbolicLink(gameFile.toPath(), modFile.canonicalFile.toPath())
         } else verbose("Skip: ${modFile.path}")
     } else if (gameFile.exists()) {
-        //TODO - eventually backup real file and create link
-        println("Skipping replacing real file ${modFile.path}")
+        verbose("Backup: ${gameFile.path}")
+        verbose("Add: ${modFile.path}")
+        Files.move(gameFile.toPath(), Path("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_override.${gameFile.extension}"), StandardCopyOption.REPLACE_EXISTING)
+        Files.createSymbolicLink(gameFile.toPath(), modFile.canonicalFile.toPath())
     } else {
         verbose("Add: ${modFile.path}")
         Files.createSymbolicLink(gameFile.toPath(), modFile.canonicalFile.toPath())
@@ -69,6 +73,11 @@ fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
     if (!modFiles.contains(gamePath) && Files.isSymbolicLink(gameFile.toPath())) {
         verbose("Delete: $gamePath")
         gameFile.delete()
+        val backedUpFile = File("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_override.${gameFile.extension}")
+        if (backedUpFile.exists()){
+            verbose("Restore: ${gameFile.path}")
+            Files.move(backedUpFile.toPath(), gameFile.toPath())
+        }
     }
 
 }
