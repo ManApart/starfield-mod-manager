@@ -2,6 +2,7 @@ package nexus
 
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -16,6 +17,9 @@ import java.io.File
 private val client = HttpClient {
     install(ContentNegotiation) {
         json(Json { ignoreUnknownKeys = true })
+    }
+    install(HttpTimeout){
+        requestTimeoutMillis = 1000 * 60 * 60 * 2
     }
 }
 
@@ -137,6 +141,7 @@ fun downloadMod(initialUrl: String, destination: String): File? {
     } catch (e: Exception) {
         println(e.message ?: "")
         verbose(e.stackTraceToString())
+        result.delete()
         null
     }
 }
