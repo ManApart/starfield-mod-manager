@@ -42,7 +42,7 @@ fun getModDetails(apiKey: String, id: Int): ModInfo? {
             }.body()
         }
     } catch (e: Exception) {
-        verbose(e.message ?: "")
+        println(e.message ?: "")
         verbose(e.stackTraceToString())
         null
     }
@@ -57,7 +57,7 @@ fun getModFiles(apiKey: String, id: Int): ModFileInfo? {
             }.body()
         }
     } catch (e: Exception) {
-        verbose(e.message ?: "")
+        println(e.message ?: "")
         verbose(e.stackTraceToString())
         null
     }
@@ -75,7 +75,7 @@ fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String? {
         }
         links.first().URI
     } catch (e: Exception) {
-        verbose(e.message ?: "")
+        println(e.message ?: "")
         verbose(e.stackTraceToString())
         null
     }
@@ -83,15 +83,15 @@ fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String? {
 
 fun getDownloadUrl(apiKey: String, modId: Int, fileId: Int): String? {
     return try {
-    val links: List<DownloadLink> = runBlocking {
-        client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json") {
-            header("accept", "application/json")
-            header("apikey", apiKey)
-        }.body()
-    }
-    links.first().URI
+        val links: List<DownloadLink> = runBlocking {
+            client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json") {
+                header("accept", "application/json")
+                header("apikey", apiKey)
+            }.body()
+        }
+        links.first().URI
     } catch (e: Exception) {
-        verbose(e.message ?: "")
+        println(e.message ?: "")
         verbose(e.stackTraceToString())
         null
     }
@@ -104,7 +104,7 @@ fun parseFileExtension(url: String): String {
     return namePart.substring(start, end)
 }
 
-fun downloadMod(initialUrl: String, destination: String): File {
+fun downloadMod(initialUrl: String, destination: String): File? {
     val url = initialUrl.replace(" ", "%20")
     val result = File(destination).also { it.parentFile.mkdirs() }
     if (result.exists()) {
@@ -112,25 +112,31 @@ fun downloadMod(initialUrl: String, destination: String): File {
         return result
     }
 
-    result.createNewFile()
-    runBlocking {
-        client.prepareGet(url) {
-        }.execute { httpResponse ->
-            val channel: ByteReadChannel = httpResponse.body()
-            var iterations = 0
-            while (!channel.isClosedForRead) {
-                val packet = channel.readRemaining(DEFAULT_BUFFER_SIZE.toLong())
-                while (!packet.isEmpty) {
-                    val bytes = packet.readBytes()
-                    result.appendBytes(bytes)
-                    iterations++
-                    if (iterations > 1000) {
-                        iterations = 0
-                        println("Progress: ${result.length()} / ${httpResponse.contentLength()}")
+    return try {
+        result.createNewFile()
+        runBlocking {
+            client.prepareGet(url) {
+            }.execute { httpResponse ->
+                val channel: ByteReadChannel = httpResponse.body()
+                var iterations = 0
+                while (!channel.isClosedForRead) {
+                    val packet = channel.readRemaining(DEFAULT_BUFFER_SIZE.toLong())
+                    while (!packet.isEmpty) {
+                        val bytes = packet.readBytes()
+                        result.appendBytes(bytes)
+                        iterations++
+                        if (iterations > 1000) {
+                            iterations = 0
+                            println("Progress: ${result.length()} / ${httpResponse.contentLength()}")
+                        }
                     }
                 }
             }
         }
+        result
+    } catch (e: Exception) {
+        println(e.message ?: "")
+        verbose(e.stackTraceToString())
+        null
     }
-    return result
 }

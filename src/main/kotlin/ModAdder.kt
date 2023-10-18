@@ -7,18 +7,22 @@ fun addModById(id: Int, fileId: Int? = null) {
     val cleanName = mod.name.replace(" ", "-")
     println("Downloading $id: ${mod.name}")
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, mod.id!!, mod.fileId!!)
-    if (downloadUrl == null){
+    if (downloadUrl == null) {
         println("Unable to get download url for ${mod.name}")
         return
     }
     val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
-    addModFile(mod, downloaded, mod.name)
+    if (downloaded == null) {
+        println("Failed to download ${mod.name}")
+    } else {
+        addModFile(mod, downloaded, mod.name)
+    }
 }
 
 fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
-        ?: return null.also{ println("Unable to get mod info for $id")}
+        ?: return null.also { println("Unable to get mod info for $id") }
     val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id)?.getPrimaryFile()
 
     if (modFileId == null) {
@@ -62,7 +66,7 @@ fun ModFileInfo.getPrimaryFile(): Int? {
 fun addModByNexusProtocol(url: String) {
     val request = parseDownloadRequest(url)
     val modInfo = getModDetails(toolConfig.apiKey!!, request.modId)
-    if (modInfo == null){
+    if (modInfo == null) {
         println("Unable to download $url")
         return
     }
@@ -75,13 +79,17 @@ fun addModByNexusProtocol(url: String) {
     save()
     println("Downloading $modName")
     val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, request)
-    if (downloadUrl == null){
+    if (downloadUrl == null) {
         println("Unable to get download url for $modName")
         return
     }
     val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
-    addModFile(mod, downloaded, modName)
+    if (downloaded == null) {
+        println("Failed to download ${mod.name}")
+    } else {
+        addModFile(mod, downloaded, modName)
+    }
 }
 
 fun addModByFile(filePath: String, nameOverride: String?) {
