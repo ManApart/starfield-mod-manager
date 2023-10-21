@@ -37,14 +37,12 @@ private fun String.between(start: String, end: String): String {
     return this.substring(first, last)
 }
 
-fun getModDetails(apiKey: String, id: Int): ModInfo? {
+suspend fun getModDetails(apiKey: String, id: Int): ModInfo? {
     return try {
-        runBlocking {
-            client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id.json") {
-                header("accept", "application/json")
-                header("apikey", apiKey)
-            }.body()
-        }
+        client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id.json") {
+            header("accept", "application/json")
+            header("apikey", apiKey)
+        }.body()
     } catch (e: Exception) {
         println(e.message ?: "")
         verbose(e.stackTraceToString())
@@ -52,14 +50,12 @@ fun getModDetails(apiKey: String, id: Int): ModInfo? {
     }
 }
 
-fun getModFiles(apiKey: String, id: Int): ModFileInfo? {
+suspend fun getModFiles(apiKey: String, id: Int): ModFileInfo? {
     return try {
-        runBlocking {
             client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id/files.json") {
                 header("accept", "application/json")
                 header("apikey", apiKey)
             }.body()
-        }
     } catch (e: Exception) {
         println(e.message ?: "")
         verbose(e.stackTraceToString())
@@ -67,16 +63,14 @@ fun getModFiles(apiKey: String, id: Int): ModFileInfo? {
     }
 }
 
-fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String? {
+suspend fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String? {
     return try {
-        val links: List<DownloadLink> = runBlocking {
-            with(downloadRequest) {
+        val links: List<DownloadLink> = with(downloadRequest) {
                 client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json?key=$key&expires=$expires") {
                     header("accept", "application/json")
                     header("apikey", apiKey)
                 }.body()
             }
-        }
         links.first().URI
     } catch (e: Exception) {
         println(e.message ?: "")
@@ -85,14 +79,12 @@ fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String? {
     }
 }
 
-fun getDownloadUrl(apiKey: String, modId: Int, fileId: Int): String? {
+suspend fun getDownloadUrl(apiKey: String, modId: Int, fileId: Int): String? {
     return try {
-        val links: List<DownloadLink> = runBlocking {
-            client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json") {
+        val links: List<DownloadLink> =client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json") {
                 header("accept", "application/json")
                 header("apikey", apiKey)
             }.body()
-        }
         links.first().URI
     } catch (e: Exception) {
         println(e.message ?: "")
@@ -151,7 +143,7 @@ fun downloadMod(initialUrl: String, destination: String, forceRedownload: Boolea
     }
 }
 
-fun getGameInfo(apiKey: String): GameInfo?{
+fun getGameInfo(apiKey: String): GameInfo? {
     return try {
         runBlocking {
             client.get("https://api.nexusmods.com/v1/games/starfield.json") {

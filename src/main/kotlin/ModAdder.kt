@@ -1,12 +1,13 @@
+import kotlinx.coroutines.runBlocking
 import nexus.*
 import java.io.File
 import kotlin.math.max
 
 fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
-    val mod = fetchModInfo(id, fileId) ?: return
+    val mod = runBlocking { fetchModInfo(id, fileId) } ?: return
     val cleanName = mod.name.replace(" ", "-")
     println("Downloading $id: ${mod.name}")
-    val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, mod.id!!, mod.fileId!!)
+    val downloadUrl = runBlocking { getDownloadUrl(toolConfig.apiKey!!, mod.id!!, mod.fileId!!) }
     if (downloadUrl == null) {
         println("Unable to get download url for ${mod.name}")
         return
@@ -20,7 +21,7 @@ fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
     }
 }
 
-fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
+suspend fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
         ?: return null.also { println("Unable to get mod info for $id") }
     val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id)?.getPrimaryFile()
@@ -38,7 +39,7 @@ fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     return toolData.byId(modInfo.mod_id)!!.also { save() }
 }
 
-fun updateModInfo(id: Int) {
+suspend fun updateModInfo(id: Int) {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
     if (modInfo == null) {
         println("Unable to get mod info for $id")
@@ -81,7 +82,7 @@ fun ModFileInfo.getPrimaryFile(): Int? {
 
 fun addModByNexusProtocol(url: String) {
     val request = parseDownloadRequest(url)
-    val modInfo = getModDetails(toolConfig.apiKey!!, request.modId)
+    val modInfo = runBlocking { getModDetails(toolConfig.apiKey!!, request.modId) }
     if (modInfo == null) {
         println("Unable to download $url")
         return
@@ -94,7 +95,7 @@ fun addModByNexusProtocol(url: String) {
     val mod = toolData.byId(modInfo.mod_id)!!
     save()
     println("Downloading $modName")
-    val downloadUrl = getDownloadUrl(toolConfig.apiKey!!, request)
+    val downloadUrl = runBlocking { getDownloadUrl(toolConfig.apiKey!!, request) }
     if (downloadUrl == null) {
         println("Unable to get download url for $modName")
         return

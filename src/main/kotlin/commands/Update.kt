@@ -3,6 +3,10 @@ package commands
 import Mod
 import addModById
 import fetchModInfo
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
+import toolConfig
 import toolData
 import updateModInfo
 import java.io.File
@@ -26,12 +30,19 @@ fun update(args: List<String>) {
     }
 }
 
-private fun List<Mod>.updateMods(){
-    mapIndexed{i, mod -> i to mod }.filter { it.second.id != null }
+private fun List<Mod>.updateMods() {
+    mapIndexed { i, mod -> i to mod }.filter { it.second.id != null }
         .also { println("Updating ${it.size} mods") }
-        .forEach { (i, mod) ->
-            updateModInfo(mod.id!!)
-            if (mod.updateAvailable()) println("(i: i) ${mod.name} can upgrade from ${mod.version} -> ${mod.latestVersion}")
+        .chunked(toolConfig.chunkSize)
+        .forEach { chunk ->
+            runBlocking {
+                chunk.map { (i, mod) ->
+                    async {
+                        updateModInfo(mod.id!!)
+                        if (mod.updateAvailable()) println("(i: $i) ${mod.name} can upgrade ${mod.version} -> ${mod.latestVersion}")
+                    }
+                }.awaitAll()
+            }
         }
-        println("Done Updating")
+    println("Done Updating")
 }
