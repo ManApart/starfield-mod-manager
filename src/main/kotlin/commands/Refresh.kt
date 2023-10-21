@@ -11,6 +11,7 @@ fun refreshHelp() = """
     refresh 1-3
     refresh all - For all mods with ids, attempt to redownload (or grab the file from the downloads folder if it exists) and restage.
     refresh empty - Refresh any files without staged data
+    If you're looking to upgrade to a new version, see update and upgrade
 """.trimIndent()
 
 fun refresh(args: List<String>) {

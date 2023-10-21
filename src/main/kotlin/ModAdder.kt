@@ -2,7 +2,7 @@ import nexus.*
 import java.io.File
 import kotlin.math.max
 
-fun addModById(id: Int, fileId: Int? = null) {
+fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
     val mod = fetchModInfo(id, fileId) ?: return
     val cleanName = mod.name.replace(" ", "-")
     println("Downloading $id: ${mod.name}")
@@ -12,7 +12,7 @@ fun addModById(id: Int, fileId: Int? = null) {
         return
     }
     val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
-    val downloaded = downloadMod(downloadUrl, destination)
+    val downloaded = downloadMod(downloadUrl, destination, forceRedownload)
     if (downloaded == null) {
         println("Failed to download ${mod.name}")
     } else {

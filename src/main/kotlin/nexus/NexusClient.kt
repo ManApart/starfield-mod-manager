@@ -18,7 +18,7 @@ private val client = HttpClient {
     install(ContentNegotiation) {
         json(Json { ignoreUnknownKeys = true })
     }
-    install(HttpTimeout){
+    install(HttpTimeout) {
         requestTimeoutMillis = 1000 * 60 * 60 * 2
     }
 }
@@ -108,12 +108,17 @@ fun parseFileExtension(url: String): String {
     return namePart.substring(start, end)
 }
 
-fun downloadMod(initialUrl: String, destination: String): File? {
+fun downloadMod(initialUrl: String, destination: String, forceRedownload: Boolean = false): File? {
     val url = initialUrl.replace(" ", "%20")
     val result = File(destination).also { it.parentFile.mkdirs() }
+
     if (result.exists()) {
-        println("Skipping download since it already exists")
-        return result
+        if (forceRedownload) {
+            result.delete()
+        } else {
+            println("Skipping download since it already exists")
+            return result
+        }
     }
 
     return try {

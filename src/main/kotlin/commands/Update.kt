@@ -12,7 +12,8 @@ fun updateHelp() = """
     update 1 2 4
     update 1-3
     update all
-    Useful for updating existing mods. To check add new mods, see fetch or add.
+    Useful for checking for updates existing mods. To check add new mods, see fetch or add.
+    To download updates, see upgrade
 """.trimIndent()
 
 fun update(args: List<String>) {
