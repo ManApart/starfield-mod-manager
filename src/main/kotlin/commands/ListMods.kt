@@ -3,6 +3,7 @@ package commands
 import Mod
 import toolData
 import java.io.File
+import kotlin.math.min
 
 fun listHelp() = "List Mod details"
 
@@ -10,7 +11,7 @@ fun listMods(args: List<String> = listOf()) = display(toolData.mods. map { it to
 fun display(mods: List<Pair<Mod, Boolean>>) {
     val columns = listOf(
         Column("Id", 10),
-        Column("Version", 10),
+        Column("Version", 20),
         Column("Load Order", 12, true),
         Column("Staged", 9),
         Column("Enabled", 9),
@@ -22,9 +23,9 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
             val enabledCheck = if (enabled) "X" else " "
             val idClean = id?.toString() ?: "?"
             val versionClean = when {
-                version != null && latestVersion != null && version != latestVersion -> "$version -> $latestVersion"
-                version != null -> version!!
-                latestVersion != null -> "? -> $latestVersion"
+                version != null && latestVersion != null && version != latestVersion -> "${version.truncate()} -> ${latestVersion.truncate()}"
+                version != null -> version.truncate(10)
+                latestVersion != null -> "? -> ${latestVersion.truncate(10)}"
                 else -> "?"
             }
             val staged = if (File(filePath).exists()) "X" else " "
@@ -40,6 +41,10 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
         } to displayed
     }.filter { it.second }.map { it.first }
     Table(columns, data).print()
+}
+
+private fun String?.truncate(length: Int = 6): String {
+    return this?.substring(0, min(this.length, length)) ?: ""
 }
 
 private data class Table(val columns: List<Column>, val data: List<Map<String, Any>>) {
