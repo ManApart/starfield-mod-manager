@@ -6,15 +6,15 @@ import toolData
 import java.io.File
 
 fun validateHelp() = """
+    validate
     validate <mod index>
     validate 1 2 4
     validate 1-3
-    validate all
 """.trimIndent()
 
 fun validateMods(args: List<String>) {
     if (args.isEmpty()) {
-        println(validateHelp())
+        toolData.mods.validate()
     } else {
         args.getIndicesOrRange(toolData.mods.size)
             .mapNotNull { toolData.byIndex(it) }
@@ -31,6 +31,7 @@ private fun List<Mod>.validate() {
     detectStagingIssues(errorMap)
 
     printErrors(errorMap)
+    println("Validation Complete")
 }
 
 private fun List<Mod>.addDupeIds(

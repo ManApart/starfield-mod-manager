@@ -12,17 +12,17 @@ import updateModInfo
 import java.io.File
 
 fun updateHelp() = """
+    update
     update <mod index>
     update 1 2 4
     update 1-3
-    update all
     Useful for checking for updates existing mods. To check add new mods, see fetch or add.
     To download updates, see upgrade
 """.trimIndent()
 
 fun update(args: List<String>) {
     if (args.isEmpty()) {
-        println(updateHelp())
+        toolData.mods.updateMods()
     } else {
         args.getIndicesOrRange(toolData.mods.size)
             .mapNotNull { toolData.byIndex(it) }

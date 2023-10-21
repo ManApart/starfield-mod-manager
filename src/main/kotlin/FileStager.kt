@@ -53,7 +53,7 @@ fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
     val stagedNames = stagedFiles.map { it.nameWithoutExtension.lowercase() }
     val stagedExtensions = stagedFiles.map { it.extension }
-    val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse")
+    val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse_readme")
     val dataTopLevelExtensions = listOf("esp", "esm", "ba2")
     return when {
         stagedNames.contains("data") -> StageChange.NONE
