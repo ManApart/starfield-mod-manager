@@ -43,6 +43,7 @@ private fun List<Mod>.updateMods() {
                     }
                 }.awaitAll()
             }
+            println("Updated ${chunk.joinToString{it.first.toString()}}")
         }
     println("Done Updating")
 }
