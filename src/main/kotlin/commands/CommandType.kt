@@ -28,6 +28,7 @@ enum class CommandType(
     SEARCH("Search Mods", ::searchHelp, ::searchMods, "grep", "awk"),
     SORT("Sort Mods", ::sortHelp, ::sortMods),
     VALIDATE("List issues with mods", ::validateHelp, ::validateMods),
+    START("Launch Starfield", ::startGameHelp, ::startGame, "game"),
     EXIT(
         "Exit Program",
         { "Exit the process" },
