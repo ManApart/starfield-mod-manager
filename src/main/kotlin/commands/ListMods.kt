@@ -31,7 +31,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
                 else -> "?"
             }
             val staged = if (File(filePath).exists()) "X" else " "
-            val category = categoryId?.let { toolConfig.categories[it] } ?: "?"
+            val category = category() ?: "?"
             mapOf(
                 "Index" to i,
                 "Staged" to staged,

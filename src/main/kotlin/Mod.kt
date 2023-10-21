@@ -24,7 +24,10 @@ data class Mod(
 
     fun idName(): String {
         return if (id == null) name else "$id $name"
+    }
 
+    fun category(): String? {
+        return categoryId?.let { toolConfig.categories[it] }
     }
 }
 

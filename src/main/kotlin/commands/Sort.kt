@@ -24,7 +24,7 @@ fun sortMods(args: List<String> = listOf()) {
         "name" -> sort(reverse) { it.name }
         "load" -> sort(reverse) { it.loadOrder }
         "order" -> sort(reverse) { it.loadOrder }
-        "category" -> sort(reverse) { mod -> mod.categoryId?.let { toolConfig.categories[it] } ?: "zzz" }
+        "category" -> sort(reverse) { mod -> mod.category() ?: "zzz" }
         "enabled" -> sort(!reverse) { it.enabled }
         "id" -> sort(reverse) { it.id.toString() }
         "staged" -> sort(!reverse) { File(it.filePath).exists() }
