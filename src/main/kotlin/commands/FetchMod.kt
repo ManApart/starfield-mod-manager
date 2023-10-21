@@ -12,7 +12,7 @@ fun fetchHelp() = """
 fun fetchMod(args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     when {
-        args.isEmpty() -> println(addModHelp())
+        args.isEmpty() -> println(fetchHelp())
         firstArg.toIntOrNull() != null -> fetchModsById(args.mapNotNull { it.toIntOrNull() })
         firstArg.startsWith("http") -> addModByUrls(args)
         else -> fetchModsById(args.mapNotNull { it.toIntOrNull() })

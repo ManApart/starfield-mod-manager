@@ -14,6 +14,7 @@ enum class CommandType(
     HELP("Explain commands", ::helpHelp, ::help),
     FETCH("Fetch Mod Data", ::fetchHelp, ::fetchMod),
     LIST("List Mods", ::listHelp, ::listMods, "ls"),
+    DETAIL("View all details of mod", ::detailHelp, ::detailMod),
     ORDER("Change Load Order", ::orderHelp, ::order),
     OPEN("Open mod on web", ::openHelp, ::open),
     LOCAL("Open local mod folder", ::openHelp, ::local),
