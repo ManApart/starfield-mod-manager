@@ -5,7 +5,7 @@ import addModById
 import addModByNexusProtocol
 import urlToId
 
-fun addModHelp(args: List<String> = listOf()) = """
+fun addModHelp() = """
    add nexus nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
    add https://www.nexusmods.com/starfield/mods/4183?tab=files
    add 4183

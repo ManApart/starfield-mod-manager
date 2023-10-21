@@ -9,13 +9,13 @@ fun main(){
 
 fun createContent(): String {
     val commands = CommandType.entries.joinToString("\n") {
-        "${it.cleanName}|${it.description}|${it.help().replace("\n", " <br/>")}"
+        "${it.cleanName} |${it.description} |${it.aliases.joinToString()} |${it.help().replace("\n", " <br/>")}"
     }
     return """
 # Manual
 
-Command | Description | Usage
---- | --- | ---
+Command | Description | Aliases | Usage
+--- | --- | --- | ---
 $commands
     """
 }

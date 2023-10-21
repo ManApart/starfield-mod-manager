@@ -39,21 +39,30 @@ fun stageMod(sourceFile: File, stageFolder: File, modName: String): Boolean {
 
 private fun fixFolderPath(modName: String, stageFolder: File) {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
+    val action = detectStagingChanges(stageFolder)
+    when (action) {
+        StageChange.NEST -> nestInData(modName, stageFolder, stagedFiles)
+        StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
+        else -> println("Unable to guess folder path for $modName. You should open the staging folder and make sure it was installed correctly.")
+    }
+}
+
+enum class StageChange { NONE, NEST, UNNEST, UNKNOWN }
+
+fun detectStagingChanges(stageFolder: File): StageChange {
+    val stagedFiles = stageFolder.listFiles() ?: arrayOf()
     val stagedNames = stagedFiles.map { it.nameWithoutExtension.lowercase() }
     val stagedExtensions = stagedFiles.map { it.extension }
     val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse")
     val dataTopLevelExtensions = listOf("esp", "esm", "ba2")
-    when {
-        stagedNames.contains("data") -> {}
-        stagedNames.any { dataTopLevelNames.contains(it) } -> nestInData(modName, stageFolder, stagedFiles)
-        stagedExtensions.any { dataTopLevelExtensions.contains(it) } -> nestInData(modName, stageFolder, stagedFiles)
-        stagedFiles.size == 1 && stagedFiles.firstOrNull()?.isDirectory ?: false && stagedFiles.first().listFiles()?.map { it.nameWithoutExtension.lowercase() }?.contains("data") ?: false -> unNestFiles(
-            modName,
-            stageFolder,
-            stagedFiles
-        )
+    return when {
+        stagedNames.contains("data") -> StageChange.NONE
+        stagedNames.any { dataTopLevelNames.contains(it) } -> StageChange.NEST
+        stagedExtensions.any { dataTopLevelExtensions.contains(it) } -> StageChange.NEST
+        stagedFiles.size == 1 && stagedFiles.firstOrNull()?.isDirectory ?: false && stagedFiles.first().listFiles()
+            ?.map { it.nameWithoutExtension.lowercase() }?.contains("data") ?: false -> StageChange.UNNEST
         //TODO FMOD
-        else -> println("Unable to guess folder path for $modName. You should open the staging folder and make sure it was installed correctly.")
+        else -> StageChange.UNKNOWN
     }
 }
 
@@ -86,11 +95,11 @@ private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<Fi
     println("Nesting files in data for $modName")
     try {
 
-    val dataFolder = File(stageFolder.path + "/Data").also { it.mkdirs() }
-    stagedFiles.forEach { file ->
-        nest(stageFolder.path, file, dataFolder.path)
-    }
-    } catch (e: Exception){
+        val dataFolder = File(stageFolder.path + "/Data").also { it.mkdirs() }
+        stagedFiles.forEach { file ->
+            nest(stageFolder.path, file, dataFolder.path)
+        }
+    } catch (e: Exception) {
         println("Failed to nest files. Please fix manually")
         verbose(e.message ?: "")
         verbose(e.stackTraceToString())
