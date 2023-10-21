@@ -4,15 +4,15 @@
 Command | Description | Aliases | Usage
 --- | --- | --- | ---
 add |Add a new mod | |add nexus nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111 <br/>add https://www.nexusmods.com/starfield/mods/4183?tab=files <br/>add 4183 <br/>add 4183 4182 4181 - Add multiple by id <br/>add <path-to-mod-zip> <name-of-mod>*
-config |Edit Configuration | |config game-path <path-to-folder> - Sets the path to the folder under steam containing the starfield Data folder and exe <br/>config api-key <key-from-nexus>
+config |Edit Configuration | |config game-path <path-to-folder> - Sets the path to the folder under steam containing the starfield Data folder and exe <br/>config api-key <key-from-nexus> <br/>config categories - download category names from nexus
 enable |Enable Mod | |enable <mod index> <br/>disable <mod index> <br/>enable 1 2 4 <br/>enable 1-4 <br/>disable all
 disable |Enable Mod | |enable <mod index> <br/>disable <mod index> <br/>enable 1 2 4 <br/>enable 1-4 <br/>disable all
-deploy |Deploy enabled mods | |deploy <br/>Applies all mods to the game folder by creating the appropriate symlinks
+deploy |Deploy enabled mods | |deploy - Applies all mods to the game folder by creating the appropriate symlinks <br/>deploy dryrun - Per your load order view how files will be deployed
 help |Explain commands | |
 fetch |Fetch Mod Data | |fetch <mod id> - Add mod metadata without downloading files <br/>fetch 111 222 333 - Fetch multiple <br/>Useful for adding NEW mods. To check for updates on existing mods, see update
 list |List Mods |ls |List Mod details
 detail |View all details of mod | |detail <mod id> - View all mod detail
-order |Change Load Order | |order 1 first <br/>order 1 last <br/>order 1 sooner 5 <br/>order 1 later <br/>order 1 set 4 - sets to exactly this order in the load, bumping later mods down
+order |Change Load Order | |order 1 first <br/>order 1 last <br/>order 1 sooner 5 <br/>order 1 later <br/>order 1 set 4 - sets to exactly this order in the load. Any mods with a higher number for load order have their number increased <br/>Mods with a higher load order are loaded later, and override mods loaded earlier. Given mod A has an order 5 and mod B has an order of 1, then A will load AFTER B, and A's files will be used instead of B's in any file conflicts. 
 open |Open mod on web | |open <mod index> - open on nexus <br/>local <mod index> - open local folder <br/>open 1 2 4 <br/>open 1-4
 local |Open local mod folder | |open <mod index> - open on nexus <br/>local <mod index> - open local folder <br/>open 1 2 4 <br/>open 1-4
 purge |Purge all sym links | |TODO

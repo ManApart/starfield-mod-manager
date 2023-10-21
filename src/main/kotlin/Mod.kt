@@ -21,9 +21,14 @@ data class Mod(
     fun url() = "https://www.nexusmods.com/starfield/mods/$id"
 
     fun updateAvailable() = latestVersion != null && latestVersion != version
+
+    fun idName(): String {
+        return if (id == null) name else "$id $name"
+
+    }
 }
 
-fun File.getFiles(filter: (File) -> Boolean = {true}): List<File> {
+fun File.getFiles(filter: (File) -> Boolean = { true }): List<File> {
     val fileList = listFiles() ?: arrayOf()
     val (folders, files) = fileList.partition { it.isDirectory }
     return files.filter { filter(it) } + folders.flatMap { it.getFiles() }

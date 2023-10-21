@@ -8,7 +8,8 @@ fun orderHelp(args: List<String> = listOf()) = """
     order 1 last
     order 1 sooner 5
     order 1 later
-    order 1 set 4 - sets to exactly this order in the load, bumping later mods down
+    order 1 set 4 - sets to exactly this order in the load. Any mods with a higher number for load order have their number increased
+    Mods with a higher load order are loaded later, and override mods loaded earlier. Given mod A has an order 5 and mod B has an order of 1, then A will load AFTER B, and A's files will be used instead of B's in any file conflicts. 
 """.trimIndent()
 
 private data class Args(val index: Int, val subCommand: String, val amount: Int?)

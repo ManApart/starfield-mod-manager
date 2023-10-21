@@ -9,21 +9,21 @@ import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
 
 fun deployHelp() = """
-    deploy
-    Applies all mods to the game folder by creating the appropriate symlinks
+    deploy - Applies all mods to the game folder by creating the appropriate symlinks
+    deploy dryrun - Per your load order view how files will be deployed
 """.trimIndent()
 
 fun deploy(args: List<String>) {
     val files = getAllModFiles()
-    getDisabledModPaths().forEach { deleteLink(it, files) }
-    if (files.isEmpty()) {
-        println("No mod files found")
-    } else if (toolConfig.gamePath == null){
-        println("No game path configured")
-    } else {
-//        println("Found Mod Files:\n${files.entries.joinToString("\n") { (key, file) -> "$key: ${file.path}" }}")
-        files.entries.forEach { (gamePath, modFile) -> makeLink(gamePath, modFile) }
-        println("Deployed ${files.size} files")
+    when {
+        args.firstOrNull() == "dryrun" -> deployDryRun()
+        toolConfig.gamePath == null -> println("No game path configured")
+        files.isEmpty() -> println("No mod files found")
+        else -> {
+            getDisabledModPaths().forEach { deleteLink(it, files) }
+            files.entries.forEach { (gamePath, modFile) -> makeLink(gamePath, modFile) }
+            println("Deployed ${files.size} files")
+        }
     }
 }
 
@@ -60,7 +60,11 @@ fun makeLink(gamePath: String, modFile: File) {
     } else if (gameFile.exists()) {
         verbose("Backup: ${gameFile.path}")
         verbose("Add: ${modFile.path}")
-        Files.move(gameFile.toPath(), Path("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_override.${gameFile.extension}"), StandardCopyOption.REPLACE_EXISTING)
+        Files.move(
+            gameFile.toPath(),
+            Path("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_override.${gameFile.extension}"),
+            StandardCopyOption.REPLACE_EXISTING
+        )
         Files.createSymbolicLink(gameFile.toPath(), modFile.canonicalFile.toPath())
     } else {
         verbose("Add: ${modFile.path}")
@@ -73,11 +77,12 @@ fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
     if (!modFiles.contains(gamePath) && Files.isSymbolicLink(gameFile.toPath())) {
         verbose("Delete: $gamePath")
         gameFile.delete()
-        val backedUpFile = File("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_override.${gameFile.extension}")
-        if (backedUpFile.exists()){
+        val backedUpFile =
+            File("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_override.${gameFile.extension}")
+        if (backedUpFile.exists()) {
             verbose("Restore: ${gameFile.path}")
             Files.move(backedUpFile.toPath(), gameFile.toPath())
         }
     }
-
 }
+
