@@ -8,7 +8,9 @@ data class Mod(
     var loadOrder: Int,
     var id: Int? = null,
     var fileId: Int? = null,
+    var latestFileId: Int? = null,
     var version: String? = null,
+    var latestVersion: String? = null,
     var enabled: Boolean = false,
 ) {
     fun getModFiles(): List<File> {
@@ -16,6 +18,8 @@ data class Mod(
     }
 
     fun url() = "https://www.nexusmods.com/starfield/mods/$id"
+
+    fun updateAvailable() = latestVersion != null && latestVersion != version
 }
 
 fun File.getFiles(filter: (File) -> Boolean = {true}): List<File> {

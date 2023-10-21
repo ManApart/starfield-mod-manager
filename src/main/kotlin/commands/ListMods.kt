@@ -21,7 +21,12 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
         with(mod) {
             val enabledCheck = if (enabled) "X" else " "
             val idClean = id?.toString() ?: "?"
-            val versionClean = version ?: "?"
+            val versionClean = when {
+                version != null && latestVersion != null && version != latestVersion -> "$version -> $latestVersion"
+                version != null -> version!!
+                latestVersion != null -> "? -> $latestVersion"
+                else -> "?"
+            }
             val staged = if (File(filePath).exists()) "X" else " "
             mapOf(
                 "Index" to i,

@@ -3,9 +3,10 @@ package commands
 import fetchModInfo
 import urlToId
 
-fun fetchHelp(args: List<String> = listOf()) = """
+fun fetchHelp() = """
    fetch <mod id> - Add mod metadata without downloading files
    fetch 111 222 333 - Fetch multiple
+   Useful for adding NEW mods. To check for updates on existing mods, see update
 """.trimIndent()
 
 fun fetchMod(args: List<String>) {

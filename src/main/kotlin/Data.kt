@@ -20,7 +20,20 @@ data class Data(
     fun update(info: ModInfo, updatedFileId: Int? = null) {
         byId(info.mod_id)?.apply {
             version = info.version
-            updatedFileId?.let { fileId = it }
+            latestVersion = info.version
+            updatedFileId?.let {
+                fileId = it
+                latestFileId = it
+            }
+        }
+    }
+
+    fun updateLatest(info: ModInfo, updatedFileId: Int? = null) {
+        byId(info.mod_id)?.apply {
+            latestVersion = info.version
+            updatedFileId?.let {
+                latestFileId = it
+            }
         }
     }
 }

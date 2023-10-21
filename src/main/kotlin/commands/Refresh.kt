@@ -5,7 +5,7 @@ import addModById
 import toolData
 import java.io.File
 
-fun refreshHelp(args: List<String> = listOf()) = """
+fun refreshHelp() = """
     refresh <mod index>
     refresh 1 2 4
     refresh 1-3

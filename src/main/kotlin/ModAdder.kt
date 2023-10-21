@@ -38,6 +38,22 @@ fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     return toolData.byId(modInfo.mod_id)!!.also { save() }
 }
 
+fun updateModInfo(id: Int) {
+    val modInfo = getModDetails(toolConfig.apiKey!!, id)
+    if (modInfo == null) {
+        println("Unable to get mod info for $id")
+        return
+    }
+    val modFileId = getModFiles(toolConfig.apiKey!!, id)?.getPrimaryFile()
+    if (modFileId == null) {
+        println("Could not find primary file for $id")
+        return
+    }
+
+    toolData.updateLatest(modInfo, modFileId)
+    save()
+}
+
 private val versionComparator = Comparator { fileA: ModFileInfoFile, fileB: ModFileInfoFile ->
     val versionA = fileA.version.split(".").mapNotNull { it.toIntOrNull() }
     val versionB = fileB.version.split(".").mapNotNull { it.toIntOrNull() }
