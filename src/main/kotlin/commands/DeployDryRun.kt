@@ -13,6 +13,7 @@ fun deployDryRun() {
             println("\tNot used: ${others.joinToString { "(${it.loadOrder}) " + it.idName() }}")
         }
     }
+    println("Deploy dryrun complete")
 }
 
 private fun getAnnotatedModFiles(): Map<String, List<Mod>> {

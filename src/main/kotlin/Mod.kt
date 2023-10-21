@@ -28,8 +28,8 @@ data class Mod(
     }
 }
 
-fun File.getFiles(filter: (File) -> Boolean = { true }): List<File> {
+fun File.getFiles(filterFunction: (File) -> Boolean = {true}): List<File> {
     val fileList = listFiles() ?: arrayOf()
     val (folders, files) = fileList.partition { it.isDirectory }
-    return files.filter { filter(it) } + folders.flatMap { it.getFiles() }
+    return files.filter { filterFunction(it) } + folders.flatMap { it.getFiles(filterFunction) }
 }
