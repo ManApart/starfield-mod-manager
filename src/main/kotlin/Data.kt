@@ -17,21 +17,13 @@ data class Data(
         } ?: Mod(name, filePath, nextLoadOrder(), id).also { mods.add(it) }
     }
 
-    fun update(info: ModInfo, updatedFileId: Int? = null) {
+    fun update(info: ModInfo, updateCurrentVersion: Boolean = true, updatedFileId: Int? = null) {
         byId(info.mod_id)?.apply {
-            version = info.version
+            if (updateCurrentVersion) version = info.version
             latestVersion = info.version
+            categoryId = info.category_id
             updatedFileId?.let {
-                fileId = it
-                latestFileId = it
-            }
-        }
-    }
-
-    fun updateLatest(info: ModInfo, updatedFileId: Int? = null) {
-        byId(info.mod_id)?.apply {
-            latestVersion = info.version
-            updatedFileId?.let {
+                if (updateCurrentVersion) fileId = it
                 latestFileId = it
             }
         }

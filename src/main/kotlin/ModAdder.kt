@@ -34,7 +34,7 @@ fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     val cleanName = modName.replace(" ", "-")
     val filePath = modFolder.path + "/" + cleanName
     toolData.createOrUpdate(modInfo.mod_id, modName, filePath)
-    toolData.update(modInfo, modFileId)
+    toolData.update(modInfo, true, modFileId)
     return toolData.byId(modInfo.mod_id)!!.also { save() }
 }
 
@@ -50,7 +50,7 @@ fun updateModInfo(id: Int) {
         return
     }
 
-    toolData.updateLatest(modInfo, modFileId)
+    toolData.update(modInfo, false, modFileId)
     save()
 }
 
@@ -90,7 +90,7 @@ fun addModByNexusProtocol(url: String) {
     val cleanName = modName.replace(" ", "-")
     val filePath = modFolder.path + "/" + cleanName
     toolData.createOrUpdate(modInfo.mod_id, modName, filePath)
-    toolData.update(modInfo, request.fileId)
+    toolData.update(modInfo, true, request.fileId)
     val mod = toolData.byId(modInfo.mod_id)!!
     save()
     println("Downloading $modName")

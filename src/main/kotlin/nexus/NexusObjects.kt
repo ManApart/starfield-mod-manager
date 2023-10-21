@@ -15,3 +15,10 @@ data class ModFileInfo(val files: List<ModFileInfoFile>)
 
 @Serializable
 data class ModFileInfoFile(val file_id: Int, val name: String, val version: String, val is_primary: Boolean)
+
+
+@Serializable
+data class GameInfo(val id: Int, val categories: List<CategoryInfo>)
+
+@Serializable
+data class CategoryInfo(val category_id: Int, val name: String)

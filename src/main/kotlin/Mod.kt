@@ -12,6 +12,7 @@ data class Mod(
     var version: String? = null,
     var latestVersion: String? = null,
     var enabled: Boolean = false,
+    var categoryId: Int? = null,
 ) {
     fun getModFiles(): List<File> {
         return File(filePath).getFiles()

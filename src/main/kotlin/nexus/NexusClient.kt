@@ -150,3 +150,18 @@ fun downloadMod(initialUrl: String, destination: String, forceRedownload: Boolea
         null
     }
 }
+
+fun getGameInfo(apiKey: String): GameInfo?{
+    return try {
+        runBlocking {
+            client.get("https://api.nexusmods.com/v1/games/starfield.json") {
+                header("accept", "application/json")
+                header("apikey", apiKey)
+            }.body()
+        }
+    } catch (e: Exception) {
+        println(e.message ?: "")
+        verbose(e.stackTraceToString())
+        null
+    }
+}

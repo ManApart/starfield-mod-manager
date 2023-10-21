@@ -5,4 +5,5 @@ data class Config(
     var gamePath: String? = null,
     var apiKey: String? = null,
     var verbose: Boolean = false,
+    var categories: Map<Int, String> = mapOf()
 )

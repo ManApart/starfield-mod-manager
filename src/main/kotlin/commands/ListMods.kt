@@ -1,6 +1,7 @@
 package commands
 
 import Mod
+import toolConfig
 import toolData
 import java.io.File
 import kotlin.math.min
@@ -15,6 +16,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
         Column("Load Order", 12, true),
         Column("Staged", 9),
         Column("Enabled", 9),
+        Column("Category", 20),
         Column("Index", 7, true),
         Column("Name", 22),
     )
@@ -29,6 +31,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
                 else -> "?"
             }
             val staged = if (File(filePath).exists()) "X" else " "
+            val category = categoryId?.let { toolConfig.categories[it] } ?: "?"
             mapOf(
                 "Index" to i,
                 "Staged" to staged,
@@ -36,6 +39,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
                 "Load Order" to loadOrder,
                 "Id" to idClean,
                 "Version" to versionClean,
+                "Category" to category,
                 "Name" to name,
             )
         } to displayed
