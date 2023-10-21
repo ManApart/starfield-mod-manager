@@ -17,6 +17,9 @@ You'll need to sudo apt install them
 - Updated `~/.local/share/applications/mimeapps.list` by adding a line `x-scheme-handler/nxm=smm.desktop`
 - Make the desktop the default handler `xdg-mime default smm.desktop x-scheme-handler/nxm`
 
+## Usage
+
+Run the app and then use `help` to see commands. Alternatively you can look at the [generated man page](manual.md).
 
 ## Test Commands
 ```

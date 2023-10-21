@@ -7,7 +7,7 @@ import java.io.File
 import java.lang.Exception
 import java.net.URI
 
-fun openHelp(args: List<String>) = """
+fun openHelp() = """
     open <mod index> - open on nexus
     local <mod index> - open local folder
     open 1 2 4
@@ -21,7 +21,7 @@ fun local(args: List<String>) = openMod(false, args)
 private fun openMod(web: Boolean = true, args: List<String>) {
     val mods = args.getIndicesOrRange(toolData.mods.size).mapNotNull { toolData.mods.getOrNull(it) }
     when {
-        mods.isEmpty() -> println(openHelp(listOf()))
+        mods.isEmpty() -> println(openHelp())
         web -> mods.forEach { openInWeb(it) }
         else -> mods.forEach { openLocal(it) }
     }

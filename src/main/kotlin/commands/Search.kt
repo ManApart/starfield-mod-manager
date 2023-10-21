@@ -4,7 +4,7 @@ import Mod
 import toolData
 import java.io.File
 
-fun searchHelp(args: List<String>) = """
+fun searchHelp() = """
     search <search text> - filter mods that contain the given text
     search 123 - show matching ids
     search enabled - show only enabled mods

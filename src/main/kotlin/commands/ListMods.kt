@@ -4,7 +4,7 @@ import Mod
 import toolData
 import java.io.File
 
-fun listHelp(args: List<String>) = "List Mod details"
+fun listHelp() = "List Mod details"
 
 fun listMods(args: List<String> = listOf()) = display(toolData.mods. map { it to true })
 fun display(mods: List<Pair<Mod, Boolean>>) {

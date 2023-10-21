@@ -7,7 +7,7 @@ import toolData
 import java.io.File
 
 //TODO - require confirmation
-fun removeHelp(args: List<String>) = """
+fun removeHelp() = """
     remove <mod index>
     rm <mod index>
 """.trimIndent()
@@ -16,7 +16,7 @@ fun remove(args: List<String>) {
     if (args.size == 1 && args.first().toIntOrNull() != null) {
         removeMod(args.first().toInt())
     } else {
-        println(removeHelp(listOf()))
+        println(removeHelp())
     }
 }
 

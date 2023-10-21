@@ -5,7 +5,8 @@ import toolConfig
 import java.io.File
 import java.nio.file.Files
 //TODO - too aggressive if on mounted hard drive
-fun purgeHelp(args: List<String>) = """
+fun purgeHelp() = """
+    TODO
 """.trimIndent()
 
 fun purge(args: List<String>) {

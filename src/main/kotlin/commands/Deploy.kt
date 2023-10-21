@@ -8,7 +8,7 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
 
-fun deployHelp(args: List<String>) = """
+fun deployHelp() = """
     deploy
     Applies all mods to the game folder by creating the appropriate symlinks
 """.trimIndent()

@@ -3,7 +3,7 @@ package commands
 import save
 import toolData
 
-fun enableHelp(args: List<String>) = """
+fun enableHelp() = """
     enable <mod index>
     disable <mod index>
     enable 1 2 4
@@ -17,7 +17,7 @@ fun disable(args: List<String>) = enableMod(false, args)
 
 fun enableMod(enable: Boolean = true, args: List<String>) {
     when {
-        args.isEmpty() -> println(enableHelp(listOf()))
+        args.isEmpty() -> println(enableHelp())
         args.size == 1 && args.first().contains("-") -> enableRange(enable, args)
         args.size == 1 && args.first() == "all" -> enableRange(enable, listOf("0-${toolData.mods.size - 1}"))
         else -> enableList(enable, args)

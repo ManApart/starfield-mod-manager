@@ -4,7 +4,7 @@ import commands.getCommand
 fun readLine(line: String?) {
     val parts = line?.parseArgs() ?: return
     when {
-        parts.isEmpty() -> CommandType.HELP.help(listOf())
+        parts.isEmpty() -> CommandType.HELP.help()
         parts.size == 1 && parts.first().startsWith("nxm://") -> addModByNexusProtocol(parts.first())
         else -> {
             val commandString = parts.first().lowercase()

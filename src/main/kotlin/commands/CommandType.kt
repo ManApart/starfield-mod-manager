@@ -1,15 +1,8 @@
 package commands
 
-interface Command {
-    val aliases: List<String>
-    val description: String
-    fun help(args: List<String>)
-    fun apply(args: List<String>)
-}
-
 enum class CommandType(
     val description: String,
-    val help: (List<String>) -> String,
+    val help: () -> String,
     val apply: (List<String>) -> Unit,
     vararg val aliases: String = arrayOf(),
 ) {
