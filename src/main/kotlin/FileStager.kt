@@ -40,10 +40,13 @@ fun stageMod(sourceFile: File, stageFolder: File, modName: String): Boolean {
 private fun fixFolderPath(modName: String, stageFolder: File) {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
     val stagedNames = stagedFiles.map { it.nameWithoutExtension.lowercase() }
+    val stagedExtensions = stagedFiles.map { it.extension }
     val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse")
+    val dataTopLevelExtensions = listOf("esp", "esm", "ba2")
     when {
         stagedNames.contains("data") -> {}
         stagedNames.any { dataTopLevelNames.contains(it) } -> nestInData(modName, stageFolder, stagedFiles)
+        stagedExtensions.any { dataTopLevelExtensions.contains(it) } -> nestInData(modName, stageFolder, stagedFiles)
         stagedFiles.size == 1 && stagedFiles.firstOrNull()?.isDirectory ?: false && stagedFiles.first().listFiles()?.map { it.nameWithoutExtension.lowercase() }?.contains("data") ?: false -> unNestFiles(
             modName,
             stageFolder,
