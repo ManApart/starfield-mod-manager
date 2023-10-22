@@ -2,8 +2,12 @@ import kotlinx.serialization.Serializable
 import nexus.ModInfo
 
 @Serializable
+data class Profile(val name: String, val ids: List<Int>, val filePaths: List<String>)
+
+@Serializable
 data class Data(
-    val mods: MutableList<Mod> = mutableListOf()
+    val mods: MutableList<Mod> = mutableListOf(),
+    val profiles: MutableList<Profile> = mutableListOf(),
 ) {
     fun byId(id: Int) = mods.firstOrNull { it.id == id }
     fun byIndex(i: Int) = mods.getOrNull(i).also { if (it == null) println("No Mod found for $i") }
@@ -28,6 +32,8 @@ data class Data(
             }
         }
     }
+
+    fun profileByIndex(i: Int) = profiles.getOrNull(i).also { if (it == null) println("No Profile found for $i") }
 }
 
 

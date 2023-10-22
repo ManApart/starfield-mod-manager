@@ -43,7 +43,6 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
     when (action) {
         StageChange.NEST -> nestInData(modName, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
-        //TODO FMOD
         StageChange.FOMOD -> println("FOMOD detected for $modName. You should open the staging folder and pick options yourself.")
         else -> println("Unable to guess folder path for $modName. You should open the staging folder and make sure it was installed correctly.")
     }

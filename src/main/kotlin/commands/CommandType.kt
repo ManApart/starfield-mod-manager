@@ -20,6 +20,7 @@ enum class CommandType(
     LOCAL("Open local mod folder", ::openHelp, ::local),
     PURGE("Purge all sym links", ::purgeHelp, ::purge),
     MOD("Update a mod", ::changeHelp, ::changeMod),
+    PROFILE("Create and use local mod lists", ::profileHelp, ::profile),
     RENAME("Rename a mod", ::changeHelp, ::moveMod, "mv"),
     REFRESH("Refresh mods by id", ::refreshHelp, ::refresh),
     UPDATE("Check for newer versions", ::updateHelp, ::update),
