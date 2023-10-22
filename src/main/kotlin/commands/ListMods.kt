@@ -8,7 +8,7 @@ import kotlin.math.min
 
 fun listHelp() = "List Mod details"
 
-fun listMods(args: List<String> = listOf()) = display(toolData.mods. map { it to true })
+fun listMods(args: List<String> = listOf()) = display(toolData.mods. map { it to it.show })
 fun display(mods: List<Pair<Mod, Boolean>>) {
     val columns = listOf(
         Column("Id", 10),

@@ -1,4 +1,5 @@
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.io.File
 
 @Serializable
@@ -14,6 +15,9 @@ data class Mod(
     var enabled: Boolean = false,
     var categoryId: Int? = null,
 ) {
+    @Transient
+    var show: Boolean = true
+
     fun getModFiles(): List<File> {
         return File(filePath).getFiles()
     }

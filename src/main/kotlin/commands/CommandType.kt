@@ -26,6 +26,7 @@ enum class CommandType(
     UPGRADE("Upgrade to newer versions", ::upgradeHelp, ::upgrade),
     REMOVE("Delete a mod", ::removeHelp, ::remove, "rm"),
     SEARCH("Search Mods", ::searchHelp, ::searchMods, "grep", "awk"),
+    FILTER("Apply a filter to Mods", ::filterHelp, ::filterMods),
     SORT("Sort Mods", ::sortHelp, ::sortMods),
     VALIDATE("List issues with mods", ::validateHelp, ::validateMods),
     START("Launch Starfield", ::startGameHelp, ::startGame, "game"),
