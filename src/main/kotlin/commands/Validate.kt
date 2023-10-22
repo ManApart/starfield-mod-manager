@@ -68,9 +68,12 @@ private fun List<Mod>.detectStagingIssues(errorMap: MutableMap<Int, Pair<Mod, Mu
         val stageFolder = File(mod.filePath)
         if (stageFolder.exists()) {
             val change = detectStagingChanges(stageFolder)
-            if (change == StageChange.UNKNOWN){
+            if (change == StageChange.UNKNOWN) {
                 errorMap.putIfAbsent(i, mod to mutableListOf())
                 errorMap[i]?.second?.add("Unable to guess folder path. You should open the staging folder and make sure it was installed correctly.")
+            } else if (change == StageChange.FOMOD) {
+                errorMap.putIfAbsent(i, mod to mutableListOf())
+                errorMap[i]?.second?.add("FOMOD detected. You should open the staging folder and pick options yourself.")
             }
         }
     }

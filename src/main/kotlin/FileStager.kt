@@ -43,11 +43,13 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
     when (action) {
         StageChange.NEST -> nestInData(modName, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
+        //TODO FMOD
+        StageChange.FOMOD -> println("FOMOD detected for $modName. You should open the staging folder and pick options yourself.")
         else -> println("Unable to guess folder path for $modName. You should open the staging folder and make sure it was installed correctly.")
     }
 }
 
-enum class StageChange { NONE, NEST, UNNEST, UNKNOWN }
+enum class StageChange { NONE, NEST, UNNEST, FOMOD, UNKNOWN }
 
 fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
@@ -61,7 +63,7 @@ fun detectStagingChanges(stageFolder: File): StageChange {
         stagedExtensions.any { dataTopLevelExtensions.contains(it) } -> StageChange.NEST
         stagedFiles.size == 1 && stagedFiles.firstOrNull()?.isDirectory ?: false && stagedFiles.first().listFiles()
             ?.map { it.nameWithoutExtension.lowercase() }?.contains("data") ?: false -> StageChange.UNNEST
-        //TODO FMOD
+        stagedNames.contains("fomod") -> StageChange.FOMOD
         else -> StageChange.UNKNOWN
     }
 }

@@ -39,5 +39,4 @@ fun delete(mod: Mod) {
     toolData.mods.remove(mod)
     toolData.mods.filter { it.loadOrder > mod.loadOrder }.map { it.loadOrder -= 1 }
     save()
-    listMods()
 }
