@@ -2,7 +2,9 @@ import kotlinx.serialization.Serializable
 import nexus.ModInfo
 
 @Serializable
-data class Profile(val name: String, val ids: List<Int>, val filePaths: List<String>)
+data class Profile(val name: String, var ids: List<Int>, var filePaths: List<String>) {
+    fun modCount() = ids.size + filePaths.size
+}
 
 @Serializable
 data class Data(
@@ -11,7 +13,8 @@ data class Data(
 ) {
     fun byId(id: Int) = mods.firstOrNull { it.id == id }
     fun byIndex(i: Int) = mods.getOrNull(i).also { if (it == null) println("No Mod found for $i") }
-    fun byName(name: String) = mods.firstOrNull { it.name == name }
+    fun byName(name: String) = mods.firstOrNull { it.name == name }.also { if (it == null) println("No Mod found for $name") }
+    fun byFilePath(path: String) = mods.firstOrNull { it.filePath == path }.also { if (it == null) println("No Mod found for $path") }
     fun nextLoadOrder() = (mods.maxOfOrNull { it.loadOrder } ?: -1) + 1
 
     fun createOrUpdate(id: Int, name: String, filePath: String) {

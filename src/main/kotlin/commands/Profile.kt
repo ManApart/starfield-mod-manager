@@ -1,9 +1,11 @@
 package commands
 
+import Column
 import Mod
 import Profile
+import Table
+import confirmation
 import save
-import toolConfig
 import toolData
 
 fun profileHelp() = """
@@ -14,7 +16,6 @@ fun profileHelp() = """
     profile load <index>
 """.trimIndent()
 
-//display like mod and operate off indexes
 fun profile(args: List<String> = listOf()) {
     val subCommand = args.firstOrNull()
     val index = args.lastOrNull()?.toIntOrNull()
@@ -29,23 +30,56 @@ fun profile(args: List<String> = listOf()) {
 }
 
 private fun viewProfiles() {
-
+    val columns = listOf(
+        Column("Index", 10),
+        Column("Mods", 10),
+        Column("Name", 22),
+    )
+    val data = toolData.profiles.mapIndexed { i, profile ->
+        mapOf(
+            "Index" to i,
+            "Name" to profile.name,
+            "Mods" to profile.modCount()
+        )
+    }
+    Table(columns, data).print()
 }
 
 private fun viewProfile(i: Int) {
-
+    toolData.profileByIndex(i)?.let { profile ->
+        println("$i: ${profile.name}")
+        val mods =
+            profile.ids.mapNotNull { toolData.byId(it) } + profile.filePaths.mapNotNull { toolData.byFilePath(it) }
+        println(mods.joinToString("\n") { "\t${it.name}" })
+    }
 }
 
 private fun loadProfile(i: Int) {
-
+    val profile = toolData.profileByIndex(i)
+    if (profile == null) {
+        println("Could not find profile for $i")
+        return
+    }
+    toolData.mods.forEach {
+        it.enabled = (profile.ids.contains(it.id) || profile.filePaths.contains(it.filePath))
+    }
+    println("Loaded ${profile.name}")
 }
 
 private fun saveProfile(i: Int) {
     toolData.profileByIndex(i)?.let { profile ->
-        //save requires confirmation and shows diff
+        println("Save changes to ${profile.name}? (y/n)")
         val newIds = enabledIds()
         val newPaths = enabledPaths()
-        
+        printDiff(profile, newIds, newPaths)
+        confirmation = { args ->
+            if (args.firstOrNull() == "y") {
+                profile.ids = newIds
+                profile.filePaths = newPaths
+                save()
+                println("Saved ${profile.name}")
+            }
+        }
     }
 }
 
@@ -57,9 +91,17 @@ private fun saveProfile(name: String) {
     }
     toolData.profiles.add(Profile(name, enabledIds(), enabledPaths()))
     save()
-    println("Saved")
+    println("Saved $name")
 }
 
+private fun printDiff(profile: Profile, newIds: List<Int>, newPaths: List<String>) {
+    val added = (newIds.filter { !profile.ids.contains(it) }
+        .map { it.toString() } + newPaths.filter { !profile.filePaths.contains(it) }).joinToString()
+    val removed = (profile.ids.filter { !newIds.contains(it) }
+        .map { it.toString() } + profile.filePaths.filter { !newPaths.contains(it) }).joinToString()
+    if (added.isNotBlank()) println("Added: $added")
+    if (removed.isNotBlank()) println("Removed: $removed")
+}
 
 private fun enabledIds() = toolData.mods.filter { it.enabled }.mapNotNull { it.id }
 
