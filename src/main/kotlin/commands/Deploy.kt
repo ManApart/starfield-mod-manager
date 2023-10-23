@@ -16,12 +16,13 @@ fun deployHelp() = """
 fun deploy(args: List<String>) {
     val files = getAllModFiles()
     when {
-        args.firstOrNull() == "dryrun" -> deployDryRun()
+        args.firstOrNull() == "dryrun" -> deployDryRun(files)
         toolConfig.gamePath == null -> println("No game path configured")
         files.isEmpty() -> println("No mod files found")
         else -> {
             getDisabledModPaths().forEach { deleteLink(it, files) }
             files.entries.forEach { (gamePath, modFile) -> makeLink(gamePath, modFile) }
+            deployPlugins(files)
             println("Deployed ${files.size} files")
         }
     }

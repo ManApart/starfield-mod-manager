@@ -4,7 +4,7 @@ import Mod
 import toolData
 import java.io.File
 
-fun deployDryRun() {
+fun deployDryRun(files: Map<String, File>) {
     getAnnotatedModFiles().forEach { entry ->
         println(entry.key)
         val winner = entry.value.first()
@@ -13,6 +13,7 @@ fun deployDryRun() {
             println("\tNot used: ${others.joinToString { "(${it.loadOrder}) " + it.idName() }}")
         }
     }
+    deployPluginsDryRun(files)
     println("Deploy dryrun complete")
 }
 

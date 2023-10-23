@@ -44,4 +44,5 @@ mods/
 config.json
 data.json
 test-game-path
+test-ini-path
 .idea/

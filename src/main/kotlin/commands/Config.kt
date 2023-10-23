@@ -9,6 +9,7 @@ import java.io.File
 
 fun configHelp(args: List<String> = listOf()) = """
     config game-path <path-to-folder> - Sets the path to the folder under steam containing the starfield Data folder and exe
+    config ini-path <path-to-folder> - Sets the path to the folder under your documents that contains StarfieldCustom.ini and eventually Plugins.txt. Needed for updating mod load order
     config api-key <key-from-nexus>
     config categories - download category names from nexus
 """.trimIndent()
@@ -23,6 +24,12 @@ fun config(args: List<String>) {
         args.size == 2 && args.first() == "game-path" -> {
             toolConfig.gamePath = args.last()
             println("Updated game path to ${toolConfig.gamePath}")
+            save()
+        }
+
+        args.size == 2 && args.first() == "ini-path" -> {
+            toolConfig.iniPath = args.last()
+            println("Updated ini path to ${toolConfig.iniPath}")
             save()
         }
 
