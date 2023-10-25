@@ -41,6 +41,8 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
     val action = detectStagingChanges(stageFolder)
     when (action) {
+        StageChange.NONE -> {}
+        StageChange.CAPITALIZE -> capitalizeData(stageFolder)
         StageChange.NEST -> nestInData(modName, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
         StageChange.FOMOD -> println("FOMOD detected for $modName. You should open the staging folder and pick options yourself.")
@@ -48,7 +50,7 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
     }
 }
 
-enum class StageChange { NONE, NEST, UNNEST, FOMOD, UNKNOWN }
+enum class StageChange { NONE, NEST, UNNEST, FOMOD, CAPITALIZE, UNKNOWN }
 
 fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
@@ -57,11 +59,13 @@ fun detectStagingChanges(stageFolder: File): StageChange {
     val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse_readme")
     val dataTopLevelExtensions = listOf("esp", "esm", "ba2")
     return when {
+        stagedFiles.any { it.nameWithoutExtension == "data" } -> StageChange.CAPITALIZE
         stagedNames.contains("data") -> StageChange.NONE
         stagedNames.any { dataTopLevelNames.contains(it) } -> StageChange.NEST
         stagedExtensions.any { dataTopLevelExtensions.contains(it) } -> StageChange.NEST
         stagedFiles.size == 1 && stagedFiles.firstOrNull()?.isDirectory ?: false && stagedFiles.first().listFiles()
             ?.map { it.nameWithoutExtension.lowercase() }?.contains("data") ?: false -> StageChange.UNNEST
+
         stagedNames.contains("fomod") -> StageChange.FOMOD
         else -> StageChange.UNKNOWN
     }
@@ -83,7 +87,7 @@ fun unNestFiles(modName: String, stageFolder: File, stagedFiles: Array<File>) {
 }
 
 private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
-    val newPath = stageFolderPath + nested.path.replace(topPath, "")
+    val newPath = properlyCapitalize(stageFolderPath, stageFolderPath + nested.path.replace(topPath, ""))
     Files.move(nested.toPath(), Path(newPath), StandardCopyOption.REPLACE_EXISTING)
     if (nested.isDirectory) {
         nested.listFiles()?.forEach { moreNested ->
@@ -108,11 +112,25 @@ private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<Fi
 }
 
 private fun nest(stageFolderPath: String, file: File, dataPath: String) {
-    val newPath = Path(file.path.replace(stageFolderPath, dataPath))
+    val newPath = Path(properlyCapitalize(dataPath, file.path.replace(stageFolderPath, dataPath)))
     Files.move(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING)
     if (file.isDirectory) {
         file.listFiles()?.forEach { moreNested ->
             nest(stageFolderPath, moreNested, dataPath)
         }
     }
+}
+
+private fun capitalizeData(stageFolder: File) {
+    Files.move(Path(stageFolder.path + "/data"), Path(stageFolder.path + "/Data"))
+}
+
+fun properlyCapitalize(stageFolderPath: String, filePath: String): String {
+    val newStagePath = stageFolderPath.replace("/data/", "/Data/")
+    val fileName = File(filePath).name
+    val innerPath = filePath
+        .replace(stageFolderPath, "")
+        .replace(fileName, "")
+        .lowercase()
+    return newStagePath + innerPath + fileName
 }
