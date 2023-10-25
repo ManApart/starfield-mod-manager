@@ -19,7 +19,10 @@ data class Mod(
     var show: Boolean = true
 
     fun getModFiles(): List<File> {
-        return File(filePath).getFiles()
+        return File(filePath).getFiles {
+            !it.path.contains("${filePath}/fomod", ignoreCase = true)
+                    && !it.path.contains("${filePath}/optional", ignoreCase = true)
+        }
     }
 
     fun url() = "https://www.nexusmods.com/starfield/mods/$id"
@@ -35,7 +38,7 @@ data class Mod(
     }
 }
 
-fun File.getFiles(filterFunction: (File) -> Boolean = {true}): List<File> {
+fun File.getFiles(filterFunction: (File) -> Boolean = { true }): List<File> {
     val fileList = listFiles() ?: arrayOf()
     val (folders, files) = fileList.partition { it.isDirectory }
     return files.filter { filterFunction(it) } + folders.flatMap { it.getFiles(filterFunction) }

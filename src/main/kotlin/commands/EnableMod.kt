@@ -29,7 +29,7 @@ private fun enableList(enable: Boolean, args: List<String>) {
         toolData.mods[i].enabled = enable
     }
     save()
-    CommandType.LIST.apply(listOf())
+    println("Enabled")
 }
 
 private fun enableRange(enable: Boolean, args: List<String>) {
@@ -39,6 +39,6 @@ private fun enableRange(enable: Boolean, args: List<String>) {
             toolData.mods[i].enabled = enable
         }
         save()
-        CommandType.LIST.apply(listOf())
+        println("Enabled")
     }
 }
