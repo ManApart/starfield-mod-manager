@@ -3,15 +3,37 @@ package commands
 import Column
 import Mod
 import Table
-import toolConfig
 import toolData
 import truncate
 import java.io.File
-import kotlin.math.min
 
-fun listHelp() = "List Mod details"
+fun listHelp() = """
+    List Mod details
+    list 10 30 - List 30 mods, starting with the 10th mod
+""".trimIndent()
 
-fun listMods(args: List<String> = listOf()) = display(toolData.mods. map { it to it.show })
+fun listMods(args: List<String> = listOf()) {
+    val ranges = args.mapNotNull { it.toIntOrNull() }
+    when {
+        ranges.isNotEmpty() -> displayAmount(ranges)
+        else -> display(toolData.mods.map { it to it.show })
+    }
+}
+
+private fun displayAmount(ranges: List<Int>) {
+    val start = ranges.first()
+    val amount = ranges.getOrNull(1) ?: 20
+    var shownCount = 0
+    val shownMods = toolData.mods.mapIndexed { i, mod ->
+        val shown = if (mod.show && i >= start && shownCount < amount) {
+            shownCount++
+            true
+        } else false
+        mod to shown
+    }
+    display(shownMods)
+}
+
 fun display(mods: List<Pair<Mod, Boolean>>) {
     val columns = listOf(
         Column("Id", 10),
