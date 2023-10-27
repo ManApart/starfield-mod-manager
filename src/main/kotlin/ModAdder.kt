@@ -15,7 +15,12 @@ fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
 
 fun refreshMod(mod: Mod, forceRedownload: Boolean = false) {
     val downloaded = if (forceRedownload || mod.downloadPath?.let { File(it) }?.exists() != true) {
-        downloadMod(mod, forceRedownload)
+        if (mod.id == null) {
+            println("Unable to refresh ${mod.name} because it has no id or local file")
+            null
+        } else {
+            downloadMod(mod, forceRedownload)
+        }
     } else {
         File(mod.downloadPath!!)
     }

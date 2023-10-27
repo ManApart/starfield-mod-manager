@@ -38,8 +38,7 @@ fun refresh(args: List<String>) {
 }
 
 private fun List<Mod>.refreshMods() {
-    filter { it.id != null }
-        .also { println("Refreshing ${it.size} mods") }
+        also { println("Refreshing ${it.size} mods") }
         .forEach { refreshMod(it) }
     println("Done Refreshing")
 }
