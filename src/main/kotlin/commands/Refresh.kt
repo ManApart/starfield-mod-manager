@@ -2,6 +2,7 @@ package commands
 
 import Mod
 import addModById
+import refreshMod
 import toolData
 import java.io.File
 
@@ -39,6 +40,6 @@ fun refresh(args: List<String>) {
 private fun List<Mod>.refreshMods() {
     filter { it.id != null }
         .also { println("Refreshing ${it.size} mods") }
-        .forEach { addModById(it.id!!, it.fileId) }
+        .forEach { refreshMod(it) }
     println("Done Refreshing")
 }

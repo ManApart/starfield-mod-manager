@@ -8,6 +8,7 @@ data class Mod(
     var filePath: String,
     var loadOrder: Int,
     var id: Int? = null,
+    var downloadPath: String? = null,
     var fileId: Int? = null,
     var latestFileId: Int? = null,
     var version: String? = null,

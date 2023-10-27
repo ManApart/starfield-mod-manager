@@ -5,20 +5,38 @@ import kotlin.math.max
 
 fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
     val mod = runBlocking { fetchModInfo(id, fileId) } ?: return
-    val cleanName = mod.name.replace(" ", "-")
-    println("Downloading $id: ${mod.name}")
-    val downloadUrl = runBlocking { getDownloadUrl(toolConfig.apiKey!!, mod.id!!, mod.fileId!!) }
-    if (downloadUrl == null) {
-        println("Unable to get download url for ${mod.name}")
-        return
-    }
-    val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
-    val downloaded = downloadMod(downloadUrl, destination, forceRedownload)
+    val downloaded = downloadMod(mod, forceRedownload)
     if (downloaded == null) {
         println("Failed to download ${mod.name}")
     } else {
         addModFile(mod, downloaded, mod.name)
     }
+}
+
+fun refreshMod(mod: Mod, forceRedownload: Boolean = false) {
+    val downloaded = if (forceRedownload || mod.downloadPath?.let { File(it) }?.exists() != true) {
+        downloadMod(mod, forceRedownload)
+    } else {
+        File(mod.downloadPath!!)
+    }
+
+    if (downloaded == null) {
+        println("Failed to download ${mod.name}")
+    } else {
+        addModFile(mod, downloaded, mod.name)
+    }
+}
+
+private fun downloadMod(mod: Mod, forceRedownload: Boolean): File? {
+    println("Downloading ${mod.id}: ${mod.name}")
+    val cleanName = mod.name.replace(" ", "-")
+    val downloadUrl = runBlocking { getDownloadUrl(toolConfig.apiKey!!, mod.id!!, mod.fileId!!) }
+    if (downloadUrl == null) {
+        println("Unable to get download url for ${mod.name}")
+        return null
+    }
+    val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
+    return downloadMod(downloadUrl, destination, forceRedownload)
 }
 
 suspend fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
@@ -130,6 +148,10 @@ fun addModFile(mod: Mod, sourceFile: File, modName: String) {
     if (!sourceFile.exists()) {
         println("Could not find ${sourceFile.absolutePath}")
         return
+    }
+    if (mod.downloadPath != sourceFile.absolutePath) {
+        mod.downloadPath = sourceFile.absolutePath
+        save()
     }
     val stageFile = File(mod.filePath)
     val stageExists = stageFile.exists()
