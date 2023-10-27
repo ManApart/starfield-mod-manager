@@ -49,6 +49,7 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
         StageChange.FOMOD -> println("FOMOD detected for $modName. You should open the staging folder and pick options yourself.")
         else -> println("Unable to guess folder path for $modName. You should open the staging folder and make sure it was installed correctly.")
     }
+    properlyCasePaths(stageFolder)
 }
 
 enum class StageChange { NONE, NEST, UNNEST, FOMOD, CAPITALIZE, UNKNOWN }
@@ -88,7 +89,7 @@ fun unNestFiles(modName: String, stageFolder: File, stagedFiles: Array<File>) {
 }
 
 private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
-    val newPath = properlyCapitalize(stageFolderPath, stageFolderPath + nested.path.replace(topPath, ""))
+    val newPath = stageFolderPath + nested.path.replace(topPath, "")
     Files.move(nested.toPath(), Path(newPath), StandardCopyOption.REPLACE_EXISTING)
     if (nested.isDirectory) {
         nested.listFiles()?.forEach { moreNested ->
@@ -100,7 +101,6 @@ private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
 private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Nesting files in data for $modName")
     try {
-
         val dataFolder = File(stageFolder.path + "/Data").also { it.mkdirs() }
         stagedFiles.forEach { file ->
             nest(stageFolder.path, file, dataFolder.path)
@@ -113,7 +113,7 @@ private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<Fi
 }
 
 private fun nest(stageFolderPath: String, file: File, dataPath: String) {
-    val newPath = Path(properlyCapitalize(dataPath, file.path.replace(stageFolderPath, dataPath)))
+    val newPath = Path(file.path.replace(stageFolderPath, dataPath))
     Files.move(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING)
     if (file.isDirectory) {
         file.listFiles()?.forEach { moreNested ->
@@ -126,12 +126,15 @@ private fun capitalizeData(stageFolder: File) {
     Files.move(Path(stageFolder.path + "/data"), Path(stageFolder.path + "/Data"))
 }
 
-fun properlyCapitalize(stageFolderPath: String, filePath: String): String {
-    val newStagePath = stageFolderPath.replace("/data/", "/Data/")
-    val fileName = File(filePath).name
-    val innerPath = filePath
-        .replace(stageFolderPath, "")
-        .replace(fileName, "")
-        .lowercase()
-    return newStagePath + innerPath + fileName
+private fun properlyCasePaths(stageFolder: File) {
+    File(stageFolder.absolutePath).listFiles()?.filter { it.isDirectory }?.forEach { case(it) }
+}
+
+private fun case(folder: File) {
+    val newPath = folder.parent + "/" + folder.name.lowercase()
+    val next = if (folder.name != "Data") {
+        Files.move(folder.toPath(), Path(newPath), StandardCopyOption.REPLACE_EXISTING)
+        File(newPath)
+    } else folder
+    next.listFiles()?.filter { it.isDirectory }?.forEach { case(it) }
 }
