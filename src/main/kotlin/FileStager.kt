@@ -5,6 +5,7 @@ import kotlin.io.path.Path
 
 fun stageMod(sourceFile: File, stageFolder: File, modName: String): Boolean {
     stageFolder.mkdirs()
+    stageFolder.listFiles()?.forEach { it.deleteRecursively() }
     return when {
         sourceFile.isDirectory -> {
             sourceFile.copyRecursively(stageFolder, overwrite = true)
@@ -56,7 +57,7 @@ fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
     val stagedNames = stagedFiles.map { it.nameWithoutExtension.lowercase() }
     val stagedExtensions = stagedFiles.map { it.extension }
-    val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse_readme")
+    val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse_readme", "sfse")
     val dataTopLevelExtensions = listOf("esp", "esm", "ba2")
     return when {
         stagedFiles.any { it.nameWithoutExtension == "data" } -> StageChange.CAPITALIZE
