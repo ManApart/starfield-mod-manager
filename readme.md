@@ -1,24 +1,30 @@
+# Starfield Mod Manager
+
+[![Build and Test](https://github.com/ManApart/starfield-mod-manager/actions/workflows/runTests.yml/badge.svg)](https://github.com/ManApart/starfield-mod-manager/actions/workflows/runTests.yml)
+
+A CLI based Starfield Mod Manager for Linux. Requires some technical know-how and familiarity with the CLI, but also provides an thin slice of Vortex capabilities.
+
 ## Configuration
 
 Get a personal API key at https://www.nexusmods.com/users/myaccount?tab=api%20access
 
-## Dependencies
+### Dependencies
 
-You'll need to sudo apt install them
+You'll need to `sudo apt install` them
 
 - `7z` for installing from 7zip files
 - `libarchive-tools` for installing rar files
 
 
-## Setup Vortex Links
+### Setup Vortex Links
 - Place `smm.desktop` in `~/.local/share/applications/`.
 - Edit the Exec line so it points to your jar install location.
-- Edit the Path line so it potins at the folder of your jar
-- Updated `~/.local/share/applications/mimeapps.list` by adding a line `x-scheme-handler/nxm=smm.desktop`
+- Edit the Path line so it points at the folder of your jar
+- Update `~/.local/share/applications/mimeapps.list` by adding a line `x-scheme-handler/nxm=smm.desktop`
 - Make the desktop the default handler `xdg-mime default smm.desktop x-scheme-handler/nxm`
 
-## Configure App
-Run `help config` to see how to add your api key, set your game folder, and optionally fetch a list of categories
+### Configure App
+Run `help config` to see how to add your api key, set your game folder, set a folder for plugins.txt and optionally fetch a list of categories
 
 ## Usage
 
@@ -67,31 +73,5 @@ Updated 46, 47, 48, 49, 50
 Updated 51, 52, 53, 54, 55
 Updated 56
 Done Updating
-
-```
-
-
-
-## Test Commands
-```
-add ~/Downloads/starfield-mods/sleepy-time
-add ~/Downloads/starfield-mods/sleepy-time.zip
-add ~/Downloads/starfield-mods/starfield-script-extender-(sfse).7z
-mod 1 file ~/Downloads/starfield-mods/interstellar---cinematic-main-menu-edit---music.rar
-```
-
-## Command Concept
-
-```
-# Check for updates for all mods with an id
-update
-
-# Update a specific mod or all mods
-upgrade 1
-upgrade
-
-sort order
-sort name
-sort enabled
 
 ```
