@@ -9,8 +9,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      contents: write
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 19
@@ -32,4 +31,4 @@ jobs:
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: ./build/libs/starfield-mod-manager.jar
+          artifacts: ./build/libs/starfield-mod-manager.jar,./app/smm.desktop
