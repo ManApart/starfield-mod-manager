@@ -1,4 +1,5 @@
 import kotlinx.serialization.Serializable
+import nexus.EndorseStatus
 import nexus.ModInfo
 
 @Serializable
@@ -29,6 +30,7 @@ data class Data(
             if (updateCurrentVersion) version = info.version
             latestVersion = info.version
             categoryId = info.category_id
+            endorsed = info.endorsement.endorseStatus.isEndorsed()
             updatedFileId?.let {
                 if (updateCurrentVersion) fileId = it
                 latestFileId = it

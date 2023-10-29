@@ -10,6 +10,8 @@ enum class CommandType(
     CONFIG("Edit Configuration", ::configHelp, ::config),
     ENABLE("Enable Mod", ::enableHelp, ::enable),
     DISABLE("Enable Mod", ::enableHelp, ::disable),
+    ENDORSE("Endorse Mod", ::endorseHelp, ::endorse),
+    ABSTAIN("Abstain from endorsing Mod", ::endorseHelp, ::abstain),
     DEPLOY("Deploy enabled mods", ::deployHelp, ::deploy),
     HELP("Explain commands", ::helpHelp, ::help),
     FETCH("Fetch Mod Data", ::fetchHelp, ::fetchMod),

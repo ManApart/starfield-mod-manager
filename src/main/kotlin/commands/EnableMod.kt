@@ -15,7 +15,7 @@ fun enable(args: List<String>) = enableMod(true, args)
 
 fun disable(args: List<String>) = enableMod(false, args)
 
-fun enableMod(enable: Boolean = true, args: List<String>) {
+private fun enableMod(enable: Boolean = true, args: List<String>) {
     when {
         args.isEmpty() -> println(enableHelp())
         args.size == 1 && args.first().contains("-") -> enableRange(enable, args)
@@ -29,7 +29,7 @@ private fun enableList(enable: Boolean, args: List<String>) {
         toolData.mods[i].enabled = enable
     }
     save()
-    println("Enabled")
+    if (enable) println("Enabled") else println("Disabled")
 }
 
 private fun enableRange(enable: Boolean, args: List<String>) {
@@ -39,6 +39,6 @@ private fun enableRange(enable: Boolean, args: List<String>) {
             toolData.mods[i].enabled = enable
         }
         save()
-        println("Enabled")
+        if (enable) println("Enabled") else println("Disabled")
     }
 }

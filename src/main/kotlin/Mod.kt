@@ -15,6 +15,7 @@ data class Mod(
     var latestVersion: String? = null,
     var enabled: Boolean = false,
     var categoryId: Int? = null,
+    var endorsed: Boolean? = null,
 ) {
     @Transient
     var show: Boolean = true

@@ -39,8 +39,9 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
         Column("Id", 10),
         Column("Version", 20),
         Column("Load Order", 12, true),
-        Column("Staged", 9),
+        Column("Staged", 8),
         Column("Enabled", 9),
+        Column("Endorsed", 10),
         Column("Category", 20),
         Column("Index", 7, true),
         Column("Name", 22),
@@ -48,6 +49,11 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
     val data = mods.mapIndexed { i, (mod, displayed) ->
         with(mod) {
             val enabledCheck = if (enabled) "X" else " "
+            val endorsedCheck = when(endorsed){
+                true -> "Y"
+                false -> "N"
+                else -> " "
+            }
             val idClean = id?.toString() ?: "?"
             val versionClean = when {
                 version != null && latestVersion != null && version != latestVersion -> "${version.truncate()} -> ${latestVersion.truncate()}"
@@ -61,6 +67,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
                 "Index" to i,
                 "Staged" to staged,
                 "Enabled" to enabledCheck,
+                "Endorsed" to endorsedCheck,
                 "Load Order" to loadOrder,
                 "Id" to idClean,
                 "Version" to versionClean,

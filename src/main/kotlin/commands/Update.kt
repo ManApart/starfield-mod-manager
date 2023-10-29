@@ -12,7 +12,7 @@ import updateModInfo
 import java.io.File
 
 fun updateHelp() = """
-    update
+    update - fetches latest metadata for mods, including new versions and endorsement data
     update <mod index>
     update 1 2 4
     update 1-3
@@ -39,6 +39,7 @@ private fun List<Mod>.updateMods() {
                 chunk.map { (i, mod) ->
                     async {
                         updateModInfo(mod.id!!)
+                        //TODO - just i
                         if (mod.updateAvailable()) println("(i: $i) ${mod.name} can upgrade ${mod.version} -> ${mod.latestVersion}")
                     }
                 }.awaitAll()
