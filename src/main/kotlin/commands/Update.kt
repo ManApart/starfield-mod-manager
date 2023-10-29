@@ -39,8 +39,7 @@ private fun List<Mod>.updateMods() {
                 chunk.map { (i, mod) ->
                     async {
                         updateModInfo(mod.id!!)
-                        //TODO - just i
-                        if (mod.updateAvailable()) println("(i: $i) ${mod.name} can upgrade ${mod.version} -> ${mod.latestVersion}")
+                        if (mod.updateAvailable()) println("$i ${mod.name} can upgrade ${mod.version} -> ${mod.latestVersion}")
                     }
                 }.awaitAll()
             }

@@ -82,7 +82,7 @@ private fun List<Mod>.detectStagingIssues(errorMap: MutableMap<Int, Pair<Mod, Mu
 private fun printErrors(errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>) {
     errorMap.entries.forEach { (i, errorList) ->
         val (mod, errors) = errorList
-        println("(i: $i) ${mod.name} has issues:")
+        println("$i ${mod.name} has issues:")
         errors.forEach { error ->
             println("\t$error")
         }
