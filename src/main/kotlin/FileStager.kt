@@ -60,12 +60,14 @@ fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedExtensions = stagedFiles.map { it.extension }
     val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse_readme", "sfse")
     val dataTopLevelExtensions = listOf("esp", "esm", "ba2")
+    val firstFile = stagedFiles.firstOrNull()
     return when {
         stagedFiles.any { it.nameWithoutExtension == "data" } -> StageChange.CAPITALIZE
         stagedNames.contains("data") -> StageChange.NONE
         stagedNames.any { dataTopLevelNames.contains(it) } -> StageChange.NEST
         stagedExtensions.any { dataTopLevelExtensions.contains(it) } -> StageChange.NEST
-        stagedFiles.size == 1 && stagedFiles.firstOrNull()?.isDirectory ?: false && stagedFiles.first().listFiles()
+        firstFile?.isDirectory ?: false && firstFile?.nameWithoutExtension?.startsWith("sfse_") ?: false -> StageChange.UNNEST
+        stagedFiles.size == 1 && firstFile?.isDirectory ?: false && stagedFiles.first().listFiles()
             ?.map { it.nameWithoutExtension.lowercase() }?.contains("data") ?: false -> StageChange.UNNEST
 
         stagedNames.contains("fomod") -> StageChange.FOMOD
