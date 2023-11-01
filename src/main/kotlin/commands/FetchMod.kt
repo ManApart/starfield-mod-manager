@@ -28,7 +28,7 @@ private fun fetchModsById(ids: List<Int>) {
         runBlocking {
             chunk.map { id ->
                 async {
-                    fetchModInfo(id)?.let { mod -> println("Fetched info for ${mod.name}") }
+                    fetchModInfo(id)?.let { mod -> println("Fetched info for ${mod.id} ${mod.name}") }
                 }
             }.awaitAll()
         }
@@ -41,7 +41,7 @@ private fun addModByUrls(urls: List<String>) {
         runBlocking {
             chunk.map {url ->
                 async {
-                        url.urlToId()?.let { fetchModInfo(it) }?.let { println("Fetched info for ${it.name}") }
+                        url.urlToId()?.let { fetchModInfo(it) }?.let { println("Fetched info for ${it.id} ${it.name}") }
                     }
                 }.awaitAll()
             }

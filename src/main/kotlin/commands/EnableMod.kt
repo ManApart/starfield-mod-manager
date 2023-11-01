@@ -25,20 +25,22 @@ private fun enableMod(enable: Boolean = true, args: List<String>) {
 }
 
 private fun enableList(enable: Boolean, args: List<String>) {
-    args.getIndices(toolData.mods.size).forEach { i ->
+    val names = args.getIndices(toolData.mods.size).map { i ->
         toolData.mods[i].enabled = enable
-    }
+        toolData.mods[i].name
+    }.joinToString(", ")
     save()
-    if (enable) println("Enabled") else println("Disabled")
+    if (enable) println("Enabled $names") else println("Disabled $names")
 }
 
 private fun enableRange(enable: Boolean, args: List<String>) {
     val range = args.getRange(toolData.mods.size)
     if (range.isNotEmpty()) {
-        range.forEach { i ->
+        val names = range.joinToString(", ") { i ->
             toolData.mods[i].enabled = enable
+            toolData.mods[i].name
         }
         save()
-        if (enable) println("Enabled") else println("Disabled")
+        if (enable) println("Enabled $names") else println("Disabled $names")
     }
 }
