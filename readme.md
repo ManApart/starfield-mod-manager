@@ -86,3 +86,10 @@ Run the app and then use `help` to see commands. Alternatively you can look at t
 
 To reduce typing, most commands take the index of the mod, instead of mod id or name. This means the index of a mod can change as mods are added, deleted or sorted. Listing mods will always show their indices, and filtering will retain the index.
 
+
+## Alternatives
+
+Don't like this mod manager? Try another one:
+- [Ammo](https://github.com/cyberrumor/ammo)
+- [Lamp](https://github.com/CHollingworth/Lamp)
+- [Starfield Mod Loader](https://github.com/lVlyke/starfield-mod-loader)
