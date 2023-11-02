@@ -30,40 +30,43 @@ fun purge(args: List<String>) {
 }
 
 private fun purgeFiles(dryRun: Boolean) {
-    toolConfig.gamePath?.let { gamePath ->
-        File(gamePath).getFiles {
-            Files.isSymbolicLink(it.toPath())
-        }.forEach { link ->
-            println("Deleting ${link.path}")
-            if (!dryRun) link.delete()
-        }
+    toolConfig.gamePath?.let { purgeFiles(dryRun, it) }
+    toolConfig.iniPath?.let { purgeFiles(dryRun, it) }
+}
 
-        File(gamePath).getFiles {
-            it.nameWithoutExtension.endsWith("_override")
-        }.forEach { link ->
-            println("Unbacking up ${link.path}")
-            if (!dryRun) {
-                val ogPath = Path(
-                    "${link.parentFile.absolutePath}/${
-                        link.nameWithoutExtension.replace(
-                            "_override",
-                            ""
-                        )
-                    }.${link.extension}"
-                )
-                if (link.exists()) {
-                    Files.move(
-                        link.toPath(),
-                        ogPath,
-                        StandardCopyOption.REPLACE_EXISTING
+private fun purgeFiles(dryRun: Boolean, gamePath: String) {
+    File(gamePath).getFiles {
+        Files.isSymbolicLink(it.toPath())
+    }.forEach { link ->
+        println("Deleting ${link.path}")
+        if (!dryRun) link.delete()
+    }
+
+    File(gamePath).getFiles {
+        it.nameWithoutExtension.endsWith("_override")
+    }.forEach { link ->
+        println("Unbacking up ${link.path}")
+        if (!dryRun) {
+            val ogPath = Path(
+                "${link.parentFile.absolutePath}/${
+                    link.nameWithoutExtension.replace(
+                        "_override",
+                        ""
                     )
-                }
+                }.${link.extension}"
+            )
+            if (link.exists()) {
+                Files.move(
+                    link.toPath(),
+                    ogPath,
+                    StandardCopyOption.REPLACE_EXISTING
+                )
             }
         }
-        if (dryRun) {
-            println("Purge dryrun compete")
-        } else {
-            println("Purge compete")
-        }
+    }
+    if (dryRun) {
+        println("Purge dryrun compete")
+    } else {
+        println("Purge compete")
     }
 }

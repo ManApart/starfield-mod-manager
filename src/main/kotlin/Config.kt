@@ -6,6 +6,9 @@ data class Config(
     var gamePath: String? = null,
     var iniPath: String? = null,
     var apiKey: String? = null,
+    var useMyDocs: Boolean = false,
     var verbose: Boolean = false,
     var categories: Map<Int, String> = mapOf(),
-)
+) {
+    fun usedGamePath(modGamePath: String) = if (useMyDocs && modGamePath.startsWith("Data", true)) iniPath else gamePath
+}

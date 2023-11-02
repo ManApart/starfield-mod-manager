@@ -11,7 +11,10 @@ fun configHelp(args: List<String> = listOf()) = """
     config game-path <path-to-folder> - Sets the path to the folder under steam containing the starfield Data folder and exe
     config ini-path <path-to-folder> - Sets the path to the folder under your documents that contains StarfieldCustom.ini and eventually Plugins.txt. Needed for updating mod load order
     config api-key <key-from-nexus>
+    config verbose <true/false> - get additional output (for debugging)
+    config use-my-docs <true/false> - deploy mod files under Data to my documents instead of the game folder. (Defaults to false) 
     config categories - download category names from nexus
+    If your paths have spaces, make sure to quote them
 """.trimIndent()
 
 fun config(args: List<String>) {
@@ -47,13 +50,19 @@ fun config(args: List<String>) {
                     save()
                 }
             }
-
         }
 
         args.first() == "verbose" -> {
             val verbose = args.getOrNull(1) == "true"
             toolConfig.verbose = verbose
             println("Updated verbose to ${toolConfig.verbose}")
+            save()
+        }
+
+        args.first() == "use-my-docs" -> {
+            val useMyDocs = args.getOrNull(1) == "true"
+            toolConfig.useMyDocs = useMyDocs
+            println("Updated use-my-docs to ${toolConfig.useMyDocs}")
             save()
         }
 
