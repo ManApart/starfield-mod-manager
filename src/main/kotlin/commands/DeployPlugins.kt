@@ -19,7 +19,12 @@ fun deployPluginsDryRun(files: Map<String, File>) {
 }
 
 private fun createPluginsContent(files: Map<String, File>): String {
-    val pluginLines = files.entries.filter { it.value.extension.lowercase() in listOf("esp", "esm", "esl") }.joinToString("\n") { "|*${it.value.name}"  }
+    val pluginList = files.entries.filter { it.value.extension.lowercase() in listOf("esp", "esm", "esl") }.map { it.value.name }
+    val pluginLines = pluginList.joinToString("\n") { "|*$it"  }
+
+    if (pluginList.toSet().size != pluginList.size){
+        println("WARNING: There are duplicate plugin files")
+    }
 
     return """
         |# This file is used by Starfield to keep track of your downloaded content.

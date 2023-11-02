@@ -29,6 +29,7 @@ private fun List<Mod>.validate() {
     addDupeIds(indexed, errorMap)
     addDupeFilenames(indexed, errorMap)
     detectStagingIssues(errorMap)
+    detectDupePlugins(indexed)
 
     printErrors(errorMap)
     println("Validation Complete")
@@ -76,6 +77,13 @@ private fun List<Mod>.detectStagingIssues(errorMap: MutableMap<Int, Pair<Mod, Mu
                 errorMap[i]?.second?.add("FOMOD detected. You should open the staging folder and pick options yourself.")
             }
         }
+    }
+}
+
+private fun detectDupePlugins(indexed: Map<Mod, Int>) {
+    val dupes = indexed.keys.flatMap { mod -> mod.getModFiles().filter { it.extension.lowercase() in listOf("esp", "esm", "esl") } }.groupBy { it.name }.filter { it.value.size > 1 }
+    if (dupes.isNotEmpty()){
+        println("The following plugins are duplicated: ${dupes.keys.joinToString()}\n")
     }
 }
 
