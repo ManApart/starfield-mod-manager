@@ -40,6 +40,20 @@ class OrderTest {
     }
 
     @Test
+    fun modsAreShiftedByOrderNotIndex() {
+        val mods = listOf(5,4,3,2,1).mapIndexed { i, order ->
+            Mod("Mod-$i", "mods/mod-$i", order, i)
+        }
+        setModOrder(mods, 0, 0)
+        assertEquals(0, mods[0].loadOrder)
+
+        val sortedMods = mods.sortedBy { it.loadOrder }
+        val expected = listOf(0,4,3,2,1)
+        val actual = sortedMods.map { it.id }
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun modsAreShiftedUp() {
         val mods = fakeMods(5)
         setModOrder(mods, 1, 10)
