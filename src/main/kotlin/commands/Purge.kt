@@ -2,6 +2,7 @@ package commands
 
 import confirmation
 import getFiles
+import getFolders
 import toolConfig
 import java.io.File
 import java.nio.file.Files
@@ -42,6 +43,7 @@ private fun purgeFiles(dryRun: Boolean) {
 private fun purgeFiles(dryRun: Boolean, gamePath: String) {
     deleteSymlinks(gamePath, dryRun)
     undoOverrides(gamePath, dryRun)
+    deleteEmptyFolders(gamePath, dryRun)
 }
 
 private fun deleteSymlinks(gamePath: String, dryRun: Boolean) {
@@ -77,4 +79,18 @@ private fun undoOverrides(gamePath: String, dryRun: Boolean) {
             }
         }
     }
+}
+
+private fun deleteEmptyFolders(gamePath: String, dryRun: Boolean) {
+    File(gamePath)
+        .getFolders()
+        .sortedByDescending { it.absolutePath.length }
+        .forEach { folder ->
+            if (folder.listFiles()?.isEmpty() == true) {
+                println("Deleting ${folder.path}")
+                if (!dryRun) {
+                    folder.delete()
+                }
+            }
+        }
 }

@@ -45,3 +45,9 @@ fun File.getFiles(filterFunction: (File) -> Boolean = { true }): List<File> {
     val (folders, files) = fileList.partition { it.isDirectory }
     return files.filter { filterFunction(it) } + folders.flatMap { it.getFiles(filterFunction) }
 }
+
+fun File.getFolders(filterFunction: (File) -> Boolean = { true }): List<File> {
+    val fileList = listFiles() ?: arrayOf()
+    val folders = fileList.filter { it.isDirectory }
+    return folders.filter { filterFunction(it) } + folders.flatMap { it.getFolders(filterFunction) }
+}
