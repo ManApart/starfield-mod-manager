@@ -13,6 +13,7 @@ fun refreshHelp() = """
     refresh all - For all mods with ids, attempt to redownload (or grab the file from the downloads folder if it exists) and restage.
     refresh empty - Refresh any files without staged data
     refresh staged - Refresh only files that are staged
+    refresh enabled - Refresh only files that are enabled
     If you're looking to upgrade to a new version, see update and upgrade
 """.trimIndent()
 
@@ -27,6 +28,11 @@ fun refresh(args: List<String>) {
         args.first() == "staged" -> {
             toolData.mods
                 .filter { File(it.filePath).exists() }
+                .refreshMods()
+        }
+        args.first() == "enabled" -> {
+            toolData.mods
+                .filter { it.enabled }
                 .refreshMods()
         }
         else -> {
