@@ -1,6 +1,8 @@
 package commands
 
+import FOLDER
 import Column
+import ENABLED
 import Mod
 import THUMBS_DOWN
 import THUMBS_UP
@@ -50,7 +52,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
     )
     val data = mods.mapIndexed { i, (mod, displayed) ->
         with(mod) {
-            val enabledCheck = if (enabled) "X" else " "
+            val enabledCheck = if (enabled) ENABLED else " "
             val endorsedCheck = when(endorsed){
                 true -> THUMBS_UP
                 false -> THUMBS_DOWN
@@ -63,7 +65,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
                 latestVersion != null -> "? -> ${latestVersion.truncate(10)}"
                 else -> "?"
             }
-            val staged = if (File(filePath).exists()) "X" else " "
+            val staged = if (File(filePath).exists()) FOLDER else " "
             val category = category() ?: "?"
             mapOf(
                 "Index" to i,
