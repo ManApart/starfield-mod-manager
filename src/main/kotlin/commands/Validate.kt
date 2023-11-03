@@ -69,13 +69,21 @@ private fun List<Mod>.detectStagingIssues(errorMap: MutableMap<Int, Pair<Mod, Mu
     forEachIndexed { i, mod ->
         val stageFolder = File(mod.filePath)
         if (stageFolder.exists()) {
-            val change = detectStagingChanges(stageFolder)
-            if (change == StageChange.UNKNOWN) {
-                errorMap.putIfAbsent(i, mod to mutableListOf())
-                errorMap[i]?.second?.add("Unable to guess folder path. You should open the staging folder and make sure it was installed correctly.")
-            } else if (change == StageChange.FOMOD) {
-                errorMap.putIfAbsent(i, mod to mutableListOf())
-                errorMap[i]?.second?.add("FOMOD detected. You should open the staging folder and pick options yourself.")
+            when (detectStagingChanges(stageFolder)) {
+                StageChange.UNKNOWN -> {
+                    errorMap.putIfAbsent(i, mod to mutableListOf())
+                    errorMap[i]?.second?.add("Unable to guess folder path. You should open the staging folder and make sure it was installed correctly.")
+                }
+
+                StageChange.FOMOD -> {
+                    errorMap.putIfAbsent(i, mod to mutableListOf())
+                    errorMap[i]?.second?.add("FOMOD detected. You should open the staging folder and pick options yourself.")
+                }
+                StageChange.NO_FILES -> {
+                    errorMap.putIfAbsent(i, mod to mutableListOf())
+                    errorMap[i]?.second?.add("No files found in stage folder.")
+                }
+                else -> {}
             }
         }
     }
@@ -90,7 +98,10 @@ private fun detectDupePlugins(indexed: Map<Mod, Int>) {
     }
 }
 
-private fun detectIncorrectCasing(indexed: Map<Mod, Int>, errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>) {
+private fun detectIncorrectCasing(
+    indexed: Map<Mod, Int>,
+    errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
+) {
     indexed.forEach { (mod, i) ->
         val modsPaths = mod.getModFiles().map { file ->
             with(file.absolutePath) {

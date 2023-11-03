@@ -43,6 +43,7 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
     val action = detectStagingChanges(stageFolder)
     when (action) {
         StageChange.NONE -> {}
+        StageChange.NO_FILES -> println("No staged files found for $modName")
         StageChange.CAPITALIZE -> capitalizeData(stageFolder)
         StageChange.NEST -> nestInData(modName, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
@@ -52,7 +53,7 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
     properlyCasePaths(stageFolder)
 }
 
-enum class StageChange { NONE, NEST, UNNEST, FOMOD, CAPITALIZE, UNKNOWN }
+enum class StageChange { NONE, NEST, UNNEST, FOMOD, CAPITALIZE, NO_FILES, UNKNOWN }
 
 fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
@@ -62,6 +63,7 @@ fun detectStagingChanges(stageFolder: File): StageChange {
     val dataTopLevelExtensions = listOf("esp", "esm", "ba2")
     val firstFile = stagedFiles.firstOrNull()
     return when {
+        stagedFiles.isEmpty() -> StageChange.NO_FILES
         stagedFiles.any { it.nameWithoutExtension == "data" } -> StageChange.CAPITALIZE
         stagedNames.contains("data") -> StageChange.NONE
         stagedNames.any { dataTopLevelNames.contains(it) } -> StageChange.NEST
