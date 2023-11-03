@@ -32,25 +32,38 @@ fun purge(args: List<String>) {
 private fun purgeFiles(dryRun: Boolean) {
     toolConfig.gamePath?.let { purgeFiles(dryRun, it) }
     toolConfig.iniPath?.let { purgeFiles(dryRun, it) }
+    if (dryRun) {
+        println("Purge dryrun compete")
+    } else {
+        println("Purge compete")
+    }
 }
 
 private fun purgeFiles(dryRun: Boolean, gamePath: String) {
+    deleteSymlinks(gamePath, dryRun)
+    undoOverrides(gamePath, dryRun)
+}
+
+private fun deleteSymlinks(gamePath: String, dryRun: Boolean) {
     File(gamePath).getFiles {
         Files.isSymbolicLink(it.toPath())
     }.forEach { link ->
         println("Deleting ${link.path}")
         if (!dryRun) link.delete()
     }
+}
 
+
+private fun undoOverrides(gamePath: String, dryRun: Boolean) {
     File(gamePath).getFiles {
-        it.nameWithoutExtension.endsWith("_override")
+        it.nameWithoutExtension.endsWith("_overridden")
     }.forEach { link ->
         println("Unbacking up ${link.path}")
         if (!dryRun) {
             val ogPath = Path(
                 "${link.parentFile.absolutePath}/${
                     link.nameWithoutExtension.replace(
-                        "_override",
+                        "_overridden",
                         ""
                     )
                 }.${link.extension}"
@@ -63,10 +76,5 @@ private fun purgeFiles(dryRun: Boolean, gamePath: String) {
                 )
             }
         }
-    }
-    if (dryRun) {
-        println("Purge dryrun compete")
-    } else {
-        println("Purge compete")
     }
 }

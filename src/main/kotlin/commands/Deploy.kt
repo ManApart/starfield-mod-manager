@@ -63,7 +63,7 @@ fun makeLink(gamePath: String, modFile: File) {
         verbose("Add: ${modFile.path}")
         Files.move(
             gameFile.toPath(),
-            Path("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_override.${gameFile.extension}"),
+            Path("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_overridden.${gameFile.extension}"),
             StandardCopyOption.REPLACE_EXISTING
         )
         Files.createSymbolicLink(gameFile.toPath(), modFile.canonicalFile.toPath())
@@ -79,7 +79,7 @@ fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
         verbose("Delete: $gamePath")
         gameFile.delete()
         val backedUpFile =
-            File("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_override.${gameFile.extension}")
+            File("${gameFile.parentFile.absolutePath}/${gameFile.nameWithoutExtension}_overridden.${gameFile.extension}")
         if (backedUpFile.exists()) {
             verbose("Restore: ${gameFile.path}")
             Files.move(backedUpFile.toPath(), gameFile.toPath())
