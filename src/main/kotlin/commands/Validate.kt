@@ -10,19 +10,27 @@ fun validateHelp() = """
     validate <mod index>
     validate 1 2 4
     validate 1-3
+    validate staged
+    validate enabled
 """.trimIndent()
 
 fun validateMods(args: List<String>) {
-    if (args.isEmpty()) {
-        toolData.mods.validate()
-    } else {
-        args.getIndicesOrRange(toolData.mods.size)
-            .mapNotNull { toolData.byIndex(it) }
-            .validate()
+    with(toolData.mods) {
+        when {
+            args.isEmpty() -> validate()
+            args.first() == "staged" -> filter { File(it.filePath).exists() }.validate()
+            args.first() == "enabled" -> filter { it.enabled }.validate()
+            else -> {
+                args.getIndicesOrRange(size)
+                    .mapNotNull { toolData.byIndex(it) }
+                    .validate()
+            }
+        }
     }
 }
 
 private fun List<Mod>.validate() {
+    println("Validating $size mods")
     val errorMap = mutableMapOf<Int, Pair<Mod, MutableList<String>>>()
     val indexed = mapIndexed { i, mod -> mod to i }.toMap()
 
@@ -79,10 +87,12 @@ private fun List<Mod>.detectStagingIssues(errorMap: MutableMap<Int, Pair<Mod, Mu
                     errorMap.putIfAbsent(i, mod to mutableListOf())
                     errorMap[i]?.second?.add("FOMOD detected. You should open the staging folder and pick options yourself.")
                 }
+
                 StageChange.NO_FILES -> {
                     errorMap.putIfAbsent(i, mod to mutableListOf())
                     errorMap[i]?.second?.add("No files found in stage folder.")
                 }
+
                 else -> {}
             }
         }
