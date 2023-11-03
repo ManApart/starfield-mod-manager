@@ -113,18 +113,19 @@ private fun detectIncorrectCasing(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
     indexed.forEach { (mod, i) ->
-        val modsPaths = mod.getModFiles().map { file ->
-            with(file.absolutePath) {
-                val start = indexOf("Data") + 4
-                val end = lastIndexOf("/")
-                substring(start, end)
-            }
-        }.filter { it != it.lowercase() }
+        val modsPaths = mod.getModFiles()
+            .map { it.parent }
+            .mapNotNull { file ->
+                val start = file.indexOf("Data") + 4
+                val end = file.lastIndexOf("/")
+                if (start < end) file.substring(start, end) else null
+            }.toSet()
+            .filter { it != it.lowercase() }
         if (modsPaths.isNotEmpty()) {
             errorMap.putIfAbsent(i, mod to mutableListOf())
             errorMap[i]?.second?.add("Filepaths should be lowercase between data and filename:")
             modsPaths.forEach {
-                errorMap[i]?.second?.add("\t$it")
+                errorMap[i]?.second?.add("\t${it}")
             }
         }
     }
