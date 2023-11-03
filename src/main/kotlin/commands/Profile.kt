@@ -60,8 +60,9 @@ private fun loadProfile(i: Int) {
         println("Could not find profile for $i")
         return
     }
-    toolData.mods.forEach {
-        it.enabled = (profile.ids.contains(it.id) || profile.filePaths.contains(it.filePath))
+    toolData.mods.forEachIndexed { modIndex, mod ->
+        val enabled = profile.ids.contains(mod.id) || profile.filePaths.contains(mod.filePath)
+        enableMod(enabled, modIndex)
     }
     println("Loaded ${profile.name}")
 }

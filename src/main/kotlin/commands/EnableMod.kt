@@ -1,7 +1,10 @@
 package commands
 
+import StageChange
+import detectStagingChanges
 import save
 import toolData
+import java.io.File
 
 fun enableHelp() = """
     enable <mod index>
@@ -25,21 +28,30 @@ private fun enableMod(enable: Boolean = true, args: List<String>) {
 }
 
 private fun enableList(enable: Boolean, args: List<String>) {
-    val names = args.getIndices(toolData.mods.size).map { i ->
-        toolData.mods[i].enabled = enable
-        toolData.mods[i].name
+    val names = args.getIndices(toolData.mods.size).mapNotNull { i ->
+        enableMod(enable, i)
     }.joinToString(", ")
     save()
     if (enable) println("Enabled $names") else println("Disabled $names")
 }
 
+fun enableMod(enable: Boolean, i: Int): String? {
+    val mod = toolData.mods[i]
+    return if (enable && detectStagingChanges(File(mod.filePath)) == StageChange.FOMOD) {
+        println("$i ${mod.name} cannot be enabled because it is an unprocessed fomod. Delete the fomod folder in the staging folder to enable. (And pick your options).")
+        null
+    } else {
+        mod.enabled = enable
+        mod.name
+    }
+}
+
 private fun enableRange(enable: Boolean, args: List<String>) {
     val range = args.getRange(toolData.mods.size)
     if (range.isNotEmpty()) {
-        val names = range.joinToString(", ") { i ->
-            toolData.mods[i].enabled = enable
-            toolData.mods[i].name
-        }
+        val names = range.mapNotNull { i ->
+            enableMod(enable, i)
+        }.joinToString(", ")
         save()
         if (enable) println("Enabled $names") else println("Disabled $names")
     }
