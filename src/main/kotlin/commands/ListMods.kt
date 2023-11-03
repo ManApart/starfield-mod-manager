@@ -2,6 +2,8 @@ package commands
 
 import Column
 import Mod
+import THUMBS_DOWN
+import THUMBS_UP
 import Table
 import toolData
 import truncate
@@ -50,8 +52,8 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
         with(mod) {
             val enabledCheck = if (enabled) "X" else " "
             val endorsedCheck = when(endorsed){
-                true -> "Y"
-                false -> "N"
+                true -> THUMBS_UP
+                false -> THUMBS_DOWN
                 else -> " "
             }
             val idClean = id?.toString() ?: "?"

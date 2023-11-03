@@ -2,6 +2,8 @@ import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+const val THUMBS_UP = "\uD83D\uDC4D"
+const val THUMBS_DOWN = "\uD83D\uDC4E"
 private const val ANSI_RESET = "\u001B[0m";
 
 fun red(text: String) = "\u001B[31m$text$ANSI_RESET"
