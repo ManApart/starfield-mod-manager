@@ -64,6 +64,7 @@ private fun loadProfile(i: Int) {
         val enabled = profile.ids.contains(mod.id) || profile.filePaths.contains(mod.filePath)
         enableMod(enabled, modIndex)
     }
+    save()
     println("Loaded ${profile.name}")
 }
 

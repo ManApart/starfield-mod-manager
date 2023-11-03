@@ -12,21 +12,25 @@ fun validateHelp() = """
     validate 1-3
     validate staged
     validate enabled
+    validate disabled
 """.trimIndent()
 
 fun validateMods(args: List<String>) {
-    with(toolData.mods) {
-        when {
-            args.isEmpty() -> validate()
-            args.first() == "staged" -> filter { File(it.filePath).exists() }.validate()
-            args.first() == "enabled" -> filter { it.enabled }.validate()
-            else -> {
-                args.getIndicesOrRange(size)
-                    .mapNotNull { toolData.byIndex(it) }
-                    .validate()
-            }
+    when {
+        args.isEmpty() -> validate()
+        args.first() == "staged" -> validate { File(it.filePath).exists() }
+        args.first() == "enabled" -> validate { it.enabled }
+        args.first() == "disabled" -> validate { it.enabled }
+        else -> {
+            args.getIndicesOrRange(toolData.mods.size)
+                .mapNotNull { toolData.byIndex(it) }
+                .validate()
         }
     }
+}
+
+private fun validate(filter: (Mod) -> Boolean = {true}) {
+    toolData.mods.filter(filter).validate()
 }
 
 private fun List<Mod>.validate() {

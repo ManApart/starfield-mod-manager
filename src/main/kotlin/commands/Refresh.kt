@@ -14,27 +14,17 @@ fun refreshHelp() = """
     refresh empty - Refresh any files without staged data
     refresh staged - Refresh only files that are staged
     refresh enabled - Refresh only files that are enabled
+    refresh disabled - Refresh only files that are NOT enabled
     If you're looking to upgrade to a new version, see update and upgrade
 """.trimIndent()
 
 fun refresh(args: List<String>) {
     when {
         args.isEmpty() -> println(refreshHelp())
-        args.first() == "empty" -> {
-            toolData.mods
-                .filter { !File(it.filePath).exists() }
-                .refreshMods()
-        }
-        args.first() == "staged" -> {
-            toolData.mods
-                .filter { File(it.filePath).exists() }
-                .refreshMods()
-        }
-        args.first() == "enabled" -> {
-            toolData.mods
-                .filter { it.enabled }
-                .refreshMods()
-        }
+        args.first() == "empty" -> refresh { !File(it.filePath).exists() }
+        args.first() == "staged" -> refresh { File(it.filePath).exists() }
+        args.first() == "enabled" -> refresh { it.enabled }
+        args.first() == "disabled" -> refresh { !it.enabled }
         else -> {
             args.getIndicesOrRange(toolData.mods.size)
                 .mapNotNull { toolData.byIndex(it) }
@@ -43,8 +33,12 @@ fun refresh(args: List<String>) {
     }
 }
 
+private fun refresh(filter: (Mod) -> Boolean) {
+    toolData.mods.filter(filter).refreshMods()
+}
+
 private fun List<Mod>.refreshMods() {
-        also { println("Refreshing ${it.size} mods") }
+    also { println("Refreshing ${it.size} mods") }
         .forEach { refreshMod(it) }
     println("Done Refreshing")
 }
