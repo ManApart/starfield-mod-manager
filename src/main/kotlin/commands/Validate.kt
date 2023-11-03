@@ -30,6 +30,7 @@ private fun List<Mod>.validate() {
     addDupeFilenames(indexed, errorMap)
     detectStagingIssues(errorMap)
     detectDupePlugins(indexed)
+    detectIncorrectCasing(indexed, errorMap)
 
     printErrors(errorMap)
     println("Validation Complete")
@@ -81,9 +82,30 @@ private fun List<Mod>.detectStagingIssues(errorMap: MutableMap<Int, Pair<Mod, Mu
 }
 
 private fun detectDupePlugins(indexed: Map<Mod, Int>) {
-    val dupes = indexed.keys.flatMap { mod -> mod.getModFiles().filter { it.extension.lowercase() in listOf("esp", "esm", "esl") } }.groupBy { it.name }.filter { it.value.size > 1 }
-    if (dupes.isNotEmpty()){
+    val dupes = indexed.keys.flatMap { mod ->
+        mod.getModFiles().filter { it.extension.lowercase() in listOf("esp", "esm", "esl") }
+    }.groupBy { it.name }.filter { it.value.size > 1 }
+    if (dupes.isNotEmpty()) {
         println("The following plugins are duplicated: ${dupes.keys.joinToString()}\n")
+    }
+}
+
+private fun detectIncorrectCasing(indexed: Map<Mod, Int>, errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>) {
+    indexed.forEach { (mod, i) ->
+        val modsPaths = mod.getModFiles().map { file ->
+            with(file.absolutePath) {
+                val start = indexOf("Data") + 4
+                val end = lastIndexOf("/")
+                substring(start, end)
+            }
+        }.filter { it != it.lowercase() }
+        if (modsPaths.isNotEmpty()) {
+            errorMap.putIfAbsent(i, mod to mutableListOf())
+            errorMap[i]?.second?.add("Filepaths should be lowercase between data and filename:")
+            modsPaths.forEach {
+                errorMap[i]?.second?.add("\t$it")
+            }
+        }
     }
 }
 
