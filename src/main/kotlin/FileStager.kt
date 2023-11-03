@@ -43,12 +43,12 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
     val action = detectStagingChanges(stageFolder)
     when (action) {
         StageChange.NONE -> {}
-        StageChange.NO_FILES -> println("No staged files found for $modName")
+        StageChange.NO_FILES -> println(yellow("No staged files found for $modName"))
         StageChange.CAPITALIZE -> capitalizeData(stageFolder)
         StageChange.NEST -> nestInData(modName, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
-        StageChange.FOMOD -> println("FOMOD detected for $modName. You should open the staging folder and pick options yourself.")
-        else -> println("Unable to guess folder path for $modName. You should open the staging folder and make sure it was installed correctly.")
+        StageChange.FOMOD -> println(yellow("FOMOD detected for $modName.") + " You should open the staging folder and pick options yourself.")
+        else -> println(yellow("Unable to guess folder path for $modName.") + " You should open the staging folder and make sure it was installed correctly.")
     }
     properlyCasePaths(stageFolder)
 }

@@ -1,6 +1,7 @@
 package commands
 
 import Mod
+import cyan
 import toolData
 import java.io.File
 
@@ -14,7 +15,7 @@ fun deployDryRun(files: Map<String, File>) {
         }
     }
     deployPluginsDryRun(files)
-    println("Deploy dryrun complete")
+    println(cyan("Deploy dryrun complete"))
 }
 
 private fun getAnnotatedModFiles(): Map<String, List<Mod>> {

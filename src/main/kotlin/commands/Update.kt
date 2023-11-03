@@ -2,6 +2,7 @@ package commands
 
 import Mod
 import addModById
+import cyan
 import fetchModInfo
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -32,7 +33,7 @@ fun update(args: List<String>) {
 
 private fun List<Mod>.updateMods() {
     mapIndexed { i, mod -> i to mod }.filter { it.second.id != null }
-        .also { println("Updating ${it.size} mods") }
+        .also { println(cyan("Updating ${it.size} mods")) }
         .chunked(toolConfig.chunkSize)
         .forEach { chunk ->
             runBlocking {
@@ -45,5 +46,5 @@ private fun List<Mod>.updateMods() {
             }
             println("Updated ${chunk.joinToString{it.first.toString()}}")
         }
-    println("Done Updating")
+    println(cyan("Done Updating"))
 }

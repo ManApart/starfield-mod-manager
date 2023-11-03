@@ -1,9 +1,12 @@
 package commands
 
 import confirmation
+import cyan
 import getFiles
 import getFolders
+import red
 import toolConfig
+import yellow
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
@@ -18,7 +21,7 @@ fun purge(args: List<String>) {
     val dryRun = args.lastOrNull() == "dryrun"
 
     if (!dryRun) {
-        println("Are you sure you want to purge? (y/n)")
+        println(yellow("Are you sure you want to purge?") + " (y/n)")
         confirmation = { c ->
             if (c.firstOrNull() == "y") {
                 purgeFiles(false)
@@ -34,9 +37,9 @@ private fun purgeFiles(dryRun: Boolean) {
     toolConfig.gamePath?.let { purgeFiles(dryRun, it) }
     toolConfig.iniPath?.let { purgeFiles(dryRun, it) }
     if (dryRun) {
-        println("Purge dryrun compete")
+        println(cyan("Purge dryrun compete"))
     } else {
-        println("Purge compete")
+        println(cyan("Purge compete"))
     }
 }
 
@@ -50,7 +53,7 @@ private fun deleteSymlinks(gamePath: String, dryRun: Boolean) {
     File(gamePath).getFiles {
         Files.isSymbolicLink(it.toPath())
     }.forEach { link ->
-        println("Deleting ${link.path}")
+        println(red("Deleting") + " ${link.path}")
         if (!dryRun) link.delete()
     }
 }
@@ -87,7 +90,7 @@ private fun deleteEmptyFolders(gamePath: String, dryRun: Boolean) {
         .sortedByDescending { it.absolutePath.length }
         .forEach { folder ->
             if (folder.listFiles()?.isEmpty() == true) {
-                println("Deleting ${folder.path}")
+                println(red("Deleting") + " ${folder.path}")
                 if (!dryRun) {
                     folder.delete()
                 }

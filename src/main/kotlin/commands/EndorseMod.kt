@@ -1,6 +1,7 @@
 package commands
 
 import Mod
+import cyan
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -44,7 +45,7 @@ private fun endorseRange(endorse: Boolean, args: List<String>) {
 private fun endorseMods(endorse: Boolean, mods: List<Mod>) {
     val endorseLine = if (endorse) "Endorsed" else "Abstained"
     mods.filter { it.id != null }
-        .also { if (it.size > 1) println("Endorsing ${it.size} mods") }
+        .also { if (it.size > 1) println(cyan("Endorsing ${it.size} mods")) }
         .chunked(toolConfig.chunkSize)
         .forEach { chunk ->
             runBlocking {
@@ -61,5 +62,5 @@ private fun endorseMods(endorse: Boolean, mods: List<Mod>) {
             println("$endorseLine ${chunk.joinToString { it.toString() }}")
         }
     save()
-    if (endorse) println("Done Endorsing") else println("Done Abstaining")
+    if (endorse) println(cyan("Done Endorsing")) else println(cyan("Done Abstaining"))
 }

@@ -1,5 +1,6 @@
 package commands
 
+import cyan
 import toolConfig
 import toolData
 import verbose
@@ -23,7 +24,7 @@ fun deploy(args: List<String>) {
             getDisabledModPaths().forEach { deleteLink(it, files) }
             files.entries.forEach { (gamePath, modFile) -> makeLink(gamePath, modFile) }
             deployPlugins(files)
-            println("Deployed ${files.size} files")
+            println(cyan("Deployed ${files.size} files"))
         }
     }
 }

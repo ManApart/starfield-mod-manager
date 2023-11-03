@@ -7,7 +7,7 @@ fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
     val mod = runBlocking { fetchModInfo(id, fileId) } ?: return
     val downloaded = downloadMod(mod, forceRedownload)
     if (downloaded == null) {
-        println("Failed to download ${mod.name}")
+        println(red("Failed to download ${mod.name}"))
     } else {
         addModFile(mod, downloaded, mod.name)
     }
@@ -16,7 +16,7 @@ fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
 fun refreshMod(mod: Mod, forceRedownload: Boolean = false) {
     val downloaded = if (forceRedownload || mod.downloadPath?.let { File(it) }?.exists() != true) {
         if (mod.id == null) {
-            println("Unable to refresh ${mod.name} because it has no id or local file")
+            println(red("Unable to refresh ${mod.name} because it has no id or local file"))
             null
         } else {
             downloadMod(mod, forceRedownload)
@@ -26,7 +26,7 @@ fun refreshMod(mod: Mod, forceRedownload: Boolean = false) {
     }
 
     if (downloaded == null) {
-        println("Failed to download ${mod.name}")
+        println(red("Failed to download ${mod.name}"))
     } else {
         addModFile(mod, downloaded, mod.name)
     }
@@ -37,7 +37,7 @@ private fun downloadMod(mod: Mod, forceRedownload: Boolean): File? {
     val cleanName = mod.name.replace(" ", "-")
     val downloadUrl = runBlocking { getDownloadUrl(toolConfig.apiKey!!, mod.id!!, mod.fileId!!) }
     if (downloadUrl == null) {
-        println("Unable to get download url for ${mod.name}")
+        println(red("Unable to get download url for ${mod.name}"))
         return null
     }
     val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
@@ -46,11 +46,11 @@ private fun downloadMod(mod: Mod, forceRedownload: Boolean): File? {
 
 suspend fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
-        ?: return null.also { println("Unable to get mod info for $id") }
+        ?: return null.also { println(red("Unable to get mod info for $id")) }
     val modFileId = fileId ?: getModFiles(toolConfig.apiKey!!, id)?.getPrimaryFile()
 
     if (modFileId == null) {
-        println("Could not find primary file for $id")
+        println(red("Could not find primary file for $id"))
         return null
     }
 
@@ -65,12 +65,12 @@ suspend fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
 suspend fun updateModInfo(id: Int) {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
     if (modInfo == null) {
-        println("Unable to get mod info for $id")
+        println(red("Unable to get mod info for $id"))
         return
     }
     val modFileId = getModFiles(toolConfig.apiKey!!, id)?.getPrimaryFile()
     if (modFileId == null) {
-        println("Could not find primary file for $id")
+        println(red("Could not find primary file for $id"))
         return
     }
 
@@ -107,7 +107,7 @@ fun addModByNexusProtocol(url: String) {
     val request = parseDownloadRequest(url)
     val modInfo = runBlocking { getModDetails(toolConfig.apiKey!!, request.modId) }
     if (modInfo == null) {
-        println("Unable to download $url")
+        println(red("Unable to download $url"))
         return
     }
     val modName = modInfo.name.lowercase()
@@ -120,13 +120,13 @@ fun addModByNexusProtocol(url: String) {
     println("Downloading $modName")
     val downloadUrl = runBlocking { getDownloadUrl(toolConfig.apiKey!!, request) }
     if (downloadUrl == null) {
-        println("Unable to get download url for $modName")
+        println(red("Unable to get download url for $modName"))
         return
     }
     val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
     if (downloaded == null) {
-        println("Failed to download ${mod.name}")
+        println(red("Failed to download ${mod.name}"))
     } else {
         addModFile(mod, downloaded, modName)
     }
@@ -151,7 +151,7 @@ fun addModByFile(filePath: String, nameOverride: String?) {
 
 fun addModFile(mod: Mod, sourceFile: File, modName: String) {
     if (!sourceFile.exists()) {
-        println("Could not find ${sourceFile.absolutePath}")
+        println(red("Could not find ${sourceFile.absolutePath}"))
         return
     }
     if (mod.downloadPath != sourceFile.absolutePath) {
@@ -167,6 +167,6 @@ fun addModFile(mod: Mod, sourceFile: File, modName: String) {
             println("Added ${mod.name}")
         }
     } else {
-        println("Failed to add mod ${mod.name}")
+        println(red("Failed to add mod ${mod.name}"))
     }
 }

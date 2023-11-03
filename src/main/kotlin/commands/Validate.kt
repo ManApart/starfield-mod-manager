@@ -1,8 +1,11 @@
 package commands
 
 import Mod
+import blue
+import cyan
 import detectStagingChanges
 import toolData
+import yellow
 import java.io.File
 
 fun validateHelp() = """
@@ -34,7 +37,6 @@ private fun validate(filter: (Mod) -> Boolean = {true}) {
 }
 
 private fun List<Mod>.validate() {
-    println("Validating $size mods")
     val errorMap = mutableMapOf<Int, Pair<Mod, MutableList<String>>>()
     val indexed = mapIndexed { i, mod -> mod to i }.toMap()
 
@@ -45,7 +47,7 @@ private fun List<Mod>.validate() {
     detectIncorrectCasing(indexed, errorMap)
 
     printErrors(errorMap)
-    println("Validation Complete")
+    println(cyan("Validated $size mods"))
 }
 
 private fun List<Mod>.addDupeIds(
@@ -138,7 +140,7 @@ private fun detectIncorrectCasing(
 private fun printErrors(errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>) {
     errorMap.entries.forEach { (i, errorList) ->
         val (mod, errors) = errorList
-        println("$i ${mod.name} has issues:")
+        println("$i ${yellow(mod.name)} has issues:")
         errors.forEach { error ->
             println("\t$error")
         }

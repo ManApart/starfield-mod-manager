@@ -1,9 +1,11 @@
 package commands
 
 import StageChange
+import cyan
 import detectStagingChanges
 import save
 import toolData
+import yellow
 import java.io.File
 
 fun enableHelp() = """
@@ -32,13 +34,13 @@ private fun enableList(enable: Boolean, args: List<String>) {
         enableMod(enable, i)
     }.joinToString(", ")
     save()
-    if (enable) println("Enabled $names") else println("Disabled $names")
+    if (enable) println(cyan("Enabled")+ " $names") else println(cyan("Disabled")+ " $names")
 }
 
 fun enableMod(enable: Boolean, i: Int): String? {
     val mod = toolData.mods[i]
     return if (enable && detectStagingChanges(File(mod.filePath)) == StageChange.FOMOD) {
-        println("$i ${mod.name} cannot be enabled because it is an unprocessed fomod. Delete the fomod folder in the staging folder to enable. (And pick your options).")
+        println("$i ${yellow(mod.name)} cannot be enabled because it is an unprocessed fomod. Delete the fomod folder in the staging folder to enable. (And pick your options).")
         null
     } else {
         mod.enabled = enable
@@ -53,6 +55,6 @@ private fun enableRange(enable: Boolean, args: List<String>) {
             enableMod(enable, i)
         }.joinToString(", ")
         save()
-        if (enable) println("Enabled $names") else println("Disabled $names")
+        if (enable) println(cyan("Enabled")+ " $names") else println(cyan("Disabled")+ " $names")
     }
 }

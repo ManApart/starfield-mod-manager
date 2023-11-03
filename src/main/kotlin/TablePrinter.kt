@@ -11,7 +11,7 @@ data class Table(val columns: List<Column>, val data: List<Map<String, Any>>) {
         }
 
         val headerValues = columns.map { it.header }.toTypedArray()
-        System.out.printf("$colFormat\n", *headerValues)
+        System.out.printf(cyan("$colFormat\n"), *headerValues)
         data.forEach { row ->
             val dataValues = columns.map { row[it.header] ?: "" }.toTypedArray()
             System.out.printf("$rowFormat\n", *dataValues)

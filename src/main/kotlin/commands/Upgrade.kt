@@ -2,6 +2,7 @@ package commands
 
 import Mod
 import addModById
+import cyan
 import toolData
 import java.io.File
 
@@ -28,7 +29,7 @@ fun upgrade(args: List<String>) {
 
 private fun List<Mod>.upgradeMods(){
     filter { it.id != null && it.updateAvailable()}
-        .also { println("Upgrading ${it.size} mods") }
+        .also { println(cyan("Upgrading ${it.size} mods")) }
         .forEach { addModById(it.id!!, it.latestFileId, true) }
-        println("Done Upgrading")
+        println(cyan("Done Upgrading"))
 }

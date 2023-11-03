@@ -2,8 +2,10 @@ package commands
 
 import Mod
 import confirmation
+import red
 import save
 import toolData
+import yellow
 import java.io.File
 
 fun removeHelp() = """
@@ -21,11 +23,11 @@ fun remove(args: List<String>) {
 
 private fun removeMod(index: Int) {
     toolData.byIndex(index)?.let { mod ->
-        println("Remove ${mod.name}? (y/n)")
+        println(yellow("Remove ${mod.name}?") + " (y/n)")
         confirmation = { args ->
-            if (args.size != 1 || args.first() !in listOf("y","n")){
+            if (args.size != 1 || args.first() !in listOf("y", "n")) {
                 println("Unable to understand response. Bailing out")
-            } else if (args.first() == "y"){
+            } else if (args.first() == "y") {
                 delete(mod)
             }
         }
@@ -38,5 +40,5 @@ fun delete(mod: Mod) {
     toolData.mods.remove(mod)
     toolData.mods.filter { it.loadOrder > mod.loadOrder }.map { it.loadOrder -= 1 }
     save()
-    println("Mod deleted")
+    println(red("Mod deleted"))
 }

@@ -1,5 +1,6 @@
 package commands
 
+import cyan
 import fetchModInfo
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -33,7 +34,7 @@ private fun fetchModsById(ids: List<Int>) {
             }.awaitAll()
         }
     }
-    println("Done Fetching")
+    println(cyan("Done Fetching"))
 }
 
 private fun addModByUrls(urls: List<String>) {
@@ -46,5 +47,5 @@ private fun addModByUrls(urls: List<String>) {
                 }.awaitAll()
             }
         }
-        println("Done fetching")
+        println(cyan("Done fetching"))
     }

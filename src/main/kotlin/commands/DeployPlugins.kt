@@ -1,6 +1,7 @@
 package commands
 
 import toolConfig
+import yellow
 import java.io.File
 
 fun deployPlugins(files: Map<String, File>) {
@@ -23,7 +24,7 @@ private fun createPluginsContent(files: Map<String, File>): String {
     val pluginLines = pluginList.joinToString("\n") { "|*$it"  }
 
     if (pluginList.toSet().size != pluginList.size){
-        println("WARNING: There are duplicate plugin files")
+        println(yellow("WARNING: There are duplicate plugin files"))
     }
 
     return """

@@ -1,7 +1,7 @@
 package commands
 
 import Mod
-import addModById
+import cyan
 import refreshMod
 import toolData
 import java.io.File
@@ -38,7 +38,7 @@ private fun refresh(filter: (Mod) -> Boolean) {
 }
 
 private fun List<Mod>.refreshMods() {
-    also { println("Refreshing ${it.size} mods") }
+    also { println(cyan("Refreshing ${it.size} mods")) }
         .forEach { refreshMod(it) }
-    println("Done Refreshing")
+    println(cyan("Done Refreshing"))
 }

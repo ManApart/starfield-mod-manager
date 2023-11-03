@@ -3,6 +3,7 @@ package commands
 import addModByFile
 import addModById
 import addModByNexusProtocol
+import cyan
 import urlToId
 
 fun addModHelp() = """
@@ -30,10 +31,10 @@ private fun addModByUrls(urls: List<String>) {
     urls.forEach { url ->
         url.urlToId()?.let { addModById(it) }
     }
-    println("Done adding")
+    println(cyan("Done adding"))
 }
 
 private fun addModByIds(ids: List<Int>){
     ids.forEach { addModById(it) }
-    println("Done adding")
+    println(cyan("Done adding"))
 }

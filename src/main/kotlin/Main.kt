@@ -17,7 +17,7 @@ val jsonMapper = kotlinx.serialization.json.Json {
 }
 
 fun main(args: Array<String>) {
-    println("\nStarfield Mod Manager")
+    println(cyan("\nStarfield Mod Manager"))
     modFolder = File("mods")
     loadData()
     if (args.isEmpty()) {
