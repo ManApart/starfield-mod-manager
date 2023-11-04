@@ -32,21 +32,21 @@ fun validateMods(args: List<String>) {
     }
 }
 
-private fun validate(filter: (Mod) -> Boolean = {true}) {
+private fun validate(filter: (Mod) -> Boolean = { true }) {
     toolData.mods.filter(filter).validate()
 }
 
 private fun List<Mod>.validate() {
     val errorMap = mutableMapOf<Int, Pair<Mod, MutableList<String>>>()
-    val indexed = mapIndexed { i, mod -> mod to i }.toMap()
+    val indexed = toolData.mods.mapIndexed { i, mod -> mod to i }.toMap()
 
     addDupeIds(indexed, errorMap)
     addDupeFilenames(indexed, errorMap)
-    detectStagingIssues(errorMap)
+    indexed.detectStagingIssues(errorMap)
     detectDupePlugins(indexed)
     detectIncorrectCasing(indexed, errorMap)
 
-    printErrors(errorMap)
+    printErrors(errorMap.filter { it.value.first in this }.toMap())
     println(cyan("Validated $size mods"))
 }
 
@@ -79,8 +79,10 @@ private fun List<Mod>.addDupeFilenames(
 }
 
 
-private fun List<Mod>.detectStagingIssues(errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>) {
-    forEachIndexed { i, mod ->
+private fun Map<Mod, Int>.detectStagingIssues(
+    errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
+) {
+    entries.forEach { (mod, i) ->
         val stageFolder = File(mod.filePath)
         if (stageFolder.exists()) {
             when (detectStagingChanges(stageFolder)) {
@@ -137,7 +139,7 @@ private fun detectIncorrectCasing(
     }
 }
 
-private fun printErrors(errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>) {
+private fun printErrors(errorMap: Map<Int, Pair<Mod, MutableList<String>>>) {
     errorMap.entries.forEach { (i, errorList) ->
         val (mod, errors) = errorList
         println("$i ${yellow(mod.name)} has issues:")
