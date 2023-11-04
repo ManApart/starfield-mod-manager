@@ -1,9 +1,11 @@
+import io.ktor.client.utils.EmptyContent.headers
+
 fun String?.truncate(length: Int = 6): String {
     return this?.substring(0, kotlin.math.min(this.length, length)) ?: ""
 }
 
 data class Table(val columns: List<Column>, val data: List<Map<String, Any>>) {
-    fun print() {
+    fun print(highlightHeaders: Boolean = true) {
         val colFormat = columns.joinToString("") { "%-${it.size}s" }
         val rowFormat = columns.joinToString("") {
             val type = if (it.isNumber) "d" else "s"
@@ -11,7 +13,8 @@ data class Table(val columns: List<Column>, val data: List<Map<String, Any>>) {
         }
 
         val headerValues = columns.map { it.header }.toTypedArray()
-        System.out.printf(cyan("$colFormat\n"), *headerValues)
+        val headers = if (highlightHeaders) cyan("$colFormat\n") else "$colFormat\n"
+        System.out.printf(headers, *headerValues)
         data.forEach { row ->
             val dataValues = columns.map { row[it.header] ?: "" }.toTypedArray()
             System.out.printf("$rowFormat\n", *dataValues)
