@@ -108,12 +108,18 @@ private fun Map<Mod, Int>.detectStagingIssues(
 }
 
 private fun detectDupePlugins(indexed: Map<Mod, Int>) {
-    val dupes = indexed.keys.flatMap { mod ->
-        mod.getModFiles().filter { it.extension.lowercase() in listOf("esp", "esm", "esl") }
-    }.groupBy { it.name }.filter { it.value.size > 1 }
-    if (dupes.isNotEmpty()) {
-        println("The following plugins are duplicated: ${dupes.keys.joinToString()}\n")
+    indexed.entries.flatMap { (mod, i) ->
+        mod.getModFiles().filter { it.extension.lowercase() in listOf("esp", "esm", "esl") }.map { it to i }
     }
+        .groupBy { it.first.name }
+        .filter { it.value.size > 1 }
+        .map { (fileName, indexList) ->
+            fileName to indexList.groupBy { it.second }.keys
+        }
+        .forEach { (name, indexList) ->
+            val modNames = indexList.joinToString(", ") { "$it ${toolData.byIndex(it)?.name}" }
+            println("$name is duplicated in $modNames")
+        }
 }
 
 private fun detectIncorrectCasing(
