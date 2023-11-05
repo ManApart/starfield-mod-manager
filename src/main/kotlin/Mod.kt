@@ -19,6 +19,8 @@ data class Mod(
 ) {
     @Transient
     var show: Boolean = true
+    @Transient
+    var index: Int = 0
 
     fun getModFiles(): List<File> {
         return File(filePath).getFiles {

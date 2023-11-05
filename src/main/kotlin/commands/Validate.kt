@@ -38,67 +38,62 @@ private fun validate(filter: (Mod) -> Boolean = { true }) {
 
 private fun List<Mod>.validate() {
     val errorMap = mutableMapOf<Int, Pair<Mod, MutableList<String>>>()
-    val indexed = toolData.mods.mapIndexed { i, mod -> mod to i }.toMap()
 
-    addDupeIds(indexed, errorMap)
-    addDupeFilenames(indexed, errorMap)
-    indexed.detectStagingIssues(errorMap)
-    detectDupePlugins(indexed)
-    detectIncorrectCasing(indexed, errorMap)
+    addDupeIds(errorMap)
+    addDupeFilenames(errorMap)
+    detectStagingIssues(errorMap)
+    detectDupePlugins()
+    detectIncorrectCasing(errorMap)
 
     printErrors(errorMap.filter { it.value.first in this }.toMap())
     println(cyan("Validated $size mods"))
 }
 
 private fun List<Mod>.addDupeIds(
-    indexed: Map<Mod, Int>,
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
     groupBy { it.id }.filter { it.key != null && it.value.size > 1 }.map { it.value }.forEach { dupes ->
-        val indexes = dupes.map { indexed[it]!! }
+        val indexes = dupes.map { it.index }
         dupes.forEach { dupe ->
-            val i = indexed[dupe]!!
-            errorMap.putIfAbsent(i, dupe to mutableListOf())
-            errorMap[i]?.second?.add("Duplicate Id ($indexes)")
+            errorMap.putIfAbsent(dupe.index, dupe to mutableListOf())
+            errorMap[dupe.index]?.second?.add("Duplicate Id ($indexes)")
         }
     }
 }
 
 private fun List<Mod>.addDupeFilenames(
-    indexed: Map<Mod, Int>,
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
     groupBy { it.filePath }.filter { it.value.size > 1 }.map { it.value }.forEach { dupes ->
-        val indexes = dupes.map { indexed[it]!! }
+        val indexes = dupes.map { it.index }
         dupes.forEach { dupe ->
-            val i = indexed[dupe]!!
-            errorMap.putIfAbsent(i, dupe to mutableListOf())
-            errorMap[i]?.second?.add("Duplicate Filepath ($indexes)")
+            errorMap.putIfAbsent(dupe.index, dupe to mutableListOf())
+            errorMap[dupe.index]?.second?.add("Duplicate Filepath ($indexes)")
         }
     }
 }
 
 
-private fun Map<Mod, Int>.detectStagingIssues(
+private fun List<Mod>.detectStagingIssues(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
-    entries.forEach { (mod, i) ->
+    forEach { mod ->
         val stageFolder = File(mod.filePath)
         if (stageFolder.exists()) {
             when (detectStagingChanges(stageFolder)) {
                 StageChange.UNKNOWN -> {
-                    errorMap.putIfAbsent(i, mod to mutableListOf())
-                    errorMap[i]?.second?.add("Unable to guess folder path. You should open the staging folder and make sure it was installed correctly.")
+                    errorMap.putIfAbsent(mod.index, mod to mutableListOf())
+                    errorMap[mod.index]?.second?.add("Unable to guess folder path. You should open the staging folder and make sure it was installed correctly.")
                 }
 
                 StageChange.FOMOD -> {
-                    errorMap.putIfAbsent(i, mod to mutableListOf())
-                    errorMap[i]?.second?.add("FOMOD detected. You should open the staging folder and pick options yourself.")
+                    errorMap.putIfAbsent(mod.index, mod to mutableListOf())
+                    errorMap[mod.index]?.second?.add("FOMOD detected. You should open the staging folder and pick options yourself.")
                 }
 
                 StageChange.NO_FILES -> {
-                    errorMap.putIfAbsent(i, mod to mutableListOf())
-                    errorMap[i]?.second?.add("No files found in stage folder.")
+                    errorMap.putIfAbsent(mod.index, mod to mutableListOf())
+                    errorMap[mod.index]?.second?.add("No files found in stage folder.")
                 }
 
                 else -> {}
@@ -107,9 +102,9 @@ private fun Map<Mod, Int>.detectStagingIssues(
     }
 }
 
-private fun detectDupePlugins(indexed: Map<Mod, Int>) {
-    indexed.entries.flatMap { (mod, i) ->
-        mod.getModFiles().filter { it.extension.lowercase() in listOf("esp", "esm", "esl") }.map { it to i }
+private fun List<Mod>.detectDupePlugins() {
+    flatMap { mod ->
+        mod.getModFiles().filter { it.extension.lowercase() in listOf("esp", "esm", "esl") }.map { it to mod.index }
     }
         .groupBy { it.first.name }
         .filter { it.value.size > 1 }
@@ -122,11 +117,10 @@ private fun detectDupePlugins(indexed: Map<Mod, Int>) {
         }
 }
 
-private fun detectIncorrectCasing(
-    indexed: Map<Mod, Int>,
+private fun List<Mod>.detectIncorrectCasing(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
-    indexed.forEach { (mod, i) ->
+    forEach { mod ->
         val modsPaths = mod.getModFiles()
             .map { it.parent }
             .mapNotNull { file ->
@@ -136,10 +130,10 @@ private fun detectIncorrectCasing(
             }.toSet()
             .filter { it != it.lowercase() }
         if (modsPaths.isNotEmpty()) {
-            errorMap.putIfAbsent(i, mod to mutableListOf())
-            errorMap[i]?.second?.add("Filepaths should be lowercase between data and filename:")
+            errorMap.putIfAbsent(mod.index, mod to mutableListOf())
+            errorMap[mod.index]?.second?.add("Filepaths should be lowercase between data and filename:")
             modsPaths.forEach {
-                errorMap[i]?.second?.add("\t${it}")
+                errorMap[mod.index]?.second?.add("\t${it}")
             }
         }
     }

@@ -2,8 +2,6 @@ import commands.CommandType
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import java.io.File
-import java.nio.file.Files
-import kotlin.io.path.Path
 
 lateinit var toolData: Data
 lateinit var toolConfig: Config
@@ -45,6 +43,7 @@ private fun loadData() {
     toolData = File("./data.json").takeIf { it.exists() }?.let {
         jsonMapper.decodeFromString(it.readText())
     } ?: Data()
+    toolData.updateSorts()
 }
 
 fun save() {

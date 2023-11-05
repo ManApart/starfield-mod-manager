@@ -29,8 +29,8 @@ fun version(args: List<String>) {
 }
 
 private fun List<Mod>.viewVersion() {
-    forEachIndexed { i, mod ->
-        println("$i ${mod.version} -> ${mod.latestVersion} ${mod.name}")
+    forEach { mod ->
+        println("${mod.index} ${mod.version} -> ${mod.latestVersion} ${mod.name}")
     }
 
 }

@@ -30,8 +30,8 @@ private fun displayAmount(ranges: List<Int>) {
     val start = ranges.first()
     val amount = ranges.getOrNull(1) ?: 20
     var shownCount = 0
-    val shownMods = toolData.mods.mapIndexed { i, mod ->
-        val shown = if (mod.show && i >= start && shownCount < amount) {
+    val shownMods = toolData.mods.map { mod ->
+        val shown = if (mod.show && mod.index >= start && shownCount < amount) {
             shownCount++
             true
         } else false
@@ -51,10 +51,10 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
         Column("Index", 7, true),
         Column("Name", 22),
     )
-    val data = mods.mapIndexed { i, (mod, displayed) ->
+    val data = mods.map { (mod, displayed) ->
         with(mod) {
             val enabledCheck = if (enabled) ENABLED else "  "
-            val endorsedCheck = when(endorsed){
+            val endorsedCheck = when (endorsed) {
                 true -> THUMBS_UP
                 false -> THUMBS_DOWN
                 else -> "  "
@@ -62,14 +62,14 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
             val idClean = id?.toString() ?: "?"
             val versionClean = when {
                 version != null && latestVersion != null && version != latestVersion -> "$UPDATE${version.truncate()}"
-                version != null ->"  "+ version.truncate(8)
+                version != null -> "  " + version.truncate(8)
                 latestVersion != null -> "$UPDATE?"
                 else -> "  ?"
             }
             val staged = if (File(filePath).exists()) FOLDER else "  "
             val category = category() ?: "?"
             mapOf(
-                "Index" to i,
+                "Index" to mod.index,
                 "Status" to "$staged $enabledCheck $endorsedCheck",
                 "Load" to loadOrder,
                 "Id" to idClean,

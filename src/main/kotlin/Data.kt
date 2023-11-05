@@ -17,6 +17,7 @@ data class Data(
     fun byName(name: String, silent: Boolean = false) = mods.firstOrNull { it.name == name }.also { if (it == null && !silent) println("No Mod found for $name") }
     fun byFilePath(path: String) = mods.firstOrNull { it.filePath == path }.also { if (it == null) println("No Mod found for $path") }
     fun nextLoadOrder() = (mods.maxOfOrNull { it.loadOrder } ?: -1) + 1
+    fun updateSorts() = toolData.mods.forEachIndexed { i, mod -> mod.index = i }
 
     fun createOrUpdate(id: Int, name: String, filePath: String) {
         byId(id)?.also {

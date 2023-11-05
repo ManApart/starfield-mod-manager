@@ -32,19 +32,19 @@ fun update(args: List<String>) {
 }
 
 private fun List<Mod>.updateMods() {
-    mapIndexed { i, mod -> i to mod }.filter { it.second.id != null }
+    filter { it.id != null }
         .also { println(cyan("Updating ${it.size} mods")) }
         .chunked(toolConfig.chunkSize)
         .forEach { chunk ->
             runBlocking {
-                chunk.map { (i, mod) ->
+                chunk.map { mod ->
                     async {
                         updateModInfo(mod.id!!)
-                        if (mod.updateAvailable()) println("$i ${mod.name} can upgrade ${mod.version} -> ${mod.latestVersion}")
+                        if (mod.updateAvailable()) println("${mod.index} ${mod.name} can upgrade ${mod.version} -> ${mod.latestVersion}")
                     }
                 }.awaitAll()
             }
-            println("Updated ${chunk.joinToString{it.first.toString()}}")
+            println("Updated ${chunk.joinToString{it.index.toString()}}")
         }
     println(cyan("Done Updating"))
 }

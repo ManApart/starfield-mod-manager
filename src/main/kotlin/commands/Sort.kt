@@ -19,8 +19,7 @@ fun sortHelp() = """
 
 fun sortMods(args: List<String> = listOf()) {
     val reverse = args.lastOrNull() == "reverse"
-    val sortType = args.firstOrNull()
-    when (sortType) {
+    when (args.firstOrNull()) {
         "name" -> sort(reverse) { it.name }
         "load" -> sort(reverse) { it.loadOrder }
         "order" -> sort(reverse) { it.loadOrder }
@@ -38,6 +37,7 @@ private inline fun <R : Comparable<R>> sort(reverse: Boolean, crossinline select
     } else {
         toolData.mods.sortBy(selector)
     }
+    toolData.updateSorts()
     save()
     listMods()
 }
