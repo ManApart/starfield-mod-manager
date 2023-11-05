@@ -5,7 +5,8 @@ import java.util.concurrent.TimeUnit
 const val THUMBS_UP = "\uD83D\uDC4D"
 const val THUMBS_DOWN = "\uD83D\uDC4E"
 const val FOLDER = "\uD83D\uDCC1"
-const val ENABLED = "\uD83D\uDD0B"
+val ENABLED = Character.toString(0x1f517)!!
+val UPDATE = Character.toString(0x1f4e9)!!
 private const val ANSI_RESET = "\u001B[0m";
 
 fun red(text: String) = "\u001B[31m$text$ANSI_RESET"

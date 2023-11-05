@@ -7,6 +7,7 @@ import Mod
 import THUMBS_DOWN
 import THUMBS_UP
 import Table
+import UPDATE
 import clearConsole
 import toolData
 import truncate
@@ -42,9 +43,9 @@ private fun displayAmount(ranges: List<Int>) {
 fun display(mods: List<Pair<Mod, Boolean>>) {
     clearConsole()
     val columns = listOf(
-        Column("Id", 10),
-        Column("Version", 20),
-        Column("Load Order", 12, true),
+        Column("Id", 7),
+        Column("Version", 12),
+        Column("Load", 7, true),
         Column("Staged", 8),
         Column("Enabled", 9),
         Column("Endorsed", 10),
@@ -62,10 +63,10 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
             }
             val idClean = id?.toString() ?: "?"
             val versionClean = when {
-                version != null && latestVersion != null && version != latestVersion -> "${version.truncate()} -> ${latestVersion.truncate()}"
-                version != null -> version.truncate(10)
-                latestVersion != null -> "? -> ${latestVersion.truncate(10)}"
-                else -> "?"
+                version != null && latestVersion != null && version != latestVersion -> "$UPDATE${version.truncate()}"
+                version != null ->"  "+ version.truncate(8)
+                latestVersion != null -> "$UPDATE?"
+                else -> "  ?"
             }
             val staged = if (File(filePath).exists()) FOLDER else " "
             val category = category() ?: "?"
@@ -74,7 +75,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
                 "Staged" to staged,
                 "Enabled" to enabledCheck,
                 "Endorsed" to endorsedCheck,
-                "Load Order" to loadOrder,
+                "Load" to loadOrder,
                 "Id" to idClean,
                 "Version" to versionClean,
                 "Category" to category,

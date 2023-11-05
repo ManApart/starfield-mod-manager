@@ -1,4 +1,3 @@
-import io.ktor.client.utils.EmptyContent.headers
 
 fun String?.truncate(length: Int = 6): String {
     return this?.substring(0, kotlin.math.min(this.length, length)) ?: ""

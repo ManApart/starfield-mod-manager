@@ -32,6 +32,7 @@ enum class CommandType(
     RENAME("Rename a mod", Category.EDIT, ::changeHelp, ::moveMod, "mv"),
     REFRESH("Refresh mods by id", Category.UPDATE, ::refreshHelp, ::refresh),
     UPDATE("Check for newer versions", Category.UPDATE, ::updateHelp, ::update),
+    VERSION("See current and new version for mod", Category.UPDATE, ::versionHelp, ::version),
     UPGRADE("Upgrade to newer versions", Category.UPDATE, ::upgradeHelp, ::upgrade),
     REMOVE("Delete a mod", Category.ADD, ::removeHelp, ::remove, "rm"),
     SEARCH("Search Mods", Category.VIEW, ::searchHelp, ::searchMods, "grep", "awk"),
