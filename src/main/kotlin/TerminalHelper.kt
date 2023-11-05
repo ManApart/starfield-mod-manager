@@ -42,3 +42,13 @@ fun File.runCommand(parts: List<String>, silent: Boolean = false, echo: Boolean 
         null
     }
 }
+
+fun clearConsole(){
+    //clear screen
+    print("\u001B[2J")
+    //clear history
+    print("\u001B[3J")
+    //move cursor to top of screen
+    print("\u001B[1;1H")
+    System.out.flush()
+}

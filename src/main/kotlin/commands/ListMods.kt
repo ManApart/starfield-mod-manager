@@ -7,6 +7,7 @@ import Mod
 import THUMBS_DOWN
 import THUMBS_UP
 import Table
+import clearConsole
 import toolData
 import truncate
 import java.io.File
@@ -39,6 +40,7 @@ private fun displayAmount(ranges: List<Int>) {
 }
 
 fun display(mods: List<Pair<Mod, Boolean>>) {
+    clearConsole()
     val columns = listOf(
         Column("Id", 10),
         Column("Version", 20),
