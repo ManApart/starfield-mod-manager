@@ -14,7 +14,7 @@ data class Data(
 ) {
     fun byId(id: Int) = mods.firstOrNull { it.id == id }
     fun byIndex(i: Int) = mods.getOrNull(i).also { if (it == null) println("No Mod found for $i") }
-    fun byName(name: String) = mods.firstOrNull { it.name == name }.also { if (it == null) println("No Mod found for $name") }
+    fun byName(name: String, silent: Boolean = false) = mods.firstOrNull { it.name == name }.also { if (it == null && !silent) println("No Mod found for $name") }
     fun byFilePath(path: String) = mods.firstOrNull { it.filePath == path }.also { if (it == null) println("No Mod found for $path") }
     fun nextLoadOrder() = (mods.maxOfOrNull { it.loadOrder } ?: -1) + 1
 

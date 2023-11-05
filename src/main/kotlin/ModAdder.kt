@@ -136,7 +136,7 @@ fun addModByFile(filePath: String, nameOverride: String?) {
     val name = nameOverride ?: File(filePath).nameWithoutExtension
     val sourceFile = File(filePath)
 
-    val existing = toolData.byName(name)
+    val existing = toolData.byName(name, true)
     val mod = if (existing != null) existing else {
         val loadOrder = toolData.nextLoadOrder()
         val stagePath = modFolder.path + "/" + name.replace(" ", "-")
