@@ -53,8 +53,10 @@ private fun endorseMods(endorse: Boolean, mods: List<Mod>) {
                     async {
                         if (endorse){
                             nexus.endorseMod(toolConfig.apiKey!!, mod.id!!)
+                            mod.endorsed = true
                         } else {
                             nexus.abstainMod(toolConfig.apiKey!!, mod.id!!)
+                            mod.endorsed = false
                         }
                     }
                 }.awaitAll()

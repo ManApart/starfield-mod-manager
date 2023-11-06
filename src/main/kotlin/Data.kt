@@ -24,8 +24,8 @@ data class Data(
             it.name = name
             it.filePath = filePath
         } ?: Mod(name, filePath, nextLoadOrder(), id).also {
+            it.index = mods.size
             mods.add(it)
-            it.index = toolData.mods.indexOf(it)
         }
     }
 
