@@ -4,7 +4,9 @@
 
 Flexible CLI commands support everything from Nexus download links to bulk updating mods, to maintaining and deploying local mod collections.
 
-View more info at the docs site:
+![Demo](demo.gif)
+
+View more info and demos at the docs site:
 
 ### [Features](https://manapart.github.io/starfield-mod-manager-site/features.html)
 
