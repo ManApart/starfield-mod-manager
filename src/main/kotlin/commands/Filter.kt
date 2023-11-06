@@ -10,6 +10,9 @@ fun filterHelp() = """
     filter disabled
     filter staged
     filter unstaged
+    filter endorsed
+    filter unendorsed
+    filter abstained
     filter missing - show missing ids
 """.trimIndent()
 
