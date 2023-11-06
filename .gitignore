@@ -45,5 +45,6 @@ config.json
 data.json
 test-game-path
 test-ini-path
+test-appdata-path
 .idea/
 manual-data.json

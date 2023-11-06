@@ -5,12 +5,12 @@ import yellow
 import java.io.File
 
 fun deployPlugins(files: Map<String, File>) {
-    if (toolConfig.iniPath == null){
-        println("Config must have ini path to update plugins.txt")
+    if (toolConfig.appDataPath == null){
+        println("Config must have appdata path to update plugins.txt")
         return
     }
-    val iniFile = File(toolConfig.iniPath!! + "/Plugins.txt")
-    iniFile.writeText(createPluginsContent(files))
+    val pluginsFile = File(toolConfig.appDataPath!! + "/Plugins.txt")
+    pluginsFile.writeText(createPluginsContent(files))
 
 }
 

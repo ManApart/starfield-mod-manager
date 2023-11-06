@@ -9,7 +9,8 @@ import java.io.File
 
 fun configHelp(args: List<String> = listOf()) = """
     config game-path <path-to-folder> - Sets the path to the folder under steam containing the starfield Data folder and exe
-    config ini-path <path-to-folder> - Sets the path to the folder under your documents that contains StarfieldCustom.ini and eventually Plugins.txt. Needed for updating mod load order
+    config appdata-path <path-to-folder> - Sets the path to the folder under your appdata that will contain Plugins.txt. Needed for updating mod load order
+    config ini-path <path-to-folder> - Sets the path to the folder under your documents that contains StarfieldCustom.ini. Optionally used to deploy to your my docs folder instead of the game path 
     config api-key <key-from-nexus>
     config verbose <true/false> - get additional output (for debugging)
     config use-my-docs <true/false> - deploy mod files under Data to my documents instead of the game folder. (Defaults to false) 
@@ -27,6 +28,12 @@ fun config(args: List<String>) {
         args.size == 2 && args.first() == "game-path" -> {
             toolConfig.gamePath = args.last()
             println("Updated game path to ${toolConfig.gamePath}")
+            save()
+        }
+
+        args.size == 2 && args.first() == "appdata-path" -> {
+            toolConfig.appDataPath = args.last()
+            println("Updated appdata path to ${toolConfig.appDataPath}")
             save()
         }
 

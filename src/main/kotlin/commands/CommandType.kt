@@ -24,6 +24,7 @@ enum class CommandType(
     OPEN("Open mod on web", Category.OPEN, ::openHelp, ::open),
     LOCAL("Open local mod folder", Category.OPEN, ::openHelp, ::local),
     GAME_PATH("Open game folder", Category.OPEN, ::openHelp, ::openGamePath, "gamepath"),
+    APPDATA_PATH("Open ini path folder", Category.OPEN, ::openHelp, ::openAppDataPath, "appdatapath"),
     INI_PATH("Open ini path folder", Category.OPEN, ::openHelp, ::openIniPath, "inipath"),
     JAR_PATH("Open jar path folder", Category.OPEN, ::openHelp, ::openJarPath, "jarpath"),
     PURGE("Purge all sym links", Category.DEPLOY, ::purgeHelp, ::purge),

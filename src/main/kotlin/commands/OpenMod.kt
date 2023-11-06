@@ -23,6 +23,7 @@ fun open(args: List<String>) = openMod(true, args)
 fun local(args: List<String>) = openMod(false, args)
 
 fun openGamePath(args: List<String>) = open(toolConfig.gamePath!!, "game path")
+fun openAppDataPath(args: List<String>) = open(toolConfig.appDataPath!!, "appdata path")
 fun openIniPath(args: List<String>) = open(toolConfig.iniPath!!, "ini path")
 fun openJarPath(args: List<String>) = open(".", "ini path")
 
