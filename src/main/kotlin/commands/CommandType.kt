@@ -37,6 +37,7 @@ enum class CommandType(
     UPGRADE("Upgrade to newer versions", Category.UPDATE, ::upgradeHelp, ::upgrade),
     REMOVE("Delete a mod", Category.ADD, ::removeHelp, ::remove, "rm"),
     SEARCH("Search Mods", Category.VIEW, ::searchHelp, ::searchMods, "grep", "awk"),
+    FIND("Find file", Category.VIEW, ::findHelp, ::find),
     FILTER("Apply a filter to Mods", Category.VIEW, ::filterHelp, ::filterMods),
     SORT("Sort Mods", Category.VIEW, ::sortHelp, ::sortMods),
     VALIDATE("List issues with mods", Category.DEPLOY, ::validateHelp, ::validateMods),
