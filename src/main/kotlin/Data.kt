@@ -23,7 +23,10 @@ data class Data(
         byId(id)?.also {
             it.name = name
             it.filePath = filePath
-        } ?: Mod(name, filePath, nextLoadOrder(), id).also { mods.add(it) }
+        } ?: Mod(name, filePath, nextLoadOrder(), id).also {
+            mods.add(it)
+            it.index = toolData.mods.indexOf(it)
+        }
     }
 
     fun update(info: ModInfo, updateCurrentVersion: Boolean = true, updatedFileId: Int? = null) {

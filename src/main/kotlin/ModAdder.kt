@@ -142,6 +142,7 @@ fun addModByFile(filePath: String, nameOverride: String?) {
         val stagePath = modFolder.path + "/" + name.replace(" ", "-")
         Mod(name, stagePath, loadOrder + 1).also {
             toolData.mods.add(it)
+            it.index = toolData.mods.indexOf(it)
             save()
         }
     }
