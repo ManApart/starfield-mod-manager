@@ -3,6 +3,7 @@ package commands
 import Mod
 import addModById
 import cyan
+import doCommand
 import fetchModInfo
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -17,18 +18,14 @@ fun updateHelp() = """
     update <mod index>
     update 1 2 4
     update 1-3
+    update staged
+    update enabled
     Useful for checking for updates existing mods. To check add new mods, see fetch or add.
     To download updates, see upgrade
 """.trimIndent()
 
 fun update(args: List<String>) {
-    if (args.isEmpty()) {
-        toolData.mods.updateMods()
-    } else {
-        args.getIndicesOrRange(toolData.mods.size)
-            .mapNotNull { toolData.byIndex(it) }
-            .updateMods()
-    }
+    doCommand(args, List<Mod>::updateMods)
 }
 
 private fun List<Mod>.updateMods() {
@@ -44,7 +41,7 @@ private fun List<Mod>.updateMods() {
                     }
                 }.awaitAll()
             }
-            println("Updated ${chunk.joinToString{it.index.toString()}}")
+            println("Updated ${chunk.joinToString { it.index.toString() }}")
         }
     println(cyan("Done Updating"))
 }

@@ -3,6 +3,7 @@ package commands
 import Mod
 import addModById
 import cyan
+import doCommand
 import toolData
 import java.io.File
 
@@ -21,9 +22,7 @@ fun upgrade(args: List<String>) {
         val updatable = toolData.mods.map { it to it.updateAvailable() }
         display(updatable)
     } else {
-        args.getIndicesOrRange(toolData.mods.size)
-            .mapNotNull { toolData.byIndex(it) }
-            .upgradeMods()
+        doCommand(args, List<Mod>::upgradeMods)
     }
 }
 

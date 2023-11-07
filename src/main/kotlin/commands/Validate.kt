@@ -4,6 +4,7 @@ import Mod
 import blue
 import cyan
 import detectStagingChanges
+import doCommand
 import toolData
 import yellow
 import java.io.File
@@ -19,21 +20,7 @@ fun validateHelp() = """
 """.trimIndent()
 
 fun validateMods(args: List<String>) {
-    when {
-        args.isEmpty() -> validate()
-        args.first() == "staged" -> validate { File(it.filePath).exists() }
-        args.first() == "enabled" -> validate { it.enabled }
-        args.first() == "disabled" -> validate { it.enabled }
-        else -> {
-            args.getIndicesOrRange(toolData.mods.size)
-                .mapNotNull { toolData.byIndex(it) }
-                .validate()
-        }
-    }
-}
-
-private fun validate(filter: (Mod) -> Boolean = { true }) {
-    toolData.mods.filter(filter).validate()
+   doCommand(args, List<Mod>::validate)
 }
 
 private fun List<Mod>.validate() {

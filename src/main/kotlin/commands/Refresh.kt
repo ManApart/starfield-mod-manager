@@ -2,6 +2,7 @@ package commands
 
 import Mod
 import cyan
+import doCommand
 import refreshMod
 import toolData
 import java.io.File
@@ -19,22 +20,7 @@ fun refreshHelp() = """
 """.trimIndent()
 
 fun refresh(args: List<String>) {
-    when {
-        args.isEmpty() -> println(refreshHelp())
-        args.first() == "empty" -> refresh { !File(it.filePath).exists() }
-        args.first() == "staged" -> refresh { File(it.filePath).exists() }
-        args.first() == "enabled" -> refresh { it.enabled }
-        args.first() == "disabled" -> refresh { !it.enabled }
-        else -> {
-            args.getIndicesOrRange(toolData.mods.size)
-                .mapNotNull { toolData.byIndex(it) }
-                .refreshMods()
-        }
-    }
-}
-
-private fun refresh(filter: (Mod) -> Boolean) {
-    toolData.mods.filter(filter).refreshMods()
+    doCommand(args, List<Mod>::refreshMods)
 }
 
 private fun List<Mod>.refreshMods() {
