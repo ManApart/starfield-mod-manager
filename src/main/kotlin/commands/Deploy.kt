@@ -12,6 +12,7 @@ import kotlin.io.path.Path
 fun deployHelp() = """
     deploy - Applies all mods to the game folder by creating the appropriate symlinks
     deploy dryrun - Per your load order view how files will be deployed
+    If you just want to see what mods are overriding other mods, see order test
 """.trimIndent()
 
 fun deploy(args: List<String>) {
