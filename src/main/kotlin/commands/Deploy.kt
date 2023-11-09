@@ -12,13 +12,14 @@ import kotlin.io.path.Path
 fun deployHelp() = """
     deploy - Applies all mods to the game folder by creating the appropriate symlinks
     deploy dryrun - Per your load order view how files will be deployed
-    If you just want to see what mods are overriding other mods, see order test
+    deploy overrides - show mods that override other mods
 """.trimIndent()
 
 fun deploy(args: List<String>) {
     val files = getAllModFiles()
     when {
         args.firstOrNull() == "dryrun" -> deployDryRun(files)
+        args.firstOrNull() == "overrides" -> showOverrides()
         toolConfig.gamePath == null -> println("No game path configured")
         files.isEmpty() -> println("No mod files found")
         else -> {
