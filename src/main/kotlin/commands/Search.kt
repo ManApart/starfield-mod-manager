@@ -4,33 +4,23 @@ import Mod
 import toolData
 import java.io.File
 
-val searchHelp = """
+val searchDescription = """
     Search for mods and list them once
     To apply a filter to future lists, see filter
-    search <search text> - search the given text (name or category) 
-    search 123 - show matching ids
-    search enabled - show only enabled mods
-    search disabled
-    search staged
-    search unstaged
-    search endorsed
-    search unendorsed
-    search abstained
-    search missing - show missing ids
+    Search the given text (name or category), by ids, by mods missing ids, and by status  
 """.trimIndent()
+
 val searchModsUsage = """
-    Search for mods and list them once
-    To apply a filter to future lists, see filter
-    search <search text> - search the given text (name or category) 
-    search 123 - show matching ids
-    search enabled - show only enabled mods
+    search <search text> 
+    search <mod id>
+    search enabled
     search disabled
     search staged
     search unstaged
     search endorsed
     search unendorsed
     search abstained
-    search missing - show missing ids
+    search missing
 """.trimIndent()
 
 fun searchMods(args: List<String> = listOf()) {

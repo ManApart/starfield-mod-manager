@@ -3,12 +3,12 @@ package commands
 import runCommand
 import java.io.File
 
-val startGameHelp = """
-    start - run the steam game
+val startGameDescription = """
+    Run the steam game
 """.trimIndent()
 
 val startGameUsage = """
-    start - run the steam game
+    start
 """.trimIndent()
 
 fun startGame(args: List<String>) {

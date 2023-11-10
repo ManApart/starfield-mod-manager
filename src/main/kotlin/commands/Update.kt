@@ -1,38 +1,26 @@
 package commands
 
 import Mod
-import addModById
 import cyan
 import doCommand
-import fetchModInfo
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import toolConfig
-import toolData
 import updateModInfo
-import java.io.File
 
-val updateHelp = """
-    update - fetches latest metadata for mods, including new versions and endorsement data
-    update <mod index>
-    update 1 2 4
-    update 1-3
-    update staged
-    update enabled
+val updateDescription = """
+    fetches latest metadata for mods, including new versions and endorsement data
     Useful for checking for updates existing mods. To check add new mods, see fetch or add.
     To download updates, see upgrade
 """.trimIndent()
 
 val updateUsage = """
-    update - fetches latest metadata for mods, including new versions and endorsement data
     update <mod index>
     update 1 2 4
     update 1-3
     update staged
     update enabled
-    Useful for checking for updates existing mods. To check add new mods, see fetch or add.
-    To download updates, see upgrade
 """.trimIndent()
 
 fun update(args: List<String>) {

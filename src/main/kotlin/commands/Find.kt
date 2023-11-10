@@ -3,13 +3,12 @@ package commands
 import cyan
 import toolData
 
-val findHelp = """
-    Find files
-    find <search text> - list all files that have the given text in their path 
+val findDescription = """
+    Find all files that have the given text in their path 
 """.trimIndent()
 val findUsage = """
     Find files
-    find <search text> - list all files that have the given text in their path 
+    find <search text> 
 """.trimIndent()
 
 fun find(args: List<String> = listOf()) {

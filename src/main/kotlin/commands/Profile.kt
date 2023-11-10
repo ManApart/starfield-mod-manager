@@ -1,14 +1,13 @@
 package commands
 
 import Column
-import Mod
 import Profile
 import Table
 import confirmation
 import save
 import toolData
 
-val profileHelp = """
+val profileDescription = """
     profile list
     profile save <name> - create a new profile 
     profile save <index> - save to an existing profile
@@ -33,7 +32,7 @@ fun profile(args: List<String> = listOf()) {
         subCommand == "load" && index != null -> loadProfile(index)
         subCommand == "save" && index != null -> saveProfile(index)
         subCommand == "save" && args.size > 1 -> saveProfile(args.drop(1).joinToString(" "))
-        else -> println(profileHelp)
+        else -> println(profileDescription)
     }
 }
 

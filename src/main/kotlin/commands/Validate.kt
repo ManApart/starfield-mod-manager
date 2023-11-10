@@ -1,7 +1,6 @@
 package commands
 
 import Mod
-import blue
 import cyan
 import detectStagingChanges
 import doCommand
@@ -9,14 +8,8 @@ import toolData
 import yellow
 import java.io.File
 
-val validateHelp = """
-    validate
-    validate <mod index>
-    validate 1 2 4
-    validate 1-3
-    validate staged
-    validate enabled
-    validate disabled
+val validateDescription = """
+    Examines mods for issues. Checks for duplicates, bad folder staging etc
 """.trimIndent()
 
 val validateUsage = """

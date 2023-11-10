@@ -8,22 +8,20 @@ import kotlinx.coroutines.runBlocking
 import toolConfig
 import urlToId
 
-val fetchHelp = """
-   fetch <mod id> - Add mod metadata without downloading files
-   fetch 111 222 333 - Fetch multiple
+val fetchDescription = """
+   Add mod metadata without downloading files
    Useful for adding NEW mods. To check for updates on existing mods, see update
 """.trimIndent()
 
 val fetchUsage = """
-   fetch <mod id> - Add mod metadata without downloading files
-   fetch 111 222 333 - Fetch multiple
-   Useful for adding NEW mods. To check for updates on existing mods, see update
+   fetch <mod id>
+   fetch 111 222 333
 """.trimIndent()
 
 fun fetchMod(args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     when {
-        args.isEmpty() -> println(fetchHelp)
+        args.isEmpty() -> println(fetchDescription)
         firstArg.toIntOrNull() != null -> fetchModsById(args.mapNotNull { it.toIntOrNull() })
         firstArg.startsWith("http") -> addModByUrls(args)
         else -> fetchModsById(args.mapNotNull { it.toIntOrNull() })

@@ -7,25 +7,24 @@ import save
 import toolConfig
 import java.io.File
 
-val configHelp = """
-    config game-path <path-to-folder> - Sets the path to the folder under steam containing the starfield Data folder and exe
-    config appdata-path <path-to-folder> - Sets the path to the folder under your appdata that will contain Plugins.txt. Needed for updating mod load order
-    config ini-path <path-to-folder> - Sets the path to the folder under your documents that contains StarfieldCustom.ini. Optionally used to deploy to your my docs folder instead of the game path 
-    config api-key <key-from-nexus>
-    config verbose <true/false> - get additional output (for debugging)
-    config use-my-docs <true/false> - deploy mod files under Data to my documents instead of the game folder. (Defaults to false) 
-    config categories - download category names from nexus
+val configDescription = """
+    Used to configure the mod manager itself. Saved in the config.json file located next to the jar
+    game-path should be the path to the folder under steam containing the starfield Data folder and exe
+    appdata-path should be the path to the folder under your appdata that will contain Plugins.txt. Needed for updating mod load order
+    ini-path should be the path to the folder under your documents that contains StarfieldCustom.ini. It's optionally used to deploy to your my docs folder instead of the game path
+    verbose gives additional output (for debugging) if set to true
+    use-my-docs optionally allows deploying mod files under Data to my documents instead of the game folder. (Defaults to false) 
+    categories is used to download category names from nexus
     If your paths have spaces, make sure to quote them
 """.trimIndent()
 val configUsage = """
-    config game-path <path-to-folder> - Sets the path to the folder under steam containing the starfield Data folder and exe
-    config appdata-path <path-to-folder> - Sets the path to the folder under your appdata that will contain Plugins.txt. Needed for updating mod load order
-    config ini-path <path-to-folder> - Sets the path to the folder under your documents that contains StarfieldCustom.ini. Optionally used to deploy to your my docs folder instead of the game path 
+    config game-path <path-to-folder>
+    config appdata-path <path-to-folder>
+    config ini-path <path-to-folder> 
     config api-key <key-from-nexus>
-    config verbose <true/false> - get additional output (for debugging)
-    config use-my-docs <true/false> - deploy mod files under Data to my documents instead of the game folder. (Defaults to false) 
-    config categories - download category names from nexus
-    If your paths have spaces, make sure to quote them
+    config verbose <true/false>
+    config use-my-docs <true/false> 
+    config categories
 """.trimIndent()
 
 fun config(args: List<String>) {

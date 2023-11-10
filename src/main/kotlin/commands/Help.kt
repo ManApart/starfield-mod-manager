@@ -4,13 +4,15 @@ import Column
 import Table
 import cyan
 
-val helpHelp = ""
 fun help(args: List<String> = listOf()) {
     val helpCommand = args.firstOrNull()?.let { getCommand(it) }
     when {
         args.isEmpty() -> printGeneralHelp()
         args.first() == "all" -> printDetailedHelp()
-        helpCommand != null -> println(helpCommand.usage)
+        helpCommand != null -> {
+            println(helpCommand.description)
+            println(helpCommand.usage)
+        }
         else -> printGeneralHelp()
     }
 }
@@ -38,6 +40,8 @@ private fun printGeneralHelp() {
 
 private fun printDetailedHelp() {
     println(CommandType.entries.filterNot { it == CommandType.HELP }.joinToString("\n") {
-        "${it.cleanName}: ${it.summary}\n\t${it.usage.replace("\n", "\n\t")}"
+        val descriptionString = it.description.replace("\n", "\n\t")
+        val usageString = it.usage.replace("\n", "\n\t")
+        "${cyan(it.cleanName)}: ${it.summary}\n\t$descriptionString\n\t$usageString"
     })
 }

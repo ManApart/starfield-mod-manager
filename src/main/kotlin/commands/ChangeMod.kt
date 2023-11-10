@@ -12,7 +12,7 @@ val changeHelp = """
     rename <mod index> <new name>
 """.trimIndent()
 
-val changeUsage = """
+val changeDescription = """
     mod <mod index> id 123 - Update mod's id
     mod <mod index> file ~/Downloads/sleepy-time.zip - Delete mod's stage folder and restage from zip
     mod <mod index> name <new name> - renames a mod without changing file paths

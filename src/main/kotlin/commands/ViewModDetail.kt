@@ -1,20 +1,18 @@
 package commands
 
 import Mod
-import fetchModInfo
 import toolData
-import urlToId
 
-val detailHelp = """
-   detail <mod id> - View all mod detail
+val detailDescription = """
+   View all mod detail
 """.trimIndent()
 val detailUsage = """
-   detail <mod id> - View all mod detail
+   detail <mod id>
 """.trimIndent()
 
 fun detailMod(args: List<String>) {
     if (args.isEmpty()) {
-        println(detailHelp)
+        println(detailDescription)
     } else {
         args.getIndicesOrRange(toolData.mods.size)
             .mapNotNull { toolData.byIndex(it) }

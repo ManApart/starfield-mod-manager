@@ -9,11 +9,10 @@ import yellow
 import java.io.File
 
 val removeHelp = """
-    remove <mod index>
-    rm <mod index>
+    Remove a mod from being managed
 """.trimIndent()
 
-val removeUsage = """
+val removeDescription = """
     remove <mod index>
     rm <mod index>
 """.trimIndent()

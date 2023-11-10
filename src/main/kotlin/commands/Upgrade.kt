@@ -5,13 +5,9 @@ import addModById
 import cyan
 import doCommand
 import toolData
-import java.io.File
 
-val upgradeHelp = """
-    upgrade <mod index>
-    upgrade 1 2 4
-    upgrade 1-3
-    upgrade all - For all mods with newer versions, attempt to stage the latest version.
+val upgradeDescription = """
+    For all mods with newer versions, attempt to stage the latest version.
     If you want to check for new versions, see update
     If you're looking to just redownload or restage a file at the current version, see refresh
 """.trimIndent()
@@ -20,14 +16,12 @@ val upgradeUsage = """
     upgrade <mod index>
     upgrade 1 2 4
     upgrade 1-3
-    upgrade all - For all mods with newer versions, attempt to stage the latest version.
-    If you want to check for new versions, see update
-    If you're looking to just redownload or restage a file at the current version, see refresh
+    upgrade all
 """.trimIndent()
 
 fun upgrade(args: List<String>) {
     if (args.isEmpty()) {
-        println(upgradeHelp + "\n")
+        println(upgradeDescription + "\n")
         val updatable = toolData.mods.map { it to it.updateAvailable() }
         display(updatable)
     } else {

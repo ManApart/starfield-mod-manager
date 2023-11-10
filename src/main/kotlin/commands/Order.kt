@@ -3,7 +3,7 @@ package commands
 import Mod
 import toolData
 
-val orderHelp = """
+val orderDescription = """
     order 1 first
     order 1 last
     order 1 sooner 5
@@ -28,7 +28,7 @@ private data class Args(val index: Int, val subCommand: String, val amount: Int?
 fun order(args: List<String>) {
     val arguments = parseArgs(args)
     if (arguments == null) {
-        println(orderHelp)
+        println(orderDescription)
         return
     }
     with(arguments) {

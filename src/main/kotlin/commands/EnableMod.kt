@@ -8,12 +8,9 @@ import toolData
 import yellow
 import java.io.File
 
-val enableHelp = """
-    enable <mod index>
-    disable <mod index>
-    enable 1 2 4
-    enable 1-4
-    disable all
+val enableDescription = """
+    Enable or disable a mod.
+    Enabled mods are symlinked into the game folder the next time the deploy command is run
 """.trimIndent()
 
 val enableUsage = """
@@ -30,7 +27,7 @@ fun disable(args: List<String>) = enableMod(false, args)
 
 private fun enableMod(enable: Boolean = true, args: List<String>) {
     when {
-        args.isEmpty() -> println(enableHelp)
+        args.isEmpty() -> println(enableDescription)
         args.size == 1 && args.first().contains("-") -> enableRange(enable, args)
         args.size == 1 && args.first() == "all" -> enableRange(enable, listOf("0-${toolData.mods.size - 1}"))
         else -> enableList(enable, args)

@@ -2,24 +2,17 @@ package commands
 
 import Mod
 import save
-import toolConfig
 import toolData
 import java.io.File
 
 
-val sortHelp = """
-    sort the list in various ways. Add reverse to invert the sort
-    sort name
-    sort id
-    sort enabled
-    sort category
-    sort order
-    sort staged
+val sortDescription = """
+    Sort the list in various ways. Add reverse to invert the sort
 """.trimIndent()
 
 val sortUsage = """
-    sort the list in various ways. Add reverse to invert the sort
     sort name
+    sort name reverse
     sort id
     sort enabled
     sort category
@@ -37,7 +30,7 @@ fun sortMods(args: List<String> = listOf()) {
         "enabled" -> sort(!reverse) { it.enabled }
         "id" -> sort(reverse) { it.id.toString() }
         "staged" -> sort(!reverse) { File(it.filePath).exists() }
-        else -> sortHelp
+        else -> sortDescription
     }
 }
 
