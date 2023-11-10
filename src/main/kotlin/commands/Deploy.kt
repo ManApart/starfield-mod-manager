@@ -9,7 +9,13 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
 
-fun deployHelp() = """
+val deployHelp = """
+    deploy - Applies all mods to the game folder by creating the appropriate symlinks
+    deploy dryrun - Per your load order view how files will be deployed
+    deploy overrides - show mods that override other mods
+""".trimIndent()
+
+val deployUsage = """
     deploy - Applies all mods to the game folder by creating the appropriate symlinks
     deploy dryrun - Per your load order view how files will be deployed
     deploy overrides - show mods that override other mods

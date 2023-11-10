@@ -5,7 +5,14 @@ import save
 import toolData
 import java.io.File
 
-fun changeHelp() = """
+val changeHelp = """
+    mod <mod index> id 123 - Update mod's id
+    mod <mod index> file ~/Downloads/sleepy-time.zip - Delete mod's stage folder and restage from zip
+    mod <mod index> name <new name> - renames a mod without changing file paths
+    rename <mod index> <new name>
+""".trimIndent()
+
+val changeUsage = """
     mod <mod index> id 123 - Update mod's id
     mod <mod index> file ~/Downloads/sleepy-time.zip - Delete mod's stage folder and restage from zip
     mod <mod index> name <new name> - renames a mod without changing file paths
@@ -19,11 +26,11 @@ fun moveMod(args: List<String>){
 fun changeMod(args: List<String>) {
     val i = args.firstOrNull()?.toIntOrNull()
     when {
-        args.isEmpty() -> println(changeHelp())
+        args.isEmpty() -> println(changeHelp)
         args.size == 3 && args[1] == "id" -> updateId(i!!, args.last().toInt())
         args.size == 3 && args[1] == "file" -> updateFile(i!!, args.last())
         args.size == 3 && args[1] == "name" -> updateName(i!!, args.last())
-        else -> println(changeHelp())
+        else -> println(changeHelp)
     }
 }
 

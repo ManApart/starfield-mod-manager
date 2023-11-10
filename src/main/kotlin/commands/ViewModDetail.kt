@@ -5,13 +5,16 @@ import fetchModInfo
 import toolData
 import urlToId
 
-fun detailHelp() = """
+val detailHelp = """
+   detail <mod id> - View all mod detail
+""".trimIndent()
+val detailUsage = """
    detail <mod id> - View all mod detail
 """.trimIndent()
 
 fun detailMod(args: List<String>) {
     if (args.isEmpty()) {
-        println(detailHelp())
+        println(detailHelp)
     } else {
         args.getIndicesOrRange(toolData.mods.size)
             .mapNotNull { toolData.byIndex(it) }

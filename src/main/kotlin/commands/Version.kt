@@ -12,7 +12,12 @@ import toolData
 import updateModInfo
 import java.io.File
 
-fun versionHelp() = """
+val versionHelp = """
+    version <mod index> - view the current and latest version of a mod
+    version 1 2 4
+    version 1-3
+""".trimIndent()
+val versionUsage = """
     version <mod index> - view the current and latest version of a mod
     version 1 2 4
     version 1-3

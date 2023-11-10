@@ -9,7 +9,17 @@ import toolData
 import yellow
 import java.io.File
 
-fun validateHelp() = """
+val validateHelp = """
+    validate
+    validate <mod index>
+    validate 1 2 4
+    validate 1-3
+    validate staged
+    validate enabled
+    validate disabled
+""".trimIndent()
+
+val validateUsage = """
     validate
     validate <mod index>
     validate 1 2 4

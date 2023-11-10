@@ -3,7 +3,11 @@ package commands
 import runCommand
 import java.io.File
 
-fun startGameHelp() = """
+val startGameHelp = """
+    start - run the steam game
+""".trimIndent()
+
+val startGameUsage = """
     start - run the steam game
 """.trimIndent()
 

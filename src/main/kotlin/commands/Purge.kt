@@ -12,7 +12,12 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
 
-fun purgeHelp() = """
+val purgeHelp = """
+    purge - delete all symlinks and rename override files
+    purge dryrun - view what a purge would do without doing it
+""".trimIndent()
+
+val purgeUsage = """
     purge - delete all symlinks and rename override files
     purge dryrun - view what a purge would do without doing it
 """.trimIndent()

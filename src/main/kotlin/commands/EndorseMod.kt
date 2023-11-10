@@ -10,7 +10,14 @@ import toolConfig
 import toolData
 import updateModInfo
 
-fun endorseHelp() = """
+val endorseHelp = """
+    endorse <mod index> - endorse a mod on nexus
+    abstain <mod index>
+    endorse 1 2 4
+    endorse 1-4
+""".trimIndent()
+
+val endorseUsage = """
     endorse <mod index> - endorse a mod on nexus
     abstain <mod index>
     endorse 1 2 4
@@ -22,7 +29,7 @@ fun abstain(args: List<String>) = endorseMod(false, args)
 
 private fun endorseMod(abstain: Boolean = true, args: List<String>) {
     when {
-        args.isEmpty() -> println(endorseHelp())
+        args.isEmpty() -> println(endorseHelp)
         args.size == 1 && args.first().contains("-") -> endorseRange(abstain, args)
         args.size == 1 && args.first() == "all" -> endorseRange(abstain, listOf("0-${toolData.mods.size - 1}"))
         else -> endorseList(abstain, args)

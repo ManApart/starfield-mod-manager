@@ -8,7 +8,17 @@ import java.io.File
 import java.lang.Exception
 import java.net.URI
 
-fun openHelp() = """
+val openHelp = """
+    open <mod index> - open on nexus
+    local <mod index> - open local folder
+    game-path - open local game folder
+    ini-path - open local ini folder
+    jar-path - open mod manager folder
+    open 1 2 4
+    open 1-4
+""".trimIndent()
+
+val openUsage = """
     open <mod index> - open on nexus
     local <mod index> - open local folder
     game-path - open local game folder
@@ -30,7 +40,7 @@ fun openJarPath(args: List<String>) = open(".", "ini path")
 private fun openMod(web: Boolean = true, args: List<String>) {
     val mods = args.getIndicesOrRange(toolData.mods.size).mapNotNull { toolData.mods.getOrNull(it) }
     when {
-        mods.isEmpty() -> println(openHelp())
+        mods.isEmpty() -> println(openHelp)
         web -> mods.forEach { openInWeb(it) }
         else -> mods.forEach { openLocal(it) }
     }

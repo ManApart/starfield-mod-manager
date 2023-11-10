@@ -4,13 +4,13 @@ import Column
 import Table
 import cyan
 
-fun helpHelp() = ""
+val helpHelp = ""
 fun help(args: List<String> = listOf()) {
     val helpCommand = args.firstOrNull()?.let { getCommand(it) }
     when {
         args.isEmpty() -> printGeneralHelp()
         args.first() == "all" -> printDetailedHelp()
-        helpCommand != null -> println(helpCommand.help())
+        helpCommand != null -> println(helpCommand.usage)
         else -> printGeneralHelp()
     }
 }
@@ -28,7 +28,7 @@ private fun printGeneralHelp() {
             val data = commands.map {
                 mapOf(
                     "Command" to it.cleanName,
-                    "Summary" to it.description,
+                    "Summary" to it.summary,
                 )
             }
             Table(columns, data).print(false)
@@ -38,6 +38,6 @@ private fun printGeneralHelp() {
 
 private fun printDetailedHelp() {
     println(CommandType.entries.filterNot { it == CommandType.HELP }.joinToString("\n") {
-        "${it.cleanName}: ${it.description}\n\t${it.help().replace("\n", "\n\t")}"
+        "${it.cleanName}: ${it.summary}\n\t${it.usage.replace("\n", "\n\t")}"
     })
 }

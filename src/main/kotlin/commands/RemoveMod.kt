@@ -8,7 +8,12 @@ import toolData
 import yellow
 import java.io.File
 
-fun removeHelp() = """
+val removeHelp = """
+    remove <mod index>
+    rm <mod index>
+""".trimIndent()
+
+val removeUsage = """
     remove <mod index>
     rm <mod index>
 """.trimIndent()
@@ -17,7 +22,7 @@ fun remove(args: List<String>) {
     if (args.size == 1 && args.first().toIntOrNull() != null) {
         removeMod(args.first().toInt())
     } else {
-        println(removeHelp())
+        println(removeHelp)
     }
 }
 

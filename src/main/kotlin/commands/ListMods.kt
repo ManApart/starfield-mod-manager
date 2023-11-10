@@ -13,7 +13,12 @@ import toolData
 import truncate
 import java.io.File
 
-fun listHelp() = """
+val listHelp = """
+    List Mod details
+    list 10 30 - List 30 mods, starting with the 10th mod
+""".trimIndent()
+
+val listUsage = """
     List Mod details
     list 10 30 - List 30 mods, starting with the 10th mod
 """.trimIndent()

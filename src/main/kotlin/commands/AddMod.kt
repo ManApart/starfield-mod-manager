@@ -6,7 +6,15 @@ import addModByNexusProtocol
 import cyan
 import urlToId
 
-fun addModHelp() = """
+val addModHelp = """
+   add nexus nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
+   add https://www.nexusmods.com/starfield/mods/4183?tab=files
+   add 4183
+   add 4183 4182 4181 - Add multiple by id
+   add <path-to-mod-zip> <name-of-mod>*
+""".trimIndent()
+
+val addModUsage = """
    add nexus nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
    add https://www.nexusmods.com/starfield/mods/4183?tab=files
    add 4183
@@ -17,7 +25,7 @@ fun addModHelp() = """
 fun addMod(args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     when {
-        args.isEmpty() -> println(addModHelp())
+        args.isEmpty() -> println(addModHelp)
         firstArg.startsWith("nxm") -> addModByNexusProtocol(firstArg)
         firstArg.toIntOrNull() != null -> addModByIds(args.mapNotNull { it.toIntOrNull() })
         firstArg.startsWith("http") -> addModByUrls(args)

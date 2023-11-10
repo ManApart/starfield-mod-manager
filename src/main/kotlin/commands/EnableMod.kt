@@ -8,7 +8,15 @@ import toolData
 import yellow
 import java.io.File
 
-fun enableHelp() = """
+val enableHelp = """
+    enable <mod index>
+    disable <mod index>
+    enable 1 2 4
+    enable 1-4
+    disable all
+""".trimIndent()
+
+val enableUsage = """
     enable <mod index>
     disable <mod index>
     enable 1 2 4
@@ -22,7 +30,7 @@ fun disable(args: List<String>) = enableMod(false, args)
 
 private fun enableMod(enable: Boolean = true, args: List<String>) {
     when {
-        args.isEmpty() -> println(enableHelp())
+        args.isEmpty() -> println(enableHelp)
         args.size == 1 && args.first().contains("-") -> enableRange(enable, args)
         args.size == 1 && args.first() == "all" -> enableRange(enable, listOf("0-${toolData.mods.size - 1}"))
         else -> enableList(enable, args)

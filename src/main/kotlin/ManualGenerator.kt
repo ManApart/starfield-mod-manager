@@ -6,7 +6,7 @@ import java.io.File
 
 fun main(){
     val manualData = File("manual-data.json").also { if (!it.exists()) it.createNewFile() }
-    val manualDataEntries = CommandType.entries.map { CommandJson(it.cleanName, it.category, it.description, it.aliases.toList(), it.help()) }
+    val manualDataEntries = CommandType.entries.map { CommandJson(it.cleanName, it.category, it.summary, it.aliases.toList(), it.usage()) }
     manualData.writeText(jsonMapper.encodeToString(manualDataEntries))
 }
 

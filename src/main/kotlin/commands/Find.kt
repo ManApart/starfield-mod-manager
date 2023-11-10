@@ -3,7 +3,11 @@ package commands
 import cyan
 import toolData
 
-fun findHelp() = """
+val findHelp = """
+    Find files
+    find <search text> - list all files that have the given text in their path 
+""".trimIndent()
+val findUsage = """
     Find files
     find <search text> - list all files that have the given text in their path 
 """.trimIndent()
