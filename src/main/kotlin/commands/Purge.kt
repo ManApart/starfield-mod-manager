@@ -13,13 +13,15 @@ import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
 
 val purgeDescription = """
-    purge - delete all symlinks and rename override files
-    purge dryrun - view what a purge would do without doing it
+    Purge your game data folder and delete all symlinks and rename override files.
+    This should set you back to vanilla, and can catch files missed by disabling mods and deploying.
+    Specifically, if you manually delete a mod outside the manager, a deploy may not delete its deployed files, but a purge should clean them up.
+    Use dryrun to view what a purge would do without actually doing it.
 """.trimIndent()
 
 val purgeUsage = """
-    purge - delete all symlinks and rename override files
-    purge dryrun - view what a purge would do without doing it
+    purge
+    purge dryrun
 """.trimIndent()
 
 fun purge(args: List<String>) {

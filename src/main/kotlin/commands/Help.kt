@@ -4,6 +4,12 @@ import Column
 import Table
 import cyan
 
+val helpDescription = "List the commands for view a specific command in detail"
+val helpUsage = """
+    help
+    help <command>
+""".trimIndent()
+
 fun help(args: List<String> = listOf()) {
     val helpCommand = args.firstOrNull()?.let { getCommand(it) }
     when {

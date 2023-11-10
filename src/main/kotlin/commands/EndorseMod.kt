@@ -14,8 +14,7 @@ val endorseDescription = """
 """.trimIndent()
 
 val endorseUsage = """
-    endorse <mod index>
-    abstain <mod index>
+    endorse <index>
     endorse 1 2 4
     endorse 1-4
 """.trimIndent()

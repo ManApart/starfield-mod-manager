@@ -6,17 +6,18 @@ import toolData
 import java.io.File
 
 val changeHelp = """
-    mod <mod index> id 123 - Update mod's id
-    mod <mod index> file ~/Downloads/sleepy-time.zip - Delete mod's stage folder and restage from zip
-    mod <mod index> name <new name> - renames a mod without changing file paths
-    rename <mod index> <new name>
+    Change various parts of a mod.
+    Use id to set its nexus id
+    Use file to delete a mods stage folder and restage it from zip
+""".trimIndent()
+val renameHelp = """
+    Use name to rename a mod without changing its file paths
 """.trimIndent()
 
 val changeDescription = """
-    mod <mod index> id 123 - Update mod's id
-    mod <mod index> file ~/Downloads/sleepy-time.zip - Delete mod's stage folder and restage from zip
-    mod <mod index> name <new name> - renames a mod without changing file paths
-    rename <mod index> <new name>
+    mod <index> id <new id>
+    mod <index> file <file-path> 
+    mod <index> name <new name>
 """.trimIndent()
 
 fun moveMod(args: List<String>){

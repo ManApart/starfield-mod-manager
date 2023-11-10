@@ -4,13 +4,9 @@ import Mod
 import toolData
 
 val orderDescription = """
-    order 1 first
-    order 1 last
-    order 1 sooner 5
-    order 1 later
-    order 1 set 4 - sets to exactly this order in the load. Any mods with a higher number for load order have their number increased
-    In these examples the first number is the mod index and the second is the sort order you want
     Mods with a higher load order are loaded later, and override mods loaded earlier. Given mod A has an order 5 and mod B has an order of 1, then A will load AFTER B, and A's files will be used instead of B's in any file conflicts. 
+    In these examples the first number is the mod index and the second is the sort order you want
+    order 1 set 4 - sets mod with index 1 to load order 4. Any mods with a higher number for load order have their number increased
 """.trimIndent()
 
 val orderUsage = """
@@ -18,9 +14,7 @@ val orderUsage = """
     order 1 last
     order 1 sooner 5
     order 1 later
-    order 1 set 4 - sets to exactly this order in the load. Any mods with a higher number for load order have their number increased
-    In these examples the first number is the mod index and the second is the sort order you want
-    Mods with a higher load order are loaded later, and override mods loaded earlier. Given mod A has an order 5 and mod B has an order of 1, then A will load AFTER B, and A's files will be used instead of B's in any file conflicts. 
+    order 1 set 4
 """.trimIndent()
 
 private data class Args(val index: Int, val subCommand: String, val amount: Int?)

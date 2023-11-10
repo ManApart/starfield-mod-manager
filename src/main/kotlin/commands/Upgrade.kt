@@ -13,7 +13,7 @@ val upgradeDescription = """
 """.trimIndent()
 
 val upgradeUsage = """
-    upgrade <mod index>
+    upgrade <index>
     upgrade 1 2 4
     upgrade 1-3
     upgrade all

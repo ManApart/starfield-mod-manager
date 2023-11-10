@@ -7,18 +7,17 @@ import cyan
 import urlToId
 
 val addModDescription = """
-   add nexus nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
-   add https://www.nexusmods.com/starfield/mods/4183?tab=files
-   add 4183
-   add 4183 4182 4181 - Add multiple by id
-   add <path-to-mod-zip> <name-of-mod>*
+   Add a new mod, including downloading it
+   You can add mods by nexus mod manager url, by mod url, by mod id, or even by path to a local zip
+   For urls and ids, you can add multiple at once, space separated
+   Example nexus mod manager url: nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
+   Example mod url: https://www.nexusmods.com/starfield/mods/4183?tab=files
 """.trimIndent()
 
 val addModUsage = """
-   add nexus nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
-   add https://www.nexusmods.com/starfield/mods/4183?tab=files
+   add nexus <nxm://starfield/...>
    add 4183
-   add 4183 4182 4181 - Add multiple by id
+   add 4183 4182 4181
    add <path-to-mod-zip> <name-of-mod>*
 """.trimIndent()
 

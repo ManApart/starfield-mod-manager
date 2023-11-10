@@ -8,17 +8,15 @@ import save
 import toolData
 
 val profileDescription = """
-    profile list
-    profile save <name> - create a new profile 
-    profile save <index> - save to an existing profile
-    profile view <index>
-    profile load <index>
+    Allows you to create new profiles, and then view, save, or load them by index.
+    Profiles are like local mod collections and save all of the enabled / disabled mods.
+    This should let you quickly bulk enable / disable mods for different scenarios.
 """.trimIndent()
 
 val profileUsage = """
     profile list
-    profile save <name> - create a new profile 
-    profile save <index> - save to an existing profile
+    profile save <name> 
+    profile save <index>
     profile view <index>
     profile load <index>
 """.trimIndent()

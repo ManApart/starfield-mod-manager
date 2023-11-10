@@ -16,7 +16,7 @@ val updateDescription = """
 """.trimIndent()
 
 val updateUsage = """
-    update <mod index>
+    update <index>
     update 1 2 4
     update 1-3
     update staged

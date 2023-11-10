@@ -15,12 +15,13 @@ import java.io.File
 
 val listDescription = """
     List Mod details
-    list 10 30 - List 30 mods, starting with the 10th mod
+    You can give a start and amount if you want to list just a subsection
+    list 10 30 would list 30 mods, starting with the 10th mod
 """.trimIndent()
 
 val listUsage = """
-    List Mod details
-    list 10 30 - List 30 mods, starting with the 10th mod
+    List
+    list <start> <amount>
 """.trimIndent()
 
 fun listMods(args: List<String> = listOf()) {

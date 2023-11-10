@@ -14,10 +14,15 @@ val enableDescription = """
 """.trimIndent()
 
 val enableUsage = """
-    enable <mod index>
-    disable <mod index>
+    enable <index>
     enable 1 2 4
     enable 1-4
+    enable all
+""".trimIndent()
+val disableUsage = """
+    disable <index>
+    disable 1 2 4
+    disable 1-4
     disable all
 """.trimIndent()
 

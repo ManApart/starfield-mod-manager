@@ -14,7 +14,7 @@ val validateDescription = """
 
 val validateUsage = """
     validate
-    validate <mod index>
+    validate <index>
     validate 1 2 4
     validate 1-3
     validate staged

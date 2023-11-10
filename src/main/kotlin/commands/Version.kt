@@ -7,7 +7,7 @@ val versionDescription = """
     View the current and latest version of a mod
 """.trimIndent()
 val versionUsage = """
-    version <mod index>
+    version <index>
     version 1 2 4
     version 1-3
 """.trimIndent()

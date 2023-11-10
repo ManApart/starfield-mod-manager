@@ -9,24 +9,10 @@ import java.lang.Exception
 import java.net.URI
 
 val openDescription = """
-    open <mod index> - open on nexus
-    local <mod index> - open local folder
-    game-path - open local game folder
-    ini-path - open local ini folder
-    jar-path - open mod manager folder
-    open 1 2 4
-    open 1-4
+    Open various folders and filepaths
+    You can open a mod locally or on the nexus, or open the various config paths
 """.trimIndent()
 
-val openUsage = """
-    open <mod index> - open on nexus
-    local <mod index> - open local folder
-    game-path - open local game folder
-    ini-path - open local ini folder
-    jar-path - open mod manager folder
-    open 1 2 4
-    open 1-4
-""".trimIndent()
 
 fun open(args: List<String>) = openMod(true, args)
 

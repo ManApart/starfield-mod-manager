@@ -13,8 +13,8 @@ val removeHelp = """
 """.trimIndent()
 
 val removeDescription = """
-    remove <mod index>
-    rm <mod index>
+    remove <index>
+    rm <index>
 """.trimIndent()
 
 fun remove(args: List<String>) {

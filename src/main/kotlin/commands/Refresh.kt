@@ -12,7 +12,7 @@ val refreshDescription = """
 """.trimIndent()
 
 val refreshUsage = """
-    refresh <mod index>
+    refresh <index>
     refresh 1 2 4
     refresh 1-3
     refresh all
