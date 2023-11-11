@@ -4,7 +4,7 @@ import Column
 import Table
 import cyan
 
-val helpDescription = "List the commands for view a specific command in detail"
+const val helpDescription = "List the commands for view a specific command in detail"
 val helpUsage = """
     help
     help <command>
