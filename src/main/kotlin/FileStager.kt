@@ -93,7 +93,7 @@ fun unNestFiles(modName: String, stageFolder: File, stagedFiles: Array<File>) {
 }
 
 private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
-    val newPath = stageFolderPath + nested.path.replace(topPath, "")
+    val newPath = stageFolderPath + nested.path.replace(topPath, "").replace("/data", "/Data")
     Files.move(nested.toPath(), Path(newPath), StandardCopyOption.REPLACE_EXISTING)
     if (nested.isDirectory) {
         nested.listFiles()?.forEach { moreNested ->
