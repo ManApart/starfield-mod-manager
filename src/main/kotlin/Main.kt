@@ -17,31 +17,38 @@ val jsonMapper = kotlinx.serialization.json.Json {
 }
 
 private fun configPath(): String {
-    return System.getenv("XDG_CONFIG_HOME")?.replace("~", HOME)?.let { "$it/$GAME-mod-manager-config.json" } ?: "./$GAME-mod-manager-config.json"
+    return System.getenv("XDG_CONFIG_HOME")?.replace("~", HOME)?.let { "$it/$GAME-mod-manager-config.json" }
+        ?: "./$GAME-mod-manager-config.json"
 }
 
 fun main(args: Array<String>) {
-    GAME = args.firstOrNull() ?: "Starfield"
-    CONFIG_PATH = configPath()
+    if (args.size == 1 && args.first().startsWith("nxm://")) {
+        //TODO - do game switching and config loading
+        addModByNexusProtocol(args.first())
+    } else {
+        GAME = args.firstOrNull() ?: "Starfield"
+        CONFIG_PATH = configPath()
 
-    println(cyan("\nCLI Mod Manager"))
-    modFolder = File("$GAME-mods")
-    loadData()
-    if (args.size < 2) {
-        CommandType.LIST.apply(listOf())
-        while (true) {
-            readLine(readlnOrNull())
-            while (confirmation != null) {
-                confirmation?.let { confirm ->
-                    readlnOrNull()?.parseArgs()?.let {
-                        confirmation = null
-                        confirm(it)
+        println(cyan("\nCLI Mod Manager"))
+        modFolder = File("$GAME-mods")
+        loadData()
+
+        if (args.size < 2) {
+            CommandType.LIST.apply(listOf())
+            while (true) {
+                readLine(readlnOrNull())
+                while (confirmation != null) {
+                    confirmation?.let { confirm ->
+                        readlnOrNull()?.parseArgs()?.let {
+                            confirmation = null
+                            confirm(it)
+                        }
                     }
                 }
             }
+        } else {
+            readLine(args.drop(1).joinToString(" "))
         }
-    } else {
-        readLine(args.drop(1).joinToString(" "))
     }
 }
 
