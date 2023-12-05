@@ -29,7 +29,7 @@ data class Mod(
         }
     }
 
-    fun url() = "https://www.nexusmods.com/starfield/mods/$id"
+    fun url() = "https://www.nexusmods.com/$GAME/mods/$id"
 
     fun updateAvailable() = latestVersion != null && latestVersion != version
 

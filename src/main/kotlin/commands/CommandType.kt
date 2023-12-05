@@ -42,7 +42,7 @@ enum class CommandType(
     FILTER("Apply a filter to Mods", Category.VIEW, filterDescription, filterUsage, ::filterMods),
     SORT("Sort Mods", Category.VIEW, sortDescription, sortUsage, ::sortMods),
     VALIDATE("List issues with mods", Category.DEPLOY, validateDescription, validateUsage, ::validateMods),
-    START("Launch Starfield", Category.CONFIG, startGameDescription, startGameUsage, ::startGame, "game"),
+    START("Launch Game", Category.CONFIG, startGameDescription, startGameUsage, ::startGame, "game"),
     EXIT(
         "Exit Program", Category.CONFIG,
         "Exit the process",

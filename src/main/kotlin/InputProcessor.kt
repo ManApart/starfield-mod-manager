@@ -28,7 +28,7 @@ fun String.parseArgs(home: String = HOME): List<String> {
 }
 
 fun String.urlToId(): Int? {
-    return replace("https://www.nexusmods.com/starfield/mods/", "").let { idPart ->
+    return replace("https://www.nexusmods.com/$GAME/mods/", "").let { idPart ->
         val end = idPart.indexOf("?").takeIf { it > 0 } ?: idPart.length
         idPart.substring(0, end)
     }.toIntOrNull().also {
