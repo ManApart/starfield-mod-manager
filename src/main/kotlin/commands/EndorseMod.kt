@@ -63,7 +63,7 @@ private fun endorseMods(endorse: Boolean, mods: List<Mod>) {
                     }
                 }.awaitAll()
             }
-            println("$endorseLine ${chunk.joinToString { it.toString() }}")
+            println("$endorseLine ${chunk.joinToString { it.idName() }}")
         }
     save()
     if (endorse) println(cyan("Done Endorsing")) else println(cyan("Done Abstaining"))
