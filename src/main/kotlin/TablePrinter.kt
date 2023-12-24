@@ -14,7 +14,8 @@ data class Table(val columns: List<Column>, val data: List<Map<String, Any>>) {
         val headerValues = columns.map { it.header }.toTypedArray()
         val headers = if (highlightHeaders) cyan("$colFormat\n") else "$colFormat\n"
         System.out.printf(headers, *headerValues)
-        data.forEach { row ->
+        data.forEachIndexed { i, row ->
+            if (i % 10 == 0 && i != 0) println()
             val dataValues = columns.map { row[it.header] ?: "" }.toTypedArray()
             System.out.printf("$rowFormat\n", *dataValues)
         }
