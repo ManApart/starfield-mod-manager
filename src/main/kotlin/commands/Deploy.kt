@@ -13,7 +13,6 @@ val deployDescription = """
     Applies all enabled mods to the game folder by creating the appropriate symlinks
     Overrides shows any mods that conflict with other mods and gives their load order in parenthesis and then the index of the mod
     Dryrun shows a detailed view of how files will be deployed, without deploying them
-    
 """.trimIndent()
 
 val deployUsage = """

@@ -31,7 +31,21 @@ fun showOverrides() {
             println("\t(${loser.loadOrder}) ${loser.index} ${loser.name}")
         }
     }
+}
 
+fun showOverrides(matchingMod: Mod) {
+    val overrideList = getAnnotatedModFiles().values.filter { it.size > 1 }.groupBy { it.first() }
+    if (overrideList.isEmpty()){
+        println("There are no mod conflicts")
+    }
+    overrideList.filter { it.key == matchingMod || it.value.flatten().contains(matchingMod) }.forEach { overrideMap ->
+        val winner = overrideMap.key
+        val losers = overrideMap.value.flatten().toSet().filter { it != winner }
+        println("(${winner.loadOrder}) ${winner.index} ${winner.name} overrides:")
+        losers.forEach { loser ->
+            println("\t(${loser.loadOrder}) ${loser.index} ${loser.name}")
+        }
+    }
 }
 
 private fun getAnnotatedModFiles(): Map<String, List<Mod>> {
