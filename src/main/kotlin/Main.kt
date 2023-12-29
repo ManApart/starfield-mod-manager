@@ -9,6 +9,7 @@ lateinit var modFolder: File
 val HOME = System.getProperty("user.home")!!
 val CONFIG_PATH = configPath()
 var confirmation: ((List<String>) -> Unit)? = null
+var testingMode = false
 
 val jsonMapper = kotlinx.serialization.json.Json {
     ignoreUnknownKeys = true
@@ -52,6 +53,7 @@ private fun loadData() {
 }
 
 fun save() {
+    if (testingMode) return
     File(CONFIG_PATH).writeText(jsonMapper.encodeToString(toolConfig))
     File("./data.json").writeText(jsonMapper.encodeToString(toolData))
 }

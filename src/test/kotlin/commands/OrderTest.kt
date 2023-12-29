@@ -1,10 +1,19 @@
 package commands
 
 import Mod
+import org.junit.jupiter.api.BeforeAll
+import testingMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class OrderTest {
+    companion object {
+        @JvmStatic
+        @BeforeAll
+        fun setup() {
+            testingMode = true
+        }
+    }
 
     @Test
     fun modsAreNotNegativeOrdered() {
