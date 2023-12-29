@@ -1,6 +1,7 @@
 package commands
 
 import Mod
+import save
 import toolData
 
 val orderDescription = """
@@ -61,4 +62,5 @@ fun setModOrder(mods: List<Mod>, modIndex: Int, position: Int) {
     mods.filter { it.loadOrder > oldOrder }.forEach { it.loadOrder -= 1 }
     mods.filter { it.loadOrder >= position }.forEach { it.loadOrder += 1 }
     mod.loadOrder = position
+    save()
 }
