@@ -22,6 +22,7 @@ enum class CommandType(
     LIST("List Mods", Category.VIEW, listDescription, listUsage, ::listMods, "ls"),
     DETAIL("View all details of mod", Category.VIEW, detailDescription, detailUsage, ::detailMod),
     ORDER("Change Load Order", Category.DEPLOY, orderDescription, orderUsage, ::order),
+    ESP("Change Load Order for plugins", Category.DEPLOY, espDescription, espUsage, ::esp, "esps", "plugin", "plugins"),
     OPEN("Open mod on web", Category.OPEN, openDescription, "open <index>", ::open),
     LOCAL("Open local mod folder", Category.OPEN, openDescription, "local <index>", ::local),
     GAME_PATH("Open game folder", Category.OPEN, openDescription, "", ::openGamePath, "gamepath"),

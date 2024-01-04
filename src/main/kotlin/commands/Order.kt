@@ -9,6 +9,7 @@ val orderDescription = """
     In these examples the first number is the mod index and the second is the sort order you want
     order 1 set 4 - sets mod with index 1 to load order 4. Any mods with a higher number for load order have their number increased
     order 1 - view any conflicts mod index 1 has with any other mods
+    To manage load order specifically for plugins, see esps command. The same order number is used for both commands.
 """.trimIndent()
 
 val orderUsage = """
@@ -20,7 +21,7 @@ val orderUsage = """
     order 1 set 4
 """.trimIndent()
 
-private data class Args(val index: Int, val subCommand: String, val amount: Int?)
+data class Args(val index: Int, val subCommand: String, val amount: Int?)
 
 fun order(args: List<String>) {
     val arguments = parseArgs(args)
@@ -45,7 +46,7 @@ fun order(args: List<String>) {
     }
 }
 
-private fun parseArgs(args: List<String>): Args? {
+fun parseArgs(args: List<String>): Args? {
     val index = args.getOrNull(0)?.toIntOrNull()
     val subCommand = args.getOrNull(1)
     val amount = args.getOrNull(2)?.toIntOrNull()
