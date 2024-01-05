@@ -1,6 +1,7 @@
 package commands
 
 import Mod
+import red
 import save
 import toolData
 
@@ -58,7 +59,12 @@ fun parseArgs(args: List<String>): Args? {
 
 fun setModOrder(mods: List<Mod>, modIndex: Int, position: Int) {
     if (position < 0) return
-    val mod = mods.getOrNull(modIndex) ?: return
+    val mod = mods.getOrNull(modIndex)
+    if (mod == null){
+        println(red("No mod found at $modIndex"))
+        return
+    }
+    println("Setting mod $modIndex at position ${mod.loadOrder} to position $position")
     val oldOrder = mod.loadOrder
     mods.filter { it.loadOrder > oldOrder }.forEach { it.loadOrder -= 1 }
     mods.filter { it.loadOrder >= position }.forEach { it.loadOrder += 1 }

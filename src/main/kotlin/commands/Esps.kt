@@ -44,17 +44,17 @@ fun esp(args: List<String>) {
             subCommand == "sooner" && amount != null -> setModOrder(
                 toolData.mods,
                 index,
-                nextPluginIndex(mods, index, -amount)
+                nextPluginLoadOrder(mods, index, -amount)
             )
 
             subCommand == "later" && amount != null -> setModOrder(
                 toolData.mods,
                 index,
-                nextPluginIndex(mods, index, amount)
+                nextPluginLoadOrder(mods, index, amount)
             )
 
-            subCommand == "sooner" -> setModOrder(toolData.mods, index, nextPluginIndex(mods, index, -1))
-            subCommand == "later" -> setModOrder(toolData.mods, index, nextPluginIndex(mods, index, 1))
+            subCommand == "sooner" -> setModOrder(toolData.mods, index, nextPluginLoadOrder(mods, index, -1))
+            subCommand == "later" -> setModOrder(toolData.mods, index, nextPluginLoadOrder(mods, index, 1))
             else -> println("Unknown subCommand: ")
         }
         display(getModsWithPlugins())
@@ -69,25 +69,33 @@ private fun getModsWithPlugins(): Map<Mod, List<File>> {
         .filter { (_, files) -> files.isNotEmpty() }
 }
 
-private typealias NewModIndex = Int
+private fun nextPluginLoadOrder(mods: Map<Mod, List<File>>, modIndexToShift: Int, pluginShiftAmount: Int): Int {
+    return nextPlugin(mods, modIndexToShift, pluginShiftAmount)?.loadOrder ?: 0
+}
 
-private fun nextPluginIndex(mods: Map<Mod, List<File>>, modIndexToShift: Int, pluginShiftAmount: Int): NewModIndex {
+private fun nextPluginIndex(mods: Map<Mod, List<File>>, modIndexToShift: Int, pluginShiftAmount: Int): Int {
+    return nextPlugin(mods, modIndexToShift, pluginShiftAmount)?.index ?: -1
+}
+
+private fun nextPlugin(mods: Map<Mod, List<File>>, modIndexToShift: Int, pluginShiftAmount: Int): Mod? {
     val sortedMods = mods.keys.toList().sortedBy { it.loadOrder }
     val i = sortedMods.firstOrNull { it.index == modIndexToShift }?.let { sortedMods.indexOf(it) } ?: -1
-    val mod = sortedMods.getOrNull(i + pluginShiftAmount)
-    return mod?.index ?: -1
+    return sortedMods.getOrNull(i + pluginShiftAmount)
 }
 
 private fun display(mods: Map<Mod, List<File>>) {
+    val modFiles = mods.flatMap { (mod, files) -> files.map { mod to it } }
+    val espWidth = modFiles.maxOf { it.second.name.length } + 5
+
     clearConsole()
     val columns = listOf(
         Column("Id", 7),
         Column("Load", 7, true),
         Column("Index", 7, true),
-        Column("Esp", 30),
+        Column("Esp", espWidth),
         Column("Mod", 22),
     )
-    val data = mods.flatMap { (mod, files) -> files.map { mod to it } }.map { (mod, file) ->
+    val data = modFiles.map { (mod, file) ->
         with(mod) {
             val idClean = id?.toString() ?: "?"
             mapOf(
