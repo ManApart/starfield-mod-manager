@@ -4,6 +4,7 @@ import java.io.File
 fun doCommand(args: List<String>, execute: List<Mod>.() -> Unit) {
     when {
         args.isEmpty() -> toolData.mods.execute()
+        args.first() == "all" -> toolData.mods.execute()
         args.first() == "empty" -> executeFiltered(execute) { !File(it.filePath).exists() }
         args.first() == "staged" -> executeFiltered(execute) { File(it.filePath).exists() }
         args.first() == "enabled" -> executeFiltered(execute) { it.enabled }

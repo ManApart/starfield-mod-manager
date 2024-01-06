@@ -14,6 +14,9 @@ fun deployDryRun(files: Map<String, File>) {
             println("\tNot used: ${others.joinToString { "(${it.loadOrder}) " + it.idName() }}")
         }
     }
+    println()
+    toolData.mods.filter { it.enabled }.validate()
+    println()
     deployPluginsDryRun(files)
     println(cyan("Deploy dryrun complete"))
 }
@@ -21,7 +24,7 @@ fun deployDryRun(files: Map<String, File>) {
 fun showOverrides() {
     val overrideList = getAnnotatedModFiles().values.filter { it.size > 1 }.groupBy { it.first() }
     if (overrideList.isEmpty()){
-        println("There are no mod conflicts")
+        println(cyan("There are no mod conflicts"))
     }
     overrideList.forEach { overrideMap ->
         val winner = overrideMap.key
@@ -36,7 +39,7 @@ fun showOverrides() {
 fun showOverrides(matchingMod: Mod) {
     val overrideList = getAnnotatedModFiles().values.filter { it.size > 1 }.groupBy { it.first() }
     if (overrideList.isEmpty()){
-        println("There are no mod conflicts")
+        println(cyan("There are no mod conflicts"))
     }
     overrideList.filter { it.key == matchingMod || it.value.flatten().contains(matchingMod) }.forEach { overrideMap ->
         val winner = overrideMap.key

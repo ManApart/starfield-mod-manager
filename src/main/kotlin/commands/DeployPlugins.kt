@@ -1,5 +1,6 @@
 package commands
 
+import cyan
 import toolConfig
 import yellow
 import java.io.File
@@ -15,7 +16,7 @@ fun deployPlugins(files: Map<String, File>) {
 }
 
 fun deployPluginsDryRun(files: Map<String, File>) {
-    println("Plugins.txt would look like:")
+    println(cyan("Plugins.txt would look like:"))
     println(createPluginsContent(files))
 }
 

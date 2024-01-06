@@ -13,27 +13,33 @@ val validateDescription = """
 """.trimIndent()
 
 val validateUsage = """
-    validate
+    validate - defaults to validating enabled
+    validate all
     validate <index>
     validate 1 2 4
     validate 1-3
     validate staged
-    validate enabled
     validate disabled
 """.trimIndent()
 
 fun validateMods(args: List<String>) {
-   doCommand(args, List<Mod>::validate)
+    if (args.isEmpty()) {
+        toolData.mods.filter { it.enabled }.validate()
+    } else {
+        doCommand(args, List<Mod>::validate)
+    }
 }
 
-private fun List<Mod>.validate() {
+fun List<Mod>.validate() {
     val errorMap = mutableMapOf<Int, Pair<Mod, MutableList<String>>>()
+    val modsWithFiles = associateWith { it.getModFiles() }
 
     addDupeIds(errorMap)
     addDupeFilenames(errorMap)
     detectStagingIssues(errorMap)
     detectDupePlugins()
     detectIncorrectCasing(errorMap)
+    modsWithFiles.detectTopLevelFiles(errorMap)
 
     printErrors(errorMap.filter { it.value.first in this }.toMap())
     println(cyan("Validated $size mods"))
@@ -126,6 +132,19 @@ private fun List<Mod>.detectIncorrectCasing(
                 errorMap[mod.index]?.second?.add("\t${it}")
             }
         }
+    }
+}
+
+private fun Map<Mod, List<File>>.detectTopLevelFiles(
+    errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
+) {
+    val excludeList = listOf("sfse_loader.exe")
+    filter { (_, files) ->
+        files.none { excludeList.contains(it.name) } &&
+                files.any { !it.path.contains("Data/") }
+    }.forEach { (mod, _) ->
+        errorMap.putIfAbsent(mod.index, mod to mutableListOf())
+        errorMap[mod.index]?.second?.add("Has files outside the Data folder")
     }
 }
 
