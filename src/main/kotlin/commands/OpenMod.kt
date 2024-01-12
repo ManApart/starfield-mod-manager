@@ -21,7 +21,8 @@ fun local(args: List<String>) = openMod(false, args)
 fun openGamePath(args: List<String>) = open(toolConfig.gamePath!!, "game path")
 fun openAppDataPath(args: List<String>) = open(toolConfig.appDataPath!!, "appdata path")
 fun openIniPath(args: List<String>) = open(toolConfig.iniPath!!, "ini path")
-fun openJarPath(args: List<String>) = open(".", "ini path")
+fun openPluginsTxt(args: List<String>) = open(toolConfig.appDataPath!! +"/Plugins.txt", "plugins file")
+fun openJarPath(args: List<String>) = open(".", "jar path")
 
 private fun openMod(web: Boolean = true, args: List<String>) {
     val mods = args.getIndicesOrRange(toolData.mods.size).mapNotNull { toolData.mods.getOrNull(it) }
@@ -50,6 +51,6 @@ private fun open(path: String, name: String) {
     try {
         Desktop.getDesktop().open(File(path))
     } catch (e: Exception) {
-        println("Unable to open $name on disk")
+        println("Unable to open $name on disk ($path)")
     }
 }
