@@ -13,6 +13,7 @@ val configDescription = """
     appdata-path should be the path to the folder under your appdata that will contain Plugins.txt. Needed for updating mod load order
     ini-path should be the path to the folder under your documents that contains StarfieldCustom.ini. It's optionally used to deploy to your my docs folder instead of the game path
     verbose gives additional output (for debugging) if set to true
+    autodeploy automatically runs deploy when enabling or disabling mods. Defaults to true
     use-my-docs optionally allows deploying mod files under Data to my documents instead of the game folder. (Defaults to false) 
     categories is used to download category names from nexus
     If your paths have spaces, make sure to quote them
@@ -23,6 +24,7 @@ val configUsage = """
     config ini-path <path-to-folder> 
     config api-key <key-from-nexus>
     config verbose <true/false>
+    config autodeploy <true/false>
     config use-my-docs <true/false> 
     config categories
 """.trimIndent()
@@ -72,6 +74,13 @@ fun config(args: List<String>) {
             val verbose = args.getOrNull(1) == "true"
             toolConfig.verbose = verbose
             println("Updated verbose to ${toolConfig.verbose}")
+            save()
+        }
+
+        args.first() == "autodeploy" -> {
+            val autoDeploy = args.getOrNull(1) == "true"
+            toolConfig.autoDeploy = autoDeploy
+            println("Updated autodeploy to ${toolConfig.autoDeploy}")
             save()
         }
 
