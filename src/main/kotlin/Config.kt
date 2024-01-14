@@ -11,6 +11,7 @@ data class Config(
     var verbose: Boolean = false,
     var autoDeploy: Boolean = true,
     var categories: Map<Int, String> = mapOf(),
+    var openInTerminalCommand: String? = null
 ) {
     fun usedGamePath(modGamePath: String) = if (useMyDocs && modGamePath.startsWith("Data", true)) iniPath else gamePath
 }

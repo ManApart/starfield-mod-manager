@@ -12,6 +12,7 @@ val configDescription = """
     game-path should be the path to the folder under steam containing the starfield Data folder and exe
     appdata-path should be the path to the folder under your appdata that will contain Plugins.txt. Needed for updating mod load order
     ini-path should be the path to the folder under your documents that contains StarfieldCustom.ini. It's optionally used to deploy to your my docs folder instead of the game path
+    open-in-terminal-command is optional and only needed if you don't use `gnome-terminal`. This value will be used as the command when opening folders in the terminal. Will be run in the relevant folder, but if you need to specify the directory in the command, you can use `{pwd}` and it will be replaced by the relevant path.
     verbose gives additional output (for debugging) if set to true
     autodeploy automatically runs deploy when enabling or disabling mods. Defaults to true
     use-my-docs optionally allows deploying mod files under Data to my documents instead of the game folder. (Defaults to false) 
@@ -23,6 +24,7 @@ val configUsage = """
     config appdata-path <path-to-folder>
     config ini-path <path-to-folder> 
     config api-key <key-from-nexus>
+    config open-in-terminal-command <path-to-folder> 
     config verbose <true/false>
     config autodeploy <true/false>
     config use-my-docs <true/false> 
@@ -51,6 +53,12 @@ fun config(args: List<String>) {
         args.size == 2 && args.first() == "ini-path" -> {
             toolConfig.iniPath = args.last()
             println("Updated ini path to ${toolConfig.iniPath}")
+            save()
+        }
+
+        args.size == 2 && args.first() == "open-in-terminal-command" -> {
+            toolConfig.openInTerminalCommand = args.last()
+            println("Updated terminal command to ${toolConfig.openInTerminalCommand}")
             save()
         }
 

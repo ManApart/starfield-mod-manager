@@ -1,6 +1,7 @@
 package commands
 
 import Mod
+import runCommand
 import toolConfig
 import toolData
 import java.awt.Desktop
@@ -11,25 +12,27 @@ import java.net.URI
 val openDescription = """
     Open various folders and filepaths
     You can open a mod locally or on the nexus, or open the various config paths
+    If you pass 'cli' it will open in terminal instead of local folder
 """.trimIndent()
 
 
 fun open(args: List<String>) = openMod(true, args)
-
 fun local(args: List<String>) = openMod(false, args)
+fun cli(args: List<String>) = openMod(false, args.toMutableList().also { it.add("cli") })
 
-fun openGamePath(args: List<String>) = open(toolConfig.gamePath!!, "game path")
-fun openAppDataPath(args: List<String>) = open(toolConfig.appDataPath!!, "appdata path")
-fun openIniPath(args: List<String>) = open(toolConfig.iniPath!!, "ini path")
-fun openPluginsTxt(args: List<String>) = open(toolConfig.appDataPath!! +"/Plugins.txt", "plugins file")
-fun openJarPath(args: List<String>) = open(".", "jar path")
+fun openGamePath(args: List<String>) = open(toolConfig.gamePath!!, "game path", args.contains("cli"))
+fun openAppDataPath(args: List<String>) = open(toolConfig.appDataPath!!, "appdata path", args.contains("cli"))
+fun openIniPath(args: List<String>) = open(toolConfig.iniPath!!, "ini path", args.contains("cli"))
+fun openPluginsTxt(args: List<String>) = open(toolConfig.appDataPath!! +"/Plugins.txt", "plugins file", args.contains("cli"))
+fun openJarPath(args: List<String>) = open(".", "jar path", args.contains("cli"))
 
 private fun openMod(web: Boolean = true, args: List<String>) {
-    val mods = args.getIndicesOrRange(toolData.mods.size).mapNotNull { toolData.mods.getOrNull(it) }
+    val cli = args.contains("cli")
+    val mods = args.filter { it != "cli" }.getIndicesOrRange(toolData.mods.size).mapNotNull { toolData.mods.getOrNull(it) }
     when {
         mods.isEmpty() -> println(openDescription)
         web -> mods.forEach { openInWeb(it) }
-        else -> mods.forEach { openLocal(it) }
+        else -> mods.forEach { openLocal(it, cli) }
     }
 }
 
@@ -45,11 +48,16 @@ fun openInWeb(mod: Mod) {
     }
 }
 
-fun openLocal(mod: Mod) = open(mod.filePath, mod.name)
+fun openLocal(mod: Mod, cli: Boolean) = open(mod.filePath, mod.name, cli)
 
-private fun open(path: String, name: String) {
+private fun open(path: String, name: String, cli: Boolean) {
     try {
-        Desktop.getDesktop().open(File(path))
+        if (cli){
+            val command = toolConfig.openInTerminalCommand?.replace("{pwd}", path) ?: "gnome-terminal"
+            File(path).runCommand(command)
+        } else {
+            Desktop.getDesktop().open(File(path))
+        }
     } catch (e: Exception) {
         println("Unable to open $name on disk ($path)")
     }
