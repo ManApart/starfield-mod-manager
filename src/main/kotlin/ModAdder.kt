@@ -163,9 +163,9 @@ fun addModFile(mod: Mod, sourceFile: File, modName: String) {
     val stageExists = stageFile.exists()
     if (stageMod(sourceFile, stageFile, modName)) {
         if (stageExists) {
-            println("Updated ${mod.name}")
+            println("Updated (${mod.index}) ${mod.name}")
         } else {
-            println("Added ${mod.name}")
+            println("Added (${mod.index}) ${mod.name}")
         }
     } else {
         println(red("Failed to add mod ${mod.name}"))
