@@ -1,6 +1,7 @@
 package commands
 
 import Column
+import Mod
 import Profile
 import Table
 import confirmation
@@ -11,6 +12,7 @@ val profileDescription = """
     Allows you to create new profiles, and then view, save, or load them by index.
     Profiles are like local mod collections and save all of the enabled / disabled mods.
     This should let you quickly bulk enable / disable mods for different scenarios.
+    Compare profile allows you to see what the difference is between your currently enabled mods and the profile's mods
 """.trimIndent()
 
 val profileUsage = """
@@ -19,6 +21,7 @@ val profileUsage = """
     profile save <index>
     profile view <index>
     profile load <index>
+    profile compare <index>
 """.trimIndent()
 
 fun profile(args: List<String> = listOf()) {
@@ -28,6 +31,7 @@ fun profile(args: List<String> = listOf()) {
         subCommand == null || subCommand == "list" -> viewProfiles()
         subCommand == "view" && index != null -> viewProfile(index)
         subCommand == "load" && index != null -> loadProfile(index)
+        subCommand == "compare" && index != null -> compareProfile(index)
         subCommand == "save" && index != null -> saveProfile(index)
         subCommand == "save" && args.size > 1 -> saveProfile(args.drop(1).joinToString(" "))
         else -> println(profileDescription)
@@ -71,6 +75,24 @@ private fun loadProfile(i: Int) {
     }
     save()
     println("Loaded ${profile.name}")
+}
+private fun compareProfile(i: Int) {
+    val profile = toolData.profileByIndex(i)
+    if (profile == null) {
+        println("Could not find profile for $i")
+        return
+    }
+    val (enabled, disabled) = toolData.mods.partition { it.enabled }
+    val added = disabled.filter { mod ->
+        profile.ids.contains(mod.id) || profile.filePaths.contains(mod.filePath)
+    }
+    val removed = enabled.filter { mod ->
+        !profile.ids.contains(mod.id) && !profile.filePaths.contains(mod.filePath)
+    }
+    println("${profile.name} adds mods:")
+    println("\t"+added.joinToString("\n\t") { it.description() })
+    println("${profile.name} removes mods:")
+    println("\t"+removed.joinToString("\n\t") { it.description() })
 }
 
 private fun saveProfile(i: Int) {

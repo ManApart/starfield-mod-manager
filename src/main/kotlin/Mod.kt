@@ -37,6 +37,14 @@ data class Mod(
         return if (id == null) name else "$id $name"
     }
 
+    fun idOrName(): String {
+        return id?.toString() ?: name
+    }
+
+    fun description(): String {
+        return "$index (${id ?: "?"}) $name"
+    }
+
     fun category(): String? {
         return categoryId?.let { toolConfig.categories[it] }
     }
