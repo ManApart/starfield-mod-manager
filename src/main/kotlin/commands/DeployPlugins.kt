@@ -30,6 +30,7 @@ private fun createPluginsContent(files: Map<String, File>): String {
 
     return """
         |# This file is used by Starfield to keep track of your downloaded content.
+        |# Please do not modify this file.
         $pluginLines
     """.trimMargin()
 }
