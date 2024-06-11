@@ -18,6 +18,7 @@ val configDescription = """
     use-my-docs optionally allows deploying mod files under Data to my documents instead of the game folder. (Defaults to false) 
     categories is used to download category names from nexus
     If your paths have spaces, make sure to quote them
+    version gives the commit that the app was built from
 """.trimIndent()
 val configUsage = """
     config game-path <path-to-folder>
@@ -29,6 +30,7 @@ val configUsage = """
     config autodeploy <true/false>
     config use-my-docs <true/false> 
     config categories
+    config version
 """.trimIndent()
 
 fun config(args: List<String>) {
@@ -98,6 +100,7 @@ fun config(args: List<String>) {
             println("Updated use-my-docs to ${toolConfig.useMyDocs}")
             save()
         }
+        args.first() == "version" -> viewAppVersion()
 
         else -> println("Unknown args: ${args.joinToString(" ")}")
     }

@@ -1,3 +1,5 @@
+import java.io.ByteArrayOutputStream
+
 plugins {
     kotlin("jvm") version "2.0.0"
     kotlin("plugin.serialization") version "2.0.0"
@@ -6,20 +8,20 @@ plugins {
 
 group = "rak.manapart"
 version = ""
-private val ktor_version = "2.2.4"
+private val ktorVersion = "2.3.11"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
-    implementation("io.ktor:ktor-serialization:$ktor_version")
-    implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    implementation("io.ktor:ktor-client-core:$ktor_version")
-    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+    implementation("io.ktor:ktor-serialization:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("org.slf4j:slf4j-nop:2.0.9")
 
     testImplementation(kotlin("test"))
@@ -37,7 +39,17 @@ application {
     mainClass.set("MainKt")
 }
 
+fun writeCommit(){
+    val byteOut = ByteArrayOutputStream()
+    project.exec {
+        commandLine = "git rev-parse HEAD".split(" ")
+        standardOutput = byteOut
+    }
+    File("./src/main/resources/commit.txt").writeText(String(byteOut.toByteArray()))
+}
+
 tasks.withType<Jar> {
+    writeCommit()
     manifest {
         attributes["Main-Class"] = "MainKt"
     }

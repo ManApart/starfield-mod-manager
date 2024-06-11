@@ -3,6 +3,8 @@ package commands
 import Mod
 import save
 import toolData
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 val versionDescription = """
     View the current and latest version of a mod
@@ -17,7 +19,11 @@ val versionUsage = """
 
 fun version(args: List<String>) {
     when {
-        args.isEmpty() -> toolData.mods.viewVersion()
+        args.isEmpty() -> {
+            viewAppVersion()
+            toolData.mods.viewVersion()
+        }
+
         args.size == 3 && args[1] == "set" -> setVersion(args[0].toInt(), args.drop(2).joinToString(" "))
         else -> {
             args.getIndicesOrRange(toolData.mods.size)
@@ -29,9 +35,7 @@ fun version(args: List<String>) {
 
 private fun List<Mod>.viewVersion() = forEach { it.viewVersion() }
 
-private fun Mod.viewVersion() {
-    println("$index $version -> $latestVersion $name")
-}
+private fun Mod.viewVersion() = println("$index $version -> $latestVersion $name")
 
 private fun setVersion(i: Int, version: String) {
     toolData.byIndex(i)?.let { mod ->
@@ -40,3 +44,10 @@ private fun setVersion(i: Int, version: String) {
         mod.viewVersion()
     }
 }
+
+fun viewAppVersion() {
+    val version = ClassLoader.getSystemClassLoader().getResourceAsStream("commit.txt")
+        .let { BufferedReader(InputStreamReader(it!!)).lines().toList().joinToString("\n") }
+    println("Running Commit: $version")
+}
+
