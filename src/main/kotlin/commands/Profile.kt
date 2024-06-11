@@ -76,6 +76,7 @@ private fun loadProfile(i: Int) {
     save()
     println("Loaded ${profile.name}")
 }
+
 private fun compareProfile(i: Int) {
     val profile = toolData.profileByIndex(i)
     if (profile == null) {
@@ -90,9 +91,9 @@ private fun compareProfile(i: Int) {
         !profile.ids.contains(mod.id) && !profile.filePaths.contains(mod.filePath)
     }
     println("${profile.name} adds mods:")
-    println("\t"+added.joinToString("\n\t") { it.description() })
+    println("\t" + added.joinToString("\n\t") { it.description() })
     println("${profile.name} removes mods:")
-    println("\t"+removed.joinToString("\n\t") { it.description() })
+    println("\t" + removed.joinToString("\n\t") { it.description() })
 }
 
 private fun saveProfile(i: Int) {
@@ -124,10 +125,15 @@ private fun saveProfile(name: String) {
 }
 
 private fun printDiff(profile: Profile, newIds: List<Int>, newPaths: List<String>) {
-    val added = (newIds.filter { !profile.ids.contains(it) }
-        .map { it.toString() } + newPaths.filter { !profile.filePaths.contains(it) }).joinToString()
-    val removed = (profile.ids.filter { !newIds.contains(it) }
-        .map { it.toString() } + profile.filePaths.filter { !newPaths.contains(it) }).joinToString()
+
+    val added = (
+            newIds.filter { !profile.ids.contains(it) }.mapNotNull { toolData.byId(it)?.description() } +
+                    newPaths.filter { !profile.filePaths.contains(it) }.map { toolData.byFilePath(it)?.description() ?: it }
+            ).joinToString()
+    val removed = (
+            profile.ids.filter { !newIds.contains(it) }.mapNotNull { toolData.byId(it)?.description() } +
+                    profile.filePaths.filter { !newPaths.contains(it) }.map { toolData.byFilePath(it)?.description() ?: it }
+            ).joinToString()
     if (added.isNotBlank()) println("Added: $added")
     if (removed.isNotBlank()) println("Removed: $removed")
 }
