@@ -1,6 +1,5 @@
 package commands
 
-import addCreation
 import addModByFile
 import addModById
 import addModByNexusProtocol
@@ -14,6 +13,7 @@ val addModDescription = """
    Example nexus mod manager url: nxm://starfield/mods/4183/files/12955?key=abc&expires=1697023374&user_id=111
    Example mod url: https://www.nexusmods.com/starfield/mods/4183?tab=files
    Example adding a creation: add SFBGS003
+   See also creation
 """.trimIndent()
 
 val addModUsage = """

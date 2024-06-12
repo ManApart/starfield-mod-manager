@@ -1,7 +1,6 @@
 import kotlinx.coroutines.runBlocking
 import nexus.*
 import java.io.File
-import java.nio.file.Files
 import kotlin.math.max
 
 fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
@@ -169,36 +168,5 @@ fun addModFile(mod: Mod, sourceFile: File, modName: String) {
         }
     } else {
         println(red("Failed to add mod ${mod.name}"))
-    }
-}
-
-fun addCreation(creationId: String, nameOverride: String?) {
-    val files = File(toolConfig.gamePath!! + "/Data").listFiles()!!.filter { it.path.lowercase().contains(creationId.lowercase()) }
-    if (files.isEmpty()) {
-        println(red("No files found for $creationId"))
-    }
-    val name = nameOverride ?: creationId
-
-    val existing = toolData.byName(name, true)
-    val mod = if (existing != null) existing else {
-        val loadOrder = toolData.nextLoadOrder()
-        val stagePath = modFolder.path + "/" + name.replace(" ", "-")
-        Mod(name, stagePath, loadOrder + 1).also {
-            it.index = toolData.mods.size
-            it.tags.add("Creation")
-            toolData.mods.add(it)
-            save()
-        }
-    }
-
-    val dest = File(mod.filePath + "/Data").also { it.mkdirs() }
-    files.forEach { file ->
-        Files.move(file.toPath(), File(dest.path + "/" + file.name).toPath())
-    }
-
-    if (existing != null) {
-        println("Updated (${mod.index}) ${mod.name}")
-    } else {
-        println("Added (${mod.index}) ${mod.name}")
     }
 }
