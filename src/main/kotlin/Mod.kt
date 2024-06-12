@@ -16,6 +16,7 @@ data class Mod(
     var enabled: Boolean = false,
     var categoryId: Int? = null,
     var endorsed: Boolean? = null,
+    val tags: MutableList<String> = mutableListOf(),
 ) {
     @Transient
     var show: Boolean = true
