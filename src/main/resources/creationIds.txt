@@ -1,0 +1,3 @@
+sfbgs023=Starborn Gravis Suit
+sfbgs021=Observatory
+sfbgs00a_a=Blackout Drumbeat Skin
