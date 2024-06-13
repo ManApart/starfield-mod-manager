@@ -1,13 +1,17 @@
 package commands
 
 import Mod
+import confirmation
 import modFolder
 import red
 import save
 import toolConfig
 import toolData
+import yellow
 import java.io.File
+import java.nio.file.CopyOption
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 val creationDescription = """
    Tools for managing creations just like other mods
@@ -34,21 +38,27 @@ fun creation(args: List<String>) {
     }
 }
 
-private fun listCreations(){
-    File(toolConfig.gamePath!! + "/Data").listFiles()!!
+private fun listCreations() = getUnmanagedCreations().sorted()
+    .joinToString(", ").let { println(it) }
+
+private fun addAllCreations() {
+    val creations = getUnmanagedCreations()
+    println(yellow("Add unmanaged creations? ") +creations.joinToString(", ") + " (y/n)")
+    confirmation = { c ->
+        if (c.firstOrNull() == "y") {
+            creations.forEach { addCreation(it) }
+        }
+    }
+}
+
+private fun getUnmanagedCreations(): Set<String> {
+    return File(toolConfig.gamePath!! + "/Data").listFiles()!!
         .asSequence()
         .filter { it.name.lowercase().startsWith("sfbgs") }
-        .map { it.nameWithoutExtension.split(" ")[0] }
-        .toSet().sorted().joinToString(", ")
-        .let { println(it) }
-
+        .map { it.nameWithoutExtension.split(" ")[0] }.toSet()
 }
 
-private fun addAllCreations(){
-
-}
-
-fun addCreation(creationId: String, nameOverride: String?) {
+fun addCreation(creationId: String, nameOverride: String? = null) {
     val files = File(toolConfig.gamePath!! + "/Data").listFiles()!!.filter { it.path.lowercase().contains(creationId.lowercase()) }
     if (files.isEmpty()) {
         println(red("No files found for $creationId"))
@@ -69,7 +79,7 @@ fun addCreation(creationId: String, nameOverride: String?) {
 
     val dest = File(mod.filePath + "/Data").also { it.mkdirs() }
     files.forEach { file ->
-        Files.move(file.toPath(), File(dest.path + "/" + file.name).toPath())
+        Files.move(file.toPath(), File(dest.path + "/" + file.name).toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 
     if (existing != null) {
