@@ -35,6 +35,12 @@ fun creation(args: List<String>) {
 }
 
 private fun listCreations(){
+    File(toolConfig.gamePath!! + "/Data").listFiles()!!
+        .asSequence()
+        .filter { it.name.lowercase().startsWith("sfbgs") }
+        .map { it.nameWithoutExtension.split(" ")[0] }
+        .toSet().sorted().joinToString(", ")
+        .let { println(it) }
 
 }
 
