@@ -25,6 +25,10 @@ fun openAppDataPath(args: List<String>) = open(toolConfig.appDataPath!!, "appdat
 fun openIniPath(args: List<String>) = open(toolConfig.iniPath!!, "ini path", args.contains("cli"))
 fun openPluginsTxt(args: List<String>) = open(toolConfig.appDataPath!! +"/Plugins.txt", "plugins file", args.contains("cli"))
 fun openJarPath(args: List<String>) = open(".", "jar path", args.contains("cli"))
+fun openManual(args: List<String>) = openInWeb("https://manapart.github.io/starfield-mod-manager-site/manual.html")
+fun openSite(args: List<String>) = openInWeb("https://manapart.github.io/starfield-mod-manager-site/index.html")
+fun openSource(args: List<String>) = openInWeb("https://github.com/ManApart/starfield-mod-manager")
+fun openNexus(args: List<String>) = openInWeb("https://www.nexusmods.com/starfield/mods/6576")
 
 private fun openMod(web: Boolean = true, args: List<String>) {
     val cli = args.contains("cli")
@@ -40,12 +44,16 @@ fun openInWeb(mod: Mod) {
     if (mod.id == null) {
         println("Can't open ${mod.name} because it doesn't have an id.")
     } else {
-        try {
-            Desktop.getDesktop().browse(URI(mod.url()))
-        } catch (e: Exception) {
-            println("Unable to open ${mod.name} in web")
-        }
+        openInWeb(mod.url(), mod.name)
     }
+}
+
+fun openInWeb(url: String, urlName: String = url) {
+        try {
+            Desktop.getDesktop().browse(URI(url))
+        } catch (e: Exception) {
+            println("Unable to open $urlName in web")
+        }
 }
 
 fun openLocal(mod: Mod, cli: Boolean) = open(mod.filePath, mod.name, cli)
