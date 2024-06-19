@@ -13,6 +13,7 @@ data class Data(
     val profiles: MutableList<Profile> = mutableListOf(),
 ) {
     fun byId(id: Int) = mods.firstOrNull { it.id == id }
+    fun byCreationId(id: String) = mods.firstOrNull { it.creationId == id }
     fun byIndex(i: Int) = mods.getOrNull(i).also { if (it == null) println("No Mod found for $i") }
     fun byName(name: String, silent: Boolean = false) = mods.firstOrNull { it.name == name }.also { if (it == null && !silent) println("No Mod found for $name") }
     fun byFilePath(path: String) = mods.firstOrNull { it.filePath == path }.also { if (it == null) println("No Mod found for $path") }

@@ -31,7 +31,8 @@ fun addMod(args: List<String>) {
         firstArg.startsWith("nxm") -> addModByNexusProtocol(firstArg)
         firstArg.toIntOrNull() != null -> addModByIds(args.mapNotNull { it.toIntOrNull() })
         firstArg.startsWith("http") -> addModByUrls(args)
-        firstArg.lowercase().startsWith("sfbgs") -> addCreation(firstArg, args.getOrNull(1))
+        firstArg.lowercase().startsWith("sfbgs") -> addCreation(firstArg)
+        firstArg.lowercase().startsWith("TM_") -> addCreation(firstArg)
         listOf("/", "./").any { firstArg.startsWith(it) } -> addModByFile(args[0], args.getOrNull(1))
 
         else -> println("Unknown args: ${args.joinToString(" ")}")

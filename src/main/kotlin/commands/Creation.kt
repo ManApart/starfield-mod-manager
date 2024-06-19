@@ -1,40 +1,47 @@
 package commands
 
+import Column
 import Mod
+import Table
 import confirmation
+import jsonMapper
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import modFolder
 import red
 import save
 import toolConfig
 import toolData
 import yellow
-import java.io.BufferedReader
 import java.io.File
-import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+data class Creation(
+    @JsonNames("AchievementSafe") val achievementSafe: Boolean,
+    @JsonNames("Files") val files: List<String>,
+    @JsonNames("Title") val title: String,
+    @JsonNames("Version") val version: String,
+) {
+    var creationId: String? = null
+    val modFileId = files.firstOrNull { it.contains("esm") }?.replace(".esm", "")
+}
+
 val creationDescription = """
    Tools for managing creations just like other mods
-   creation ls - lists unmanaged creations by examining your game data folder
-   creation add - adds a single creation by its id (like SFBGS021). Also see add mod
-   creation add all - Attempts to add _all_ unmanaged creations found in the data folder
+   creation ls - lists unmanaged creations by examining your game content catalog
+   creation add - adds a single creation by its mod file id (like SFBGS021) or content id (like TM_31ccf130-4852-417b-842a-9d82672028e4). Also see add mod
+   creation add all - Attempts to add _all_ unmanaged creations found in the content catalog
 """.trimIndent()
 
 val creationUsage = """
    creation ls
-   creation add <id> *<name>
+   creation add <id>
    creation add all
 """.trimIndent()
-
-val idMap by lazy {
-    ClassLoader.getSystemClassLoader().getResourceAsStream("creationIds.txt")
-        .let { BufferedReader(InputStreamReader(it!!)).lines().toList() }
-        .associate { line ->
-            val (key, value) = line.split("=")
-            key.lowercase() to value.lowercase().replace(" ", "-")
-        }
-}
 
 fun creation(args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
@@ -42,17 +49,32 @@ fun creation(args: List<String>) {
         args.isEmpty() -> println(creationDescription)
         listOf("ls", "list").contains(firstArg) -> listCreations()
         args.getOrNull(1) == "all" && firstArg == "add" -> addAllCreations()
-        firstArg == "add" -> addCreation(args.getOrNull(1)!!, args.getOrNull(2))
+        firstArg == "add" -> addCreation(args.getOrNull(1)!!)
 
         else -> println("Unknown args: ${args.joinToString(" ")}")
     }
 }
 
-private fun listCreations() = println(getUnmanagedCreations().sorted().creationFriendlyNames())
+private fun listCreations() {
+    val columns = listOf(
+        Column("Creation Id", 42),
+        Column("Mod File Id", 15),
+        Column("Title", 22),
+    )
+    val data = parseCatalog().values.map { creation ->
+        mapOf(
+            "Creation Id" to (creation.creationId ?: ""),
+            "Mod File Id" to (creation.modFileId ?: ""),
+            "Title" to creation.title,
+        )
+    }
+
+    Table(columns, data).print()
+}
 
 private fun addAllCreations() {
-    val creations = getUnmanagedCreations()
-    println(yellow("Add unmanaged creations? ") + creations.toList().creationFriendlyNames() + " (y/n)")
+    val creations = parseCatalog().values.filter { it.creationId == null || toolData.byCreationId(it.creationId!!) != null }
+    println(yellow("Add unmanaged creations? ") + creations.joinToString(", ") { it.title } + " (y/n)")
     confirmation = { c ->
         if (c.firstOrNull() == "y") {
             creations.forEach { addCreation(it) }
@@ -60,30 +82,25 @@ private fun addAllCreations() {
     }
 }
 
-private fun List<String>.creationFriendlyNames(): String {
-    return joinToString(", ") { it + (idMap[it.lowercase()]?.let { name -> " ($name)" } ?: "") }
+fun addCreation(creationId: String) {
+    val creations = parseCatalog()
+    val creation: Creation? = creations[creationId] ?: creations.values.firstOrNull { it.modFileId?.lowercase() == creationId.lowercase() }
+    creation?.let { addCreation(it) }
 }
 
-private fun getUnmanagedCreations(): Set<String> {
-    return File(toolConfig.gamePath!! + "/Data").listFiles()!!
-        .asSequence()
-        .filter { it.name.lowercase().startsWith("sfbgs") }
-        .map { it.nameWithoutExtension.split(" ")[0] }.toSet()
-}
-
-fun addCreation(creationId: String, nameOverride: String? = null) {
-    val files = File(toolConfig.gamePath!! + "/Data").listFiles()!!.filter { it.path.lowercase().contains(creationId.lowercase()) }
+fun addCreation(creation: Creation) {
+    val files = creation.files.map { File(toolConfig.gamePath!! + "/Data/$it") }
     if (files.isEmpty()) {
-        println(red("No files found for $creationId"))
+        println(red("No files found for ${creation.title}"))
     }
-    val name = nameOverride ?: idMap[creationId] ?: creationId
 
-    val existing = toolData.byName(name, true)
+    val existing = toolData.byName(creation.title, true)
     val mod = if (existing != null) existing else {
         val loadOrder = toolData.nextLoadOrder()
-        val stagePath = modFolder.path + "/" + name.replace(" ", "-")
-        Mod(name, stagePath, loadOrder + 1).also {
+        val stagePath = modFolder.path + "/" + creation.title.replace(" ", "-")
+        Mod(creation.title, stagePath, loadOrder + 1).also {
             it.index = toolData.mods.size
+            it.creationId = creation.creationId
             it.tags.add("Creation")
             toolData.mods.add(it)
             save()
@@ -100,4 +117,10 @@ fun addCreation(creationId: String, nameOverride: String? = null) {
     } else {
         println("Added (${mod.index}) ${mod.name}")
     }
+}
+
+private fun parseCatalog(): Map<String, Creation> {
+    val rawLines = File(toolConfig.appDataPath + "/ContentCatalog.txt").readLines()
+    val parsable = "{" + rawLines.drop(6).joinToString("\n")
+    return jsonMapper.decodeFromString<Map<String, Creation>>(parsable).also { it.entries.forEach { (id, creation) -> creation.creationId = id } }
 }
