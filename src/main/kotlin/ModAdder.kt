@@ -1,4 +1,3 @@
-import commands.refreshPlugins
 import kotlinx.coroutines.runBlocking
 import nexus.*
 import java.io.File

@@ -22,6 +22,7 @@ val espDescription = """
 val espUsage = """
     esp ls
     esp refresh
+    esp refresh 1
     esp 1 first
     esp 1 last
     esp 1 sooner 5
@@ -34,18 +35,28 @@ fun esp(args: List<String>) {
         ?: when {
             args.size == 1 && args.last() == "ls" -> {
                 val mods = getModsWithPlugins()
-                if (mods.isEmpty()){
+                if (mods.isEmpty()) {
                     println("Found no plugins. Consider running esp refresh")
                 } else {
-                display(getModsWithPlugins())
+                    display(getModsWithPlugins())
                 }
                 return
             }
-            args.size == 1 && args.last() == "refresh" -> {
-                refreshPlugins()
-                println("Refreshed Plugins")
+
+            args.first() == "refresh" -> {
+                val i = args.last().toIntOrNull()
+                if (i != null) {
+                    toolData.byIndex(i)?.let {
+                        it.refreshPlugins()
+                        println("Refreshed Plugins for mod ${it.description()}")
+                    }
+                } else {
+                    refreshPlugins()
+                    println("Refreshed Plugins")
+                }
                 return
             }
+
             else -> {
                 println(orderDescription)
                 return
@@ -79,10 +90,6 @@ fun esp(args: List<String>) {
 
 private fun refreshPlugins() {
     toolData.mods.forEach { it.refreshPlugins() }
-}
-
-fun Mod.refreshPlugins() {
-    plugins = getModFiles().filter { it.extension.lowercase() in espTypes }.map { it.name }
 }
 
 private fun getModsWithPlugins(): Map<Mod, List<String>> {

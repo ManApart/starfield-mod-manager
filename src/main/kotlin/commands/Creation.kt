@@ -101,7 +101,7 @@ fun addCreation(creation: Creation) {
         Mod(creation.title, stagePath, loadOrder + 1).also {
             it.index = toolData.mods.size
             it.creationId = creation.creationId
-            it.tags.add("Creation")
+            it.add(Tag.CREATION)
             it.refreshPlugins()
             toolData.mods.add(it)
             save()

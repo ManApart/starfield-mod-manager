@@ -83,7 +83,7 @@ fun addExternal(esp: String, name: String? = null) {
     val stagePath = modFolder.path + "/" + usedName.replace(" ", "-")
     val mod = Mod(usedName, stagePath, loadOrder + 1).also {
         it.index = toolData.mods.size
-        it.tags.add("External")
+        it.add(Tag.EXTERNAL)
         it.plugins = listOf(cleanKey)
         toolData.mods.add(it)
         save()

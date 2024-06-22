@@ -1,3 +1,5 @@
+import commands.Tag
+import commands.espTypes
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.io.File
@@ -22,6 +24,7 @@ data class Mod(
 ) {
     @Transient
     var show: Boolean = true
+
     @Transient
     var index: Int = 0
 
@@ -50,6 +53,16 @@ data class Mod(
 
     fun category(): String? {
         return categoryId?.let { toolConfig.categories[it] }
+    }
+
+    fun add(tag: Tag) = tags.add(tag.tag)
+    fun hasTag(tag: Tag) = hasTag(tag.tag)
+    fun hasTag(tag: String) = tags.contains(tag)
+
+    fun refreshPlugins() {
+        if (!hasTag(Tag.EXTERNAL)) {
+            plugins = getModFiles().filter { it.extension.lowercase() in espTypes }.map { it.name }
+        }
     }
 }
 
