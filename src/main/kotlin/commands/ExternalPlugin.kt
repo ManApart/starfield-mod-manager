@@ -12,7 +12,7 @@ import yellow
 import java.io.File
 import java.nio.file.Files
 
-private val ignoredExternalPlugins = listOf("Starfield", "OldMars", "Constellation", "BlueprintShips-Starfield")
+private val ignoredExternalPlugins = listOf("Starfield", "OldMars", "Constellation", "BlueprintShips-Starfield", "SFBGS003", "SFBGS006", "SFBGS007", "SFBGS008")
 
 val externalModDescription = """
 Tools for managing external plugins

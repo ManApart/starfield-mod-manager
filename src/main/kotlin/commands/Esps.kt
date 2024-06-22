@@ -43,7 +43,7 @@ fun esp(args: List<String>) {
                 return
             }
 
-            args.first() == "refresh" -> {
+            args.firstOrNull() == "refresh" -> {
                 val i = args.last().toIntOrNull()
                 if (i != null) {
                     toolData.byIndex(i)?.let {
