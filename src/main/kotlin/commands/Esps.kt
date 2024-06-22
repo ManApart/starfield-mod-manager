@@ -7,6 +7,8 @@ import clearConsole
 import toolData
 import java.io.File
 
+val espTypes = listOf("esp", "esm", "esl")
+
 val espDescription = """
     Plugins with a higher load order are loaded later, and override plugins loaded earlier. Given plugin A has an order 5 and plugin B has an order of 1, then A will load AFTER B, and A's records will be used instead of B's in any conflicts. 
     In these examples the first number is the mod index and the second is the sort order you want
@@ -80,7 +82,6 @@ private fun refreshPlugins() {
 }
 
 fun Mod.refreshPlugins() {
-    val espTypes = listOf("esp", "esm", "esl")
     plugins = getModFiles().filter { it.extension.lowercase() in espTypes }.map { it.name }
 }
 

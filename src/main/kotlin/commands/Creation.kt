@@ -61,7 +61,7 @@ private fun listCreations() {
         Column("Mod File Id", 15),
         Column("Title", 22),
     )
-    val data = parseCatalog().values.map { creation ->
+    val data = parseCreationCatalog().values.map { creation ->
         mapOf(
             "Creation Id" to (creation.creationId ?: ""),
             "Mod File Id" to (creation.modFileId ?: ""),
@@ -73,7 +73,7 @@ private fun listCreations() {
 }
 
 private fun addAllCreations() {
-    val creations = parseCatalog().values.filter { it.creationId == null || toolData.byCreationId(it.creationId!!) != null }
+    val creations = parseCreationCatalog().values.filter { it.creationId == null || toolData.byCreationId(it.creationId!!) != null }
     println(yellow("Add unmanaged creations? ") + creations.joinToString(", ") { it.title } + " (y/n)")
     confirmation = { c ->
         if (c.firstOrNull() == "y") {
@@ -83,7 +83,7 @@ private fun addAllCreations() {
 }
 
 fun addCreation(creationId: String) {
-    val creations = parseCatalog()
+    val creations = parseCreationCatalog()
     val creation: Creation? = creations[creationId] ?: creations.values.firstOrNull { it.modFileId?.lowercase() == creationId.lowercase() }
     creation?.let { addCreation(it) }
 }
@@ -102,6 +102,7 @@ fun addCreation(creation: Creation) {
             it.index = toolData.mods.size
             it.creationId = creation.creationId
             it.tags.add("Creation")
+            it.refreshPlugins()
             toolData.mods.add(it)
             save()
         }
@@ -119,8 +120,12 @@ fun addCreation(creation: Creation) {
     }
 }
 
-private fun parseCatalog(): Map<String, Creation> {
+fun parseCreationCatalog(): Map<String, Creation> {
     val rawLines = File(toolConfig.appDataPath + "/ContentCatalog.txt").readLines()
     val parsable = "{" + rawLines.drop(6).joinToString("\n")
     return jsonMapper.decodeFromString<Map<String, Creation>>(parsable).also { it.entries.forEach { (id, creation) -> creation.creationId = id } }
+}
+
+fun parseCreationPlugins(): List<String> {
+    return parseCreationCatalog().values.flatMap { creation -> creation.files.filter { file -> espTypes.any { file.endsWith(it) } } }
 }

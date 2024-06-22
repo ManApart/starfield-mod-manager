@@ -26,14 +26,16 @@ val addModUsage = """
 
 fun addMod(args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
+    val firstLower = firstArg.lowercase()
     when {
         args.isEmpty() -> println(addModDescription)
         firstArg.startsWith("nxm") -> addModByNexusProtocol(firstArg)
         firstArg.toIntOrNull() != null -> addModByIds(args.mapNotNull { it.toIntOrNull() })
         firstArg.startsWith("http") -> addModByUrls(args)
-        firstArg.lowercase().startsWith("sfbgs") -> addCreation(firstArg)
-        firstArg.lowercase().startsWith("TM_") -> addCreation(firstArg)
         listOf("/", "./").any { firstArg.startsWith(it) } -> addModByFile(args[0], args.getOrNull(1))
+        firstLower.startsWith("TM_") -> addCreation(firstArg)
+        firstLower.startsWith("sfbgs") && parseCreationPlugins().map { it.lowercase() }.any { it.contains(firstLower) } -> addCreation(firstArg)
+        firstLower.startsWith("sfbgs") -> addExternal(firstArg)
 
         else -> println("Unknown args: ${args.joinToString(" ")}")
     }

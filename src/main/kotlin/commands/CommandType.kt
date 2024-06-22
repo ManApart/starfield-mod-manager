@@ -13,6 +13,7 @@ enum class CommandType(
     ADD("Add a new mod", Category.ADD, addModDescription, addModUsage, ::addMod),
     CONFIG("Edit Configuration", Category.CONFIG, configDescription, configUsage, ::config),
     CREATION("Manage Creation", Category.ADD, creationDescription, creationUsage, ::creation, "creations"),
+    EXTERNAL("Manage External Plugins", Category.ADD, externalModDescription, externalModUsage, ::externalMod),
     ENABLE("Enable Mod", Category.DEPLOY, enableDescription, enableUsage, ::enable),
     DISABLE("Disable Mod", Category.DEPLOY, enableDescription, disableUsage, ::disable),
     ENDORSE("Endorse Mod", Category.EDIT, endorseDescription, endorseUsage, ::endorse),
