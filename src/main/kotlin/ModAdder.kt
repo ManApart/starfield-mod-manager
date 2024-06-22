@@ -1,3 +1,4 @@
+import commands.refreshPlugins
 import kotlinx.coroutines.runBlocking
 import nexus.*
 import java.io.File
@@ -161,6 +162,7 @@ fun addModFile(mod: Mod, sourceFile: File, modName: String) {
     val stageFile = File(mod.filePath)
     val stageExists = stageFile.exists()
     if (stageMod(sourceFile, stageFile, modName)) {
+        mod.refreshPlugins()
         if (stageExists) {
             println("Updated (${mod.index}) ${mod.name}")
         } else {

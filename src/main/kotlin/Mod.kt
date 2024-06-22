@@ -8,6 +8,7 @@ data class Mod(
     var filePath: String,
     var loadOrder: Int,
     var id: Int? = null,
+    var plugins: List<String> = emptyList(),
     var creationId: String? = null,
     var downloadPath: String? = null,
     var fileId: Int? = null,
