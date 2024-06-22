@@ -12,6 +12,7 @@ import yellow
 import java.io.File
 import java.nio.file.Files
 
+private val ignoredExternalPlugins = listOf("Starfield", "OldMars", "Constellation", "BlueprintShips-Starfield")
 
 val externalModDescription = """
 Tools for managing external plugins
@@ -97,6 +98,7 @@ private fun getExternalMods(): Map<String, Mod?> {
         .filter {
             it.extension in espTypes
                     && !Files.isSymbolicLink(it.toPath())
+                    && !ignoredExternalPlugins.contains(it.nameWithoutExtension)
                     && !creations.contains(it.name)
         }
         .associate { it.name to modFromEsp(it.name) }
