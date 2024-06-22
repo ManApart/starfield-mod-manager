@@ -65,7 +65,7 @@ suspend fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
 suspend fun updateModInfo(id: Int) {
     val modInfo = getModDetails(toolConfig.apiKey!!, id)
     if (modInfo == null) {
-        println(red("Unable to get mod info for $id"))
+        println(red("Unable to get mod info for ${toolData.byId(id)?.description() ?: id}"))
         return
     }
     val modFileId = getModFiles(toolConfig.apiKey!!, id)?.getPrimaryFile()

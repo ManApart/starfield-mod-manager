@@ -49,7 +49,7 @@ suspend fun getModDetails(apiKey: String, id: Int): ModInfo? {
             commonHeaders(apiKey)
         }.body()
     } catch (e: Exception) {
-        println(e.message ?: "")
+        verbose(e.message ?: "")
         verbose(e.stackTraceToString())
         null
     }
