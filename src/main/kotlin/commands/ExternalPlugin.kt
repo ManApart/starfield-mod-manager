@@ -45,6 +45,7 @@ private fun listExternal() {
     val columns = listOf(
         Column("Esp", 42),
         Column("Index", 15),
+        Column("Managed", 15),
         Column("Name", 22),
     )
     val data = getExternalMods().map { (esp, mod) ->
@@ -52,6 +53,7 @@ private fun listExternal() {
             "Esp" to esp,
             "Index" to (mod?.index ?: ""),
             "Name" to (mod?.name ?: ""),
+            "Managed" to (mod != null),
         )
     }
 
