@@ -1,16 +1,12 @@
 package commands
 
-import Column
 import Mod
-import Table
 import confirmation
-import modFolder
+import cyan
+import red
 import save
-import toolConfig
 import toolData
 import yellow
-import java.io.File
-import java.nio.file.Files
 
 enum class Tag(val tag: String) {
     CREATION("Creation"),
@@ -26,36 +22,51 @@ external add all - Attempts to add _all_ unmanaged plugins found in the data fol
 """.trimIndent()
 
 val tagUsage = """
-   external ls
-   external add <id>
-   external add all
+   tag 1 add essential
+   tag 1 rm essential
+   tag 1 rm 0
 """.trimIndent()
 
 fun tag(args: List<String>) {
-    val firstArg = args.firstOrNull() ?: ""
-//    when {
-//        args.isEmpty() -> println(creationDescription)
-//        listOf("ls", "list").contains(firstArg) -> listExternal()
-//        args.getOrNull(1) == "all" && firstArg == "add" -> addAllExternal()
-//        firstArg == "add" -> addExternal(args.getOrNull(1)!!, args.getOrNull(2))
-//
-//        else -> println("Unknown args: ${args.joinToString(" ")}")
-//    }
+    val i = args.firstOrNull()?.toIntOrNull()
+    val mod = i?.let { toolData.byIndex(it) }
+    val command = args.getOrNull(1)?.replace("rm", "remove")
+    val tagArg = args.getOrNull(2)
+    when {
+        args.isEmpty() -> println(tagDescription)
+        mod == null -> println("Must provide the index of a valid mod to update")
+        command == "add" -> addTag(mod, tagArg)
+        command == "remove" && tagArg?.toIntOrNull() != null -> removeTag(mod, tagArg.toInt())
+        command == "remove" && tagArg != null -> removeTag(mod, tagArg)
+
+        else -> println("Unknown args: ${args.joinToString(" ")}")
+    }
 }
 
-private fun listExternal() {
-//    val columns = listOf(
-//        Column("Esp", 42),
-//        Column("Index", 15),
-//        Column("Name", 22),
-//    )
-//    val data = getExternalMods().map { (esp, mod) ->
-//        mapOf(
-//            "Esp" to esp,
-//            "Index" to (mod?.index ?: ""),
-//            "Name" to (mod?.name ?: ""),
-//        )
-//    }
-//
-//    Table(columns, data).print()
+private fun addTag(mod: Mod, tag: String?) {
+    if (tag == null) {
+        println("No tag value found to add")
+        return
+    }
+    mod.tags.add(tag)
+    save()
 }
+
+private fun removeTag(mod: Mod, tagId: Int) = removeTag(mod, mod.tags.elementAt(tagId))
+
+private fun removeTag(mod: Mod, tag: String) {
+    if(!mod.tags.contains(tag)){
+        println(red("Tag ") + cyan("'$tag'") +red(" doesn't exist in ") + cyan("'${mod.tags.joinToString(", ")}'") + ". (Command is case sensitive.)")
+        return
+    }
+    println(yellow("Remove tag $tag? ") + " (y/n)")
+    confirmation = { c ->
+        if (c.firstOrNull() == "y") {
+            mod.tags.remove(tag)
+            save()
+        }
+    }
+}
+
+
+

@@ -30,7 +30,7 @@ val externalModUsage = """
 fun externalMod(args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     when {
-        args.isEmpty() -> println(creationDescription)
+        args.isEmpty() -> println(externalModDescription)
         listOf("ls", "list").contains(firstArg) -> listExternal()
         args.getOrNull(1) == "all" && firstArg == "add" -> addAllExternal()
         firstArg == "add" -> addExternal(args.getOrNull(1)!!, args.getOrNull(2))
@@ -77,7 +77,7 @@ fun addExternal(esp: String, name: String? = null) {
         println("Mod already managed as ${mods[esp]?.description()}")
         return
     }
-    val usedName = name ?: esp
+    val usedName = (name ?: esp).lowercase()
 
     val loadOrder = toolData.nextLoadOrder()
     val stagePath = modFolder.path + "/" + usedName.replace(" ", "-")

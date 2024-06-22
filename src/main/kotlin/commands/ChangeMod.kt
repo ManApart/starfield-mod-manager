@@ -5,7 +5,7 @@ import save
 import toolData
 import java.io.File
 
-val changeHelp = """
+val changeDescription = """
     Change various parts of a mod.
     Use id to set its nexus id
     Use file to delete a mods stage folder and restage it from zip
@@ -14,7 +14,7 @@ val renameHelp = """
     Use name to rename a mod without changing its file paths
 """.trimIndent()
 
-val changeDescription = """
+val changeUsage = """
     mod <index> id <new id>
     mod <index> file <file-path> 
     mod <index> name <new name>
@@ -27,11 +27,11 @@ fun moveMod(args: List<String>){
 fun changeMod(args: List<String>) {
     val i = args.firstOrNull()?.toIntOrNull()
     when {
-        args.isEmpty() -> println(changeHelp)
+        args.isEmpty() -> println(changeDescription)
         args.size == 3 && args[1] == "id" -> updateId(i!!, args.last().toInt())
         args.size == 3 && args[1] == "file" -> updateFile(i!!, args.last())
         args.size == 3 && args[1] == "name" -> updateName(i!!, args.last())
-        else -> println(changeHelp)
+        else -> println(changeDescription)
     }
 }
 

@@ -55,7 +55,8 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
         Column("Status", 10),
         Column("Category", 20),
         Column("Index", 7, true),
-        Column("Name", 22),
+        Column("Name", 60),
+        Column("Tags", 30),
     )
     val data = mods.map { (mod, displayed) ->
         with(mod) {
@@ -82,6 +83,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
                 "Version" to versionClean,
                 "Category" to category,
                 "Name" to name,
+                "Tags" to tags.joinToString(", "),
             )
         } to displayed
     }.filter { it.second }.map { it.first }

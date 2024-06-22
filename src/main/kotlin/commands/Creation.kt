@@ -94,11 +94,11 @@ fun addCreation(creation: Creation) {
         println(red("No files found for ${creation.title}"))
     }
 
-    val existing = toolData.byName(creation.title, true)
+    val existing = toolData.byName(creation.title.lowercase(), true)
     val mod = if (existing != null) existing else {
         val loadOrder = toolData.nextLoadOrder()
         val stagePath = modFolder.path + "/" + creation.title.replace(" ", "-")
-        Mod(creation.title, stagePath, loadOrder + 1).also {
+        Mod(creation.title.lowercase(), stagePath, loadOrder + 1).also {
             it.index = toolData.mods.size
             it.creationId = creation.creationId
             it.add(Tag.CREATION)
