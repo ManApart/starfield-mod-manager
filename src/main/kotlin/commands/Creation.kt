@@ -91,12 +91,14 @@ private fun listCreations() {
     val columns = listOf(
         Column("Creation Id", 42),
         Column("Mod File Id", 15),
+        Column("Managed", 15),
         Column("Title", 22),
     )
     val data = parseCreationCatalog().values.map { creation ->
         mapOf(
             "Creation Id" to (creation.creationId ?: ""),
             "Mod File Id" to (creation.modFileId ?: ""),
+            "Managed" to (creation.creationId?.let { toolData.byCreationId(it) } != null),
             "Title" to creation.title,
         )
     }
@@ -105,9 +107,14 @@ private fun listCreations() {
 }
 
 private fun addAllCreations(force: Boolean = false) {
-    val creations = parseCreationCatalog().values.filter { it.creationId == null || toolData.byCreationId(it.creationId!!) != null }
-    confirm(force, yellow("Add unmanaged creations? ") + creations.joinToString(", ") { it.title }) {
-        creations.forEach { addCreation(it) }
+    val creations = parseCreationCatalog().values.filter { it.creationId == null || toolData.byCreationId(it.creationId!!) == null }
+    if (creations.isEmpty()) {
+        println("No creations found")
+    } else {
+        confirm(force, yellow("Add unmanaged creations? ") + creations.joinToString(", ") { it.title }) {
+            creations.forEach { addCreation(it) }
+            println("Added Creations")
+        }
     }
 }
 
@@ -151,25 +158,37 @@ fun addCreation(creation: Creation) {
 
 private fun rmAllCreations(force: Boolean = false) {
     val creations = toolData.mods.filter { it.creationId != null }
-    confirm(force, yellow("Remove Creations? ") + creations.joinToString(", ") { it.name }) {
+    confirm(force, yellow("Remove All Creations? ") + creations.joinToString(", ") { it.name }) {
         creations.forEach { rmCreation(it, true) }
     }
 }
 
-private fun rmCreation(creation: Mod, force: Boolean = false) {
-    confirm(force, yellow("Remove Creations? ")) {
-        creation.getModFiles().forEach { file ->
-
-        }
+private fun rmCreation(mod: Mod, force: Boolean = false) {
+    confirm(force, yellow("Remove Creation ${mod.description()} ")) {
+        val modRoot = File(mod.filePath).absolutePath + "/"
+        mod.getModFiles()
+            .forEach { file ->
+                val linkFile = file.absolutePath.replace(modRoot, "")
+                deleteLink(linkFile, mapOf())
+                val destFile = File(file.absolutePath.replace(modRoot, toolConfig.gamePath!! +"/"))
+                if (!destFile.exists()) {
+                    Files.move(file.toPath(), destFile.toPath())
+                }
+            }
+        delete(mod)
     }
 }
 
 private fun refreshAllCreations() {
-    rmAllCreations(true)
-    addAllCreations(true)
+    confirm(false, "Refresh All Creations?") {
+        rmAllCreations(true)
+        addAllCreations(true)
+    }
 }
 
-private fun refreshCreation(creation: Mod) {
-    rmCreation(creation)
-    creation.creationId?.let { addCreation(it) }
+private fun refreshCreation(mod: Mod) {
+    confirm(false, yellow("Refresh Creation ${mod.description()} ")) {
+        rmCreation(mod)
+        mod.creationId?.let { addCreation(it) }
+    }
 }

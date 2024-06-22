@@ -1,5 +1,6 @@
 package commands
 
+import Mod
 import cyan
 import toolConfig
 import toolData
@@ -48,13 +49,15 @@ private fun getDisabledModPaths(): List<String> {
 
 private fun getAllModFiles(): Map<String, File> {
     val mappings = mutableMapOf<String, File>()
-    toolData.mods.filter { it.enabled }.sortedBy { it.loadOrder }.forEach { mod ->
-        val modRoot = File(mod.filePath).absolutePath + "/"
-        mod.getModFiles().forEach { file ->
-            mappings[file.absolutePath.replace(modRoot, "")] = file
-        }
-    }
+    toolData.mods.filter { it.enabled }.sortedBy { it.loadOrder }.forEach { mappings.addModFiles(it) }
     return mappings
+}
+
+private fun MutableMap<String, File>.addModFiles(mod: Mod) {
+    val modRoot = File(mod.filePath).absolutePath + "/"
+    mod.getModFiles().forEach { file ->
+        this[file.absolutePath.replace(modRoot, "")] = file
+    }
 }
 
 fun makeLink(gamePath: String, modFile: File) {
@@ -95,4 +98,3 @@ fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
         }
     }
 }
-

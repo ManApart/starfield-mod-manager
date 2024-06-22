@@ -34,11 +34,12 @@ private fun removeMod(index: Int) {
 }
 
 fun delete(mod: Mod) {
+    val desc = mod.name
     val existing = File(mod.filePath)
     if (existing.exists()) existing.deleteRecursively()
     toolData.mods.remove(mod)
     toolData.mods.filter { it.loadOrder > mod.loadOrder }.map { it.loadOrder -= 1 }
     toolData.mods.filter { it.index > mod.index }.map { it.index -= 1 }
     save()
-    println(red("Mod deleted"))
+    println(red("Mod '$desc' deleted"))
 }
