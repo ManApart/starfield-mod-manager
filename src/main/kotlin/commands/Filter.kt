@@ -10,7 +10,7 @@ val filterUsage = """
     filter <search text>
     filter tag
     filter tag <tag>
-    filter 123 
+    filter 123
     filter enabled
     filter disabled
     filter staged
