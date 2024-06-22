@@ -7,11 +7,14 @@ import java.io.File
 val searchDescription = """
     Search for mods and list them once
     To apply a filter to future lists, see filter
-    Search the given text (name or category), by ids, by mods missing ids, and by status  
+    Search the given text (name or category), by ids, by mods missing ids, and by status
+    Searching a string will search tags as well. To search ONLY tags, use search tag <tagName>
 """.trimIndent()
 
 val searchModsUsage = """
     search <search text> 
+    search <tag> 
+    search tag <tag> 
     search <mod id>
     search enabled
     search disabled
@@ -49,16 +52,17 @@ fun searchMods(persist: Boolean, args: List<String> = listOf()) {
         else -> null
     }
     val unendorsed = args.contains("unendorsed")
+    val tagSearch = args.getOrNull(0) == "tag"
     val missing = when {
         args.contains("missing") -> true
         else -> null
     }
     val id = args.firstOrNull { it.toIntOrNull() != null }
-    val flagList = listOf("enabled", "disabled", "staged", "unstaged", "endorsed", "abstained", "unendorsed")
+    val flagList = listOf("enabled", "disabled", "staged", "unstaged", "endorsed", "abstained", "unendorsed", "tag")
     val search = args.filter { !flagList.contains(it) && it.toIntOrNull() == null }.joinToString(" ").lowercase()
 
     val mods = toolData.mods.map { mod ->
-        val displayed = mod.isDisplayed(enabled, staged, missing, id, endorsed, unendorsed, search)
+        val displayed = mod.isDisplayed(enabled, staged, missing, id, endorsed, unendorsed, tagSearch, search)
         if (persist) mod.show = displayed
         mod to displayed
     }
@@ -72,13 +76,16 @@ private fun Mod.isDisplayed(
     id: String?,
     endorsed: Boolean?,
     unendorsed: Boolean,
+    tagSearch: Boolean,
     search: String
 ): Boolean {
     return (enabled != null && enabled == this.enabled) ||
             (staged != null && staged == File(filePath).exists()) ||
             (missing != null && missing == (this.id == null)) ||
-            (search.isNotBlank() && name.contains(search)) ||
-            (search.isNotBlank() && category()?.lowercase()?.contains(search) ?: false) ||
+            (tagSearch && search.isNotBlank() && tags.any { tag -> tag.lowercase().contains(search) }) ||
+            (!tagSearch && search.isNotBlank() && name.contains(search)) ||
+            (!tagSearch && search.isNotBlank() && tags.any { tag -> tag.lowercase().contains(search) }) ||
+            (!tagSearch && search.isNotBlank() && category()?.lowercase()?.contains(search) ?: false) ||
             (id != null && this.id?.toString()?.contains(id) ?: false) ||
             (endorsed != null && endorsed == this.endorsed) || (unendorsed && this.endorsed == null)
 }

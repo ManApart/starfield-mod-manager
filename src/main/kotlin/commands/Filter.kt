@@ -7,7 +7,9 @@ val filterDescription = """
 """.trimIndent()
 
 val filterUsage = """
-    filter <search text> - 
+    filter <search text>
+    filter tag
+    filter tag <tag>
     filter 123 
     filter enabled
     filter disabled
