@@ -1,6 +1,6 @@
 package commands
 
-import confirmation
+import confirm
 import cyan
 import getFiles
 import getFolders
@@ -28,11 +28,8 @@ fun purge(args: List<String>) {
     val dryRun = args.lastOrNull() == "dryrun"
 
     if (!dryRun) {
-        println(yellow("Are you sure you want to purge?") + " (y/n)")
-        confirmation = { c ->
-            if (c.firstOrNull() == "y") {
-                purgeFiles(false)
-            }
+        confirm(false, yellow("Are you sure you want to purge?")) {
+            purgeFiles(false)
         }
     } else {
         purgeFiles(true)

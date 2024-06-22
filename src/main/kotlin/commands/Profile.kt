@@ -1,10 +1,9 @@
 package commands
 
 import Column
-import Mod
 import Profile
 import Table
-import confirmation
+import confirm
 import save
 import toolData
 
@@ -102,13 +101,11 @@ private fun saveProfile(i: Int) {
         val newIds = enabledIds()
         val newPaths = enabledPaths()
         printDiff(profile, newIds, newPaths)
-        confirmation = { args ->
-            if (args.firstOrNull() == "y") {
-                profile.ids = newIds
-                profile.filePaths = newPaths
-                save()
-                println("Saved ${profile.name}")
-            }
+        confirm {
+            profile.ids = newIds
+            profile.filePaths = newPaths
+            save()
+            println("Saved ${profile.name}")
         }
     }
 }
@@ -125,7 +122,6 @@ private fun saveProfile(name: String) {
 }
 
 private fun printDiff(profile: Profile, newIds: List<Int>, newPaths: List<String>) {
-
     val added = (
             newIds.filter { !profile.ids.contains(it) }.mapNotNull { toolData.byId(it)?.description() } +
                     newPaths.filter { !profile.filePaths.contains(it) }.map { toolData.byFilePath(it)?.description() ?: it }

@@ -1,7 +1,7 @@
 package commands
 
 import Mod
-import confirmation
+import confirm
 import cyan
 import red
 import save
@@ -55,18 +55,12 @@ private fun addTag(mod: Mod, tag: String?) {
 private fun removeTag(mod: Mod, tagId: Int) = removeTag(mod, mod.tags.elementAt(tagId))
 
 private fun removeTag(mod: Mod, tag: String) {
-    if(!mod.tags.contains(tag)){
-        println(red("Tag ") + cyan("'$tag'") +red(" doesn't exist in ") + cyan("'${mod.tags.joinToString(", ")}'") + ". (Command is case sensitive.)")
+    if (!mod.tags.contains(tag)) {
+        println(red("Tag ") + cyan("'$tag'") + red(" doesn't exist in ") + cyan("'${mod.tags.joinToString(", ")}'") + ". (Command is case sensitive.)")
         return
     }
-    println(yellow("Remove tag $tag? ") + " (y/n)")
-    confirmation = { c ->
-        if (c.firstOrNull() == "y") {
-            mod.tags.remove(tag)
-            save()
-        }
+    confirm(false, yellow("Remove tag $tag? ")) {
+        mod.tags.remove(tag)
+        save()
     }
 }
-
-
-

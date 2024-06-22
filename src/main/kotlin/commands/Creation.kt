@@ -3,7 +3,7 @@ package commands
 import Column
 import Mod
 import Table
-import confirmation
+import confirm
 import jsonMapper
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -35,24 +35,56 @@ val creationDescription = """
    creation ls - lists unmanaged creations by examining your game content catalog
    creation add - adds a single creation by its mod file id (like SFBGS021) or content id (like TM_31ccf130-4852-417b-842a-9d82672028e4). Also see add mod
    creation add all - Attempts to add _all_ unmanaged creations found in the content catalog
+   creation rm - unmanage this creation, dumping the files back into the data directory (deletes the "mod" but unmanages the files)
+   creation refresh - copy any creation related files from the data directory, overriding existing mod files. Used to update a creation if there are new files
 """.trimIndent()
 
 val creationUsage = """
    creation ls
    creation add <id>
    creation add all
+   creation rm <index>
+   creation rm all
+   creation refresh <index>
+   creation refresh all
+   
 """.trimIndent()
 
 fun creation(args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
+    val i = args.getOrNull(1)?.toIntOrNull()
+    val mod = i?.let { toolData.byIndex(it) }
     when {
         args.isEmpty() -> println(creationDescription)
         listOf("ls", "list").contains(firstArg) -> listCreations()
         args.getOrNull(1) == "all" && firstArg == "add" -> addAllCreations()
-        firstArg == "add" -> addCreation(args.getOrNull(1)!!)
+        args.getOrNull(1) == "all" && firstArg == "rm" -> rmAllCreations()
+        args.getOrNull(1) == "all" && firstArg == "refresh" -> refreshAllCreations()
+        firstArg == "add" -> addCreation(args[1])
+        firstArg == "rm" -> when {
+            mod == null -> println("Unable to find a valid mod at index $i")
+            !mod.hasTag(Tag.CREATION) -> println("${mod.description()} is not a creation.")
+            else -> rmCreation(mod)
+        }
+
+        firstArg == "refresh" -> when {
+            mod == null -> println("Unable to find a valid mod at index $i")
+            !mod.hasTag(Tag.CREATION) -> println("${mod.description()} is not a creation.")
+            else -> refreshCreation(mod)
+        }
 
         else -> println("Unknown args: ${args.joinToString(" ")}")
     }
+}
+
+fun parseCreationCatalog(): Map<String, Creation> {
+    val rawLines = File(toolConfig.appDataPath + "/ContentCatalog.txt").readLines()
+    val parsable = "{" + rawLines.drop(6).joinToString("\n")
+    return jsonMapper.decodeFromString<Map<String, Creation>>(parsable).also { it.entries.forEach { (id, creation) -> creation.creationId = id } }
+}
+
+fun parseCreationPlugins(): List<String> {
+    return parseCreationCatalog().values.flatMap { creation -> creation.files.filter { file -> espTypes.any { file.endsWith(it) } } }
 }
 
 private fun listCreations() {
@@ -72,13 +104,10 @@ private fun listCreations() {
     Table(columns, data).print()
 }
 
-private fun addAllCreations() {
+private fun addAllCreations(force: Boolean = false) {
     val creations = parseCreationCatalog().values.filter { it.creationId == null || toolData.byCreationId(it.creationId!!) != null }
-    println(yellow("Add unmanaged creations? ") + creations.joinToString(", ") { it.title } + " (y/n)")
-    confirmation = { c ->
-        if (c.firstOrNull() == "y") {
-            creations.forEach { addCreation(it) }
-        }
+    confirm(force, yellow("Add unmanaged creations? ") + creations.joinToString(", ") { it.title }) {
+        creations.forEach { addCreation(it) }
     }
 }
 
@@ -120,12 +149,27 @@ fun addCreation(creation: Creation) {
     }
 }
 
-fun parseCreationCatalog(): Map<String, Creation> {
-    val rawLines = File(toolConfig.appDataPath + "/ContentCatalog.txt").readLines()
-    val parsable = "{" + rawLines.drop(6).joinToString("\n")
-    return jsonMapper.decodeFromString<Map<String, Creation>>(parsable).also { it.entries.forEach { (id, creation) -> creation.creationId = id } }
+private fun rmAllCreations(force: Boolean = false) {
+    val creations = toolData.mods.filter { it.creationId != null }
+    confirm(force, yellow("Remove Creations? ") + creations.joinToString(", ") { it.name }) {
+        creations.forEach { rmCreation(it, true) }
+    }
 }
 
-fun parseCreationPlugins(): List<String> {
-    return parseCreationCatalog().values.flatMap { creation -> creation.files.filter { file -> espTypes.any { file.endsWith(it) } } }
+private fun rmCreation(creation: Mod, force: Boolean = false) {
+    confirm(force, yellow("Remove Creations? ")) {
+        creation.getModFiles().forEach { file ->
+
+        }
+    }
+}
+
+private fun refreshAllCreations() {
+    rmAllCreations(true)
+    addAllCreations(true)
+}
+
+private fun refreshCreation(creation: Mod) {
+    rmCreation(creation)
+    creation.creationId?.let { addCreation(it) }
 }

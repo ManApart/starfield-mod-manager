@@ -7,7 +7,7 @@ lateinit var toolConfig: Config
 lateinit var modFolder: File
 val HOME = System.getProperty("user.home")!!
 val CONFIG_PATH = configPath()
-var confirmation: ((List<String>) -> Unit)? = null
+private var confirmation: ((List<String>) -> Unit)? = null
 var testingMode = false
 
 val jsonMapper = kotlinx.serialization.json.Json {
@@ -60,4 +60,17 @@ fun save() {
 
 fun verbose(message: String) {
     if (toolConfig.verbose) println(message)
+}
+
+fun confirm(skip: Boolean = false, warnMessage: String? = null, block: () -> Unit) {
+    if (skip) block() else {
+        warnMessage?.let { println("$it (y/n)") }
+        confirmation = { c ->
+            if (c.firstOrNull() == "y" || c.firstOrNull() == "yes") {
+                block()
+            } else if (c.size != 1 || c.first() !in listOf("no", "n")) {
+                println("Unable to understand response. Bailing out")
+            }
+        }
+    }
 }

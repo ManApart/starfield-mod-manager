@@ -1,7 +1,7 @@
 package commands
 
 import Mod
-import confirmation
+import confirm
 import red
 import save
 import toolData
@@ -27,13 +27,8 @@ fun remove(args: List<String>) {
 
 private fun removeMod(index: Int) {
     toolData.byIndex(index)?.let { mod ->
-        println(yellow("Remove ${mod.name}?") + " (y/n)")
-        confirmation = { args ->
-            if (args.size != 1 || args.first() !in listOf("y", "n")) {
-                println("Unable to understand response. Bailing out")
-            } else if (args.first() == "y") {
-                delete(mod)
-            }
+        confirm(false, yellow("Remove ${mod.name}?")) {
+            delete(mod)
         }
     }
 }

@@ -3,7 +3,7 @@ package commands
 import Column
 import Mod
 import Table
-import confirmation
+import confirm
 import modFolder
 import save
 import toolConfig
@@ -18,6 +18,7 @@ Tools for managing external plugins
 external ls - lists unmanaged plugins by examining your game data folder
 external add - adds a single plugin by its id (like SFBGS003). Also see add mod
 external add all - Attempts to add _all_ unmanaged plugins found in the data folder
+To remove an external plugin, just use the normal remove commands. The empty mod folder will be deleted but since there are no mod files there won't be other changes
 
 """.trimIndent()
 
@@ -58,11 +59,8 @@ private fun listExternal() {
 
 private fun addAllExternal() {
     val mods = getExternalMods().filter { it.value == null }.keys
-    println(yellow("Add unmanaged creations? ") + mods.joinToString(", ") + " (y/n)")
-    confirmation = { c ->
-        if (c.firstOrNull() == "y") {
+    confirm(false,yellow("Add unmanaged creations? ") + mods.joinToString(", ")){
             mods.forEach { addExternal(it.split(".")[0]) }
-        }
     }
 }
 
