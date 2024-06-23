@@ -45,5 +45,3 @@ data class Data(
 
     fun profileByIndex(i: Int) = profiles.getOrNull(i).also { if (it == null) println("No Profile found for $i") }
 }
-
-

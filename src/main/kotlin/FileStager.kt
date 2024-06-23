@@ -140,5 +140,6 @@ private fun case(folder: File) {
         Files.move(folder.toPath(), Path(newPath), StandardCopyOption.REPLACE_EXISTING)
         File(newPath)
     } else folder
+    if (!next.canExecute()) next.setExecutable(true, false)
     next.listFiles()?.filter { it.isDirectory }?.forEach { case(it) }
 }

@@ -4,6 +4,12 @@ import java.io.File
 import kotlin.math.max
 
 fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
+    val existing = toolData.byId(id)
+    if (existing != null){
+        println("Mod already exists. Refreshing...")
+        refreshMod(existing, forceRedownload)
+        return
+    }
     val mod = runBlocking { fetchModInfo(id, fileId) } ?: return
     val downloaded = downloadMod(mod, forceRedownload)
     if (downloaded == null) {
@@ -55,7 +61,7 @@ suspend fun fetchModInfo(id: Int, fileId: Int? = null): Mod? {
     }
 
     val modName = modInfo.name.lowercase()
-    val cleanName = modName.replace(" ", "-")
+    val cleanName = modName.cleanModName()
     val filePath = modFolder.path + "/" + cleanName
     toolData.createOrUpdate(modInfo.mod_id, modName, filePath)
     toolData.update(modInfo, true, modFileId)
@@ -110,7 +116,7 @@ fun addModByNexusProtocol(url: String) {
         return
     }
     val modName = modInfo.name.lowercase()
-    val cleanName = modName.replace(" ", "-")
+    val cleanName = modName.cleanModName()
     val filePath = modFolder.path + "/" + cleanName
     toolData.createOrUpdate(modInfo.mod_id, modName, filePath)
     toolData.update(modInfo, true, request.fileId)
@@ -171,3 +177,5 @@ fun addModFile(mod: Mod, sourceFile: File, modName: String) {
         println(red("Failed to add mod ${mod.name}"))
     }
 }
+
+private fun String.cleanModName() = replace(" ", "-").replace("[^A-Za-z0-9\\-]".toRegex(), "")
