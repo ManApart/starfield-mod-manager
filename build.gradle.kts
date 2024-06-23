@@ -45,7 +45,7 @@ fun writeCommit(){
         commandLine = "git rev-parse HEAD".split(" ")
         standardOutput = byteOut
     }
-    File("./src/main/resources/commit.txt").writeText(String(byteOut.toByteArray()))
+    File("./src/main/resources/commit.txt").also { it.parentFile.mkdirs() }.writeText(String(byteOut.toByteArray()))
 }
 
 tasks.withType<Jar> {
