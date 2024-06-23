@@ -3,6 +3,7 @@ package commands
 import Column
 import Mod
 import Table
+import cleanModName
 import confirm
 import jsonMapper
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -133,7 +134,7 @@ fun addCreation(creation: Creation) {
     val existing = toolData.byName(creation.title.lowercase(), true)
     val mod = if (existing != null) existing else {
         val loadOrder = toolData.nextLoadOrder()
-        val stagePath = modFolder.path + "/" + creation.title.replace(" ", "-")
+        val stagePath = modFolder.path + "/" + creation.title.cleanModName()
         Mod(creation.title.lowercase(), stagePath, loadOrder + 1).also {
             it.index = toolData.mods.size
             it.creationId = creation.creationId
@@ -146,7 +147,13 @@ fun addCreation(creation: Creation) {
 
     val dest = File(mod.filePath + "/Data").also { it.mkdirs() }
     files.forEach { file ->
-        Files.move(file.toPath(), File(dest.path + "/" + file.name).toPath(), StandardCopyOption.REPLACE_EXISTING)
+        if (!file.exists()) {
+            println(red("Unable to find creation files in data. Are you sure it's properly downloaded?"))
+            rmCreation(mod, true)
+            return
+        } else {
+            Files.move(file.toPath(), File(dest.path + "/" + file.name).toPath(), StandardCopyOption.REPLACE_EXISTING)
+        }
     }
 
     if (existing != null) {
@@ -170,7 +177,7 @@ private fun rmCreation(mod: Mod, force: Boolean = false) {
             .forEach { file ->
                 val linkFile = file.absolutePath.replace(modRoot, "")
                 deleteLink(linkFile, mapOf())
-                val destFile = File(file.absolutePath.replace(modRoot, toolConfig.gamePath!! +"/"))
+                val destFile = File(file.absolutePath.replace(modRoot, toolConfig.gamePath!! + "/"))
                 if (!destFile.exists()) {
                     Files.move(file.toPath(), destFile.toPath())
                 }

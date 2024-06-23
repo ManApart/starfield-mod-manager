@@ -93,7 +93,7 @@ fun addExternal(esp: String, name: String? = null) {
     println("Added (${mod.index}) ${mod.name}")
 }
 
-private fun getExternalMods(): Map<String, Mod?> {
+fun getExternalMods(): Map<String, Mod?> {
     val creations = parseCreationPlugins()
     return File(toolConfig.gamePath!! + "/Data").listFiles()!!
         .asSequence()

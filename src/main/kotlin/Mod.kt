@@ -61,9 +61,15 @@ data class Mod(
 
     fun refreshPlugins() {
         if (!hasTag(Tag.EXTERNAL)) {
-            plugins = getModFiles().filter { it.extension.lowercase() in espTypes }.map { it.name }
+            val newPlugins = discoverPlugins()
+
+            if (plugins.toSet().sorted() != newPlugins.toSet().sorted()) {
+                plugins = newPlugins
+            }
         }
     }
+
+    fun discoverPlugins() = getModFiles().filter { it.extension.lowercase() in espTypes }.map { it.name }
 }
 
 fun File.getFiles(filterFunction: (File) -> Boolean = { true }): List<File> {

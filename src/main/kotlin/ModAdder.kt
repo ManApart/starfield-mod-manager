@@ -178,4 +178,4 @@ fun addModFile(mod: Mod, sourceFile: File, modName: String) {
     }
 }
 
-private fun String.cleanModName() = replace(" ", "-").replace("[^A-Za-z\\-]".toRegex(), "")
+fun String.cleanModName() = replace(" ", "-").replace("[^A-Za-z\\-]".toRegex(), "")

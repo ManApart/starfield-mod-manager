@@ -4,6 +4,8 @@ import Mod
 import cyan
 import detectStagingChanges
 import doCommand
+import green
+import red
 import toolData
 import yellow
 import java.io.File
@@ -32,6 +34,8 @@ fun validateMods(args: List<String>) {
 
 fun List<Mod>.validate() {
     val errorMap = mutableMapOf<Int, Pair<Mod, MutableList<String>>>()
+    val nonModErrors = mutableListOf<String>()
+    val helpMessages = mutableSetOf<String>()
     val modsWithFiles = associateWith { it.getModFiles() }
 
     addDupeIds(errorMap)
@@ -40,8 +44,17 @@ fun List<Mod>.validate() {
     detectDupePlugins()
     detectIncorrectCasing(errorMap)
     modsWithFiles.detectTopLevelFiles(errorMap)
+    checkPlugins(errorMap, helpMessages)
+
+    checkCreations(nonModErrors, helpMessages)
+    checkExternalMods(nonModErrors, helpMessages)
 
     printErrors(errorMap.filter { it.value.first in this }.toMap())
+    println()
+    nonModErrors.forEach { println(it) }
+    println()
+    helpMessages.forEach { println(it) }
+    println()
     println(cyan("Validated $size mods"))
 }
 
@@ -145,6 +158,38 @@ private fun Map<Mod, List<File>>.detectTopLevelFiles(
     }.forEach { (mod, _) ->
         errorMap.putIfAbsent(mod.index, mod to mutableListOf())
         errorMap[mod.index]?.second?.add("Has files outside the Data folder")
+    }
+}
+
+private fun checkPlugins(
+    errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>,
+    helpMessages: MutableSet<String>
+) {
+    toolData.mods.filter { !it.hasTag(Tag.EXTERNAL) }.forEach { mod ->
+        val newPlugins = mod.discoverPlugins().sorted().toSet()
+        val existing = mod.plugins.sorted().toSet()
+
+        if (existing != newPlugins) {
+            errorMap.putIfAbsent(mod.index, mod to mutableListOf())
+            val added = newPlugins - existing
+            val removed = existing - newPlugins
+            errorMap[mod.index]?.second?.add("Has an out of date plugin list: Added [${green(added.joinToString(", "))}], Removed [${red(removed.joinToString(", "))}]")
+            helpMessages.add("To fix plugin issues, run 'esp refresh'")
+        }
+    }
+}
+
+private fun checkCreations(errors: MutableList<String>, helpMessages: MutableSet<String>) {
+    parseCreationCatalog().values.filter { creation -> (creation.creationId?.let { toolData.byCreationId(it) } == null) }.forEach { creation ->
+        errors.add("Creation '${creation.title}' is not managed")
+        helpMessages.add("To manage creations try 'help creation'")
+    }
+}
+
+private fun checkExternalMods(errors: MutableList<String>, helpMessages: MutableSet<String>) {
+    getExternalMods().filter { it.value == null }.keys.forEach {
+        errors.add("External Mod '$it' is not managed")
+        helpMessages.add("To manage external plugins try 'help external'")
     }
 }
 

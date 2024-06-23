@@ -7,6 +7,7 @@ import save
 import toolData
 import yellow
 import java.io.File
+import java.nio.file.Files.delete
 
 val removeHelp = """
     Remove a mod from being managed
@@ -27,8 +28,12 @@ fun remove(args: List<String>) {
 
 private fun removeMod(index: Int) {
     toolData.byIndex(index)?.let { mod ->
-        confirm(false, yellow("Remove ${mod.name}?")) {
-            delete(mod)
+        if (mod.hasTag(Tag.CREATION)) {
+            println(yellow("Use ") + "'creation rm'" + yellow(" to unmanage a creation."))
+        } else {
+            confirm(false, yellow("Remove ${mod.name}?")) {
+                delete(mod)
+            }
         }
     }
 }
