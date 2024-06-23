@@ -12,12 +12,7 @@ fun stageMod(sourceFile: File, stageFolder: File, modName: String): Boolean {
             true
         }
 
-        sourceFile.extension == "zip" -> {
-            stageFolder.runCommand(listOf("unzip", "-q", "-o", sourceFile.absolutePath), !toolConfig.verbose)
-            true
-        }
-
-        sourceFile.extension == "7z" -> {
+        sourceFile.extension == "7z" || sourceFile.extension == "zip" -> {
             stageFolder.runCommand(listOf("7z", "x", "-y", sourceFile.absolutePath), !toolConfig.verbose)
             true
         }
