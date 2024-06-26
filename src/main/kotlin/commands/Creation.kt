@@ -14,6 +14,7 @@ import red
 import save
 import toolConfig
 import toolData
+import verbose
 import yellow
 import java.io.File
 import java.nio.file.Files
@@ -145,9 +146,17 @@ fun addCreation(creation: Creation) {
         }
     }
 
+    val dataFolderFiles = File(toolConfig.gamePath!! + "/Data").listFiles()!!
     val dest = File(mod.filePath + "/Data").also { it.mkdirs() }
-    files.forEach { file ->
-        if (!file.exists()) {
+    files.forEach { initialFile ->
+        var file: File? = initialFile
+        //Catalog can have incorrect file casing, so we should perform a backup search
+        if (!initialFile.exists()) {
+            val search = initialFile.name.lowercase()
+            file = dataFolderFiles.firstOrNull { it.name.lowercase() == search }
+        }
+        if (file == null || !file.exists()) {
+            verbose(red(initialFile.absolutePath + " does not exist"))
             println(red("Unable to find creation files in data. Are you sure it's properly downloaded?"))
             rmCreation(mod, true)
             return
