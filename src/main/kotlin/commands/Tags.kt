@@ -11,6 +11,7 @@ import yellow
 enum class Tag(val tag: String) {
     CREATION("Creation"),
     EXTERNAL("External"),
+    SKIP_VALIDATE("Skip-Validate"),
 }
 
 val tagDescription = """

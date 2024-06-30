@@ -55,7 +55,14 @@ data class Mod(
         return categoryId?.let { toolConfig.categories[it] }
     }
 
-    fun add(tag: Tag) = tags.add(tag.tag)
+    fun add(tag: Tag){
+        tags.add(tag.tag)
+        save()
+    }
+    fun remove(tag: Tag){
+        tags.remove(tag.tag)
+        save()
+    }
     fun hasTag(tag: Tag) = hasTag(tag.tag)
     fun hasTag(tag: String) = tags.contains(tag)
 

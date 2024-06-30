@@ -12,6 +12,8 @@ import java.io.File
 
 val validateDescription = """
     Examines mods for issues. Checks for duplicates, bad folder staging etc
+    Use validate skip 1 to add a tag so that mod at index 1 is skipped for validation
+    Use validate check 1 to remove the tag, so the mod is validated
 """.trimIndent()
 
 val validateUsage = """
@@ -22,13 +24,28 @@ val validateUsage = """
     validate 1-3
     validate staged
     validate disabled
+    validate skip 1
+    validate check 1
 """.trimIndent()
 
 fun validateMods(args: List<String>) {
-    if (args.isEmpty()) {
-        toolData.mods.filter { it.enabled }.validate()
-    } else {
-        doCommand(args, List<Mod>::validate)
+    val i = args.getOrNull(args.size - 1)?.toIntOrNull()
+    when {
+        args.isEmpty() -> toolData.mods.filter { it.enabled }.validate()
+        args.first() == "skip" && i != null -> {
+            toolData.byIndex(i)?.let {
+                it.add(Tag.SKIP_VALIDATE)
+                println("Skipping ${it.description()} during validation")
+            }
+        }
+
+        args.first() == "check" && i != null ->{
+            toolData.byIndex(i)?.let {
+                it.remove(Tag.SKIP_VALIDATE)
+                println("Considering ${it.description()} for validation")
+            }
+        }
+        else -> doCommand(args, List<Mod>::validate)
     }
 }
 
@@ -98,8 +115,10 @@ private fun List<Mod>.detectStagingIssues(
         if (stageFolder.exists()) {
             when (detectStagingChanges(stageFolder)) {
                 StageChange.UNKNOWN -> {
-                    errorMap.putIfAbsent(mod.index, mod to mutableListOf())
-                    errorMap[mod.index]?.second?.add("Unable to guess folder path. You should open the staging folder and make sure it was installed correctly.")
+                    if (!mod.hasTag(Tag.SKIP_VALIDATE)) {
+                        errorMap.putIfAbsent(mod.index, mod to mutableListOf())
+                        errorMap[mod.index]?.second?.add("Unable to guess folder path. You should open the staging folder and make sure it was installed correctly.")
+                    }
                 }
 
                 StageChange.FOMOD -> {
@@ -159,8 +178,9 @@ private fun Map<Mod, List<File>>.detectTopLevelFiles(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
     val excludeList = listOf("sfse_loader.exe")
-    filter { (_, files) ->
-        files.none { excludeList.contains(it.name) } &&
+    filter { (mod, files) ->
+        !mod.hasTag(Tag.SKIP_VALIDATE) &&
+                files.none { excludeList.contains(it.name) } &&
                 files.any { !it.path.contains("Data/") }
     }.forEach { (mod, _) ->
         errorMap.putIfAbsent(mod.index, mod to mutableListOf())
