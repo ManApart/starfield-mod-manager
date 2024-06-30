@@ -97,15 +97,21 @@ private fun compareProfile(i: Int) {
 
 private fun saveProfile(i: Int) {
     toolData.profileByIndex(i)?.let { profile ->
-        println("Save changes to ${profile.name}? (y/n)")
         val newIds = enabledIds()
         val newPaths = enabledPaths()
-        printDiff(profile, newIds, newPaths)
-        confirm {
-            profile.ids = newIds
-            profile.filePaths = newPaths
-            save()
-            println("Saved ${profile.name}")
+        val (added, removed) = getDiff(profile, newIds, newPaths)
+        if (added.isNotEmpty() || removed.isNotEmpty()) {
+            println("Save changes to ${profile.name}? (y/n)")
+            if (added.isNotEmpty()) println("Added: ${added.joinToString()}")
+            if (removed.isNotEmpty()) println("Removed: ${removed.joinToString()}")
+            confirm {
+                profile.ids = newIds
+                profile.filePaths = newPaths
+                save()
+                println("Saved ${profile.name}")
+            }
+        } else {
+            println("No changes to save.")
         }
     }
 }
@@ -121,17 +127,16 @@ private fun saveProfile(name: String) {
     println("Saved $name")
 }
 
-private fun printDiff(profile: Profile, newIds: List<Int>, newPaths: List<String>) {
+private fun getDiff(profile: Profile, newIds: List<Int>, newPaths: List<String>): Pair<List<String>, List<String>> {
     val added = (
             newIds.filter { !profile.ids.contains(it) }.mapNotNull { toolData.byId(it)?.description() } +
                     newPaths.filter { !profile.filePaths.contains(it) }.map { toolData.byFilePath(it)?.description() ?: it }
-            ).joinToString()
+            )
     val removed = (
             profile.ids.filter { !newIds.contains(it) }.mapNotNull { toolData.byId(it)?.description() } +
                     profile.filePaths.filter { !newPaths.contains(it) }.map { toolData.byFilePath(it)?.description() ?: it }
-            ).joinToString()
-    if (added.isNotBlank()) println("Added: $added")
-    if (removed.isNotBlank()) println("Removed: $removed")
+            )
+    return Pair(added, removed)
 }
 
 private fun enabledIds() = toolData.mods.filter { it.enabled }.mapNotNull { it.id }
