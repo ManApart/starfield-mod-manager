@@ -49,12 +49,19 @@ fun List<Mod>.validate() {
     checkCreations(nonModErrors, helpMessages)
     checkExternalMods(nonModErrors, helpMessages)
 
-    printErrors(errorMap.filter { it.value.first in this }.toMap())
-    println()
-    nonModErrors.forEach { println(it) }
-    println()
-    helpMessages.forEach { println(it) }
-    println()
+    val filteredErrors = errorMap.filter { it.value.first in this }.toMap()
+    if (filteredErrors.isNotEmpty()) {
+        printErrors(filteredErrors)
+        println()
+    }
+    if (nonModErrors.isNotEmpty()) {
+        nonModErrors.forEach { println(it) }
+        println()
+    }
+    if (helpMessages.isNotEmpty()) {
+        helpMessages.forEach { println(it) }
+        println()
+    }
     println(cyan("Validated $size mods"))
 }
 
