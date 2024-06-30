@@ -28,15 +28,15 @@ enum class CommandType(
     OPEN("Open mod on web", Category.OPEN, openDescription, "open <index>", ::open, "o"),
     LOCAL("Open local mod folder", Category.OPEN, openDescription, "local <index> *<cli>", ::local, "l"),
     CLI("Open local mod folder in terminal", Category.OPEN, openDescription, "cli <index>", ::cli, "terminal", "term"),
-    GAME_PATH("Open game folder", Category.OPEN, openDescription, "", ::openGamePath, "gamepath", "gg"),
-    APPDATA_PATH("Open ini path folder", Category.OPEN, openDescription, "", ::openAppDataPath, "appdatapath", "app"),
-    INI_PATH("Open ini path folder", Category.OPEN, openDescription, "", ::openIniPath, "inipath", "ini"),
-    PLUGINS("Open plugins file", Category.OPEN, openDescription, "", ::openPluginsTxt, "plugin"),
-    JAR_PATH("Open jar path folder", Category.OPEN, openDescription, "", ::openJarPath, "jarpath", "jar"),
-    MANUAL("Open website manual", Category.OPEN, openDescription, "", ::openManual, "man"),
-    SITE("Open website", Category.OPEN, openDescription, "", ::openSite),
-    SOURCE("Open app source", Category.OPEN, openDescription, "", ::openSource, "git", "github"),
-    NEXUS("Open app nexus page", Category.OPEN, openDescription, "", ::openNexus),
+    GAME_PATH("Open game folder", Category.OPEN, openDescription, ::openGamePath, "gamepath", "gg"),
+    APPDATA_PATH("Open appdata path folder", Category.OPEN, openDescription, ::openAppDataPath, "appdatapath", "app"),
+    INI_PATH("Open ini path folder", Category.OPEN, openDescription, ::openIniPath, "inipath", "ini"),
+    PLUGINS("Open plugins file", Category.OPEN, openDescription, ::openPluginsTxt, "plugin"),
+    JAR_PATH("Open jar path folder", Category.OPEN, openDescription, ::openJarPath, "jarpath", "jar"),
+    MANUAL("Open website manual", Category.OPEN, openDescription, ::openManual, "man"),
+    SITE("Open website", Category.OPEN, openDescription, ::openSite),
+    SOURCE("Open app source", Category.OPEN, openDescription, ::openSource, "git", "github"),
+    NEXUS("Open app nexus page", Category.OPEN, openDescription, ::openNexus),
     PURGE("Purge all sym links", Category.DEPLOY, purgeDescription, purgeUsage, ::purge),
     MOD("Update a mod", Category.EDIT, changeDescription, changeUsage, ::changeMod, "m"),
     TAG("Edit tags on a mod", Category.EDIT, tagDescription, tagUsage, ::tag, "t"),
@@ -60,6 +60,14 @@ enum class CommandType(
         { kotlin.system.exitProcess(0) }
     ),
     ;
+
+    constructor(
+        summary: String,
+        category: Category,
+        description: String,
+        apply: (List<String>) -> Unit,
+        vararg aliases: String = arrayOf()
+    ) : this(summary, category, description, summary, apply, aliases = aliases)
 
     val cleanName = name.lowercase().replace("_", "-")
 }
