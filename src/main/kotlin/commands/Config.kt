@@ -6,6 +6,7 @@ import nexus.getGameInfo
 import save
 import toolConfig
 import java.io.File
+import kotlin.reflect.KMutableProperty0
 
 val configDescription = """
     Used to configure the mod manager itself. Saved in the config.json file located next to the jar
@@ -80,28 +81,22 @@ fun config(args: List<String>) {
             }
         }
 
-        args.first() == "verbose" -> {
-            val verbose = args.getOrNull(1) == "true"
-            toolConfig.verbose = verbose
-            println("Updated verbose to ${toolConfig.verbose}")
-            save()
-        }
-
-        args.first() == "autodeploy" -> {
-            val autoDeploy = args.getOrNull(1) == "true"
-            toolConfig.autoDeploy = autoDeploy
-            println("Updated autodeploy to ${toolConfig.autoDeploy}")
-            save()
-        }
-
-        args.first() == "use-my-docs" -> {
-            val useMyDocs = args.getOrNull(1) == "true"
-            toolConfig.useMyDocs = useMyDocs
-            println("Updated use-my-docs to ${toolConfig.useMyDocs}")
-            save()
-        }
+        args.first() == "verbose" -> updateBoolean(args, toolConfig::verbose)
+        args.first() == "autodeploy" -> updateBoolean(args, toolConfig::autoDeploy)
+        args.first() == "use-my-docs" -> updateBoolean(args, toolConfig::useMyDocs)
         args.first() == "version" -> viewAppVersion()
 
         else -> println("Unknown args: ${args.joinToString(" ")}")
     }
+}
+
+private fun updateBoolean(args: List<String>, mutable: KMutableProperty0<Boolean>) {
+    val flag = when (args.getOrNull(1)) {
+        "true" -> true
+        "false" -> false
+        else -> !mutable.get()
+    }
+    mutable.set(flag)
+    println("Updated ${mutable.name} to ${mutable.get()}")
+    save()
 }
