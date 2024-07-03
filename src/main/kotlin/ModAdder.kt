@@ -7,25 +7,25 @@ fun addModById(id: Int, fileId: Int? = null, forceRedownload: Boolean = false) {
     val existing = toolData.byId(id)
     if (existing != null){
         println("Mod already exists. Refreshing...")
-        refreshMod(existing, forceRedownload)
+        refreshMod(existing, forceRedownload, fileId)
         return
     }
     val mod = runBlocking { fetchModInfo(id, fileId) } ?: return
-    val downloaded = downloadMod(mod, forceRedownload)
+    val downloaded = downloadMod(mod, forceRedownload, fileId)
     if (downloaded == null) {
         println(red("Failed to download ${mod.name}"))
     } else {
-        addModFile(mod, downloaded, mod.name)
+        addModFile(mod, downloaded, mod.name, mod.latestVersion)
     }
 }
 
-fun refreshMod(mod: Mod, forceRedownload: Boolean = false) {
+fun refreshMod(mod: Mod, forceRedownload: Boolean = false, fileId: Int? = null) {
     val downloaded = if (forceRedownload || mod.downloadPath?.let { File(it) }?.exists() != true) {
         if (mod.id == null) {
             println(red("Unable to refresh ${mod.name} because it has no id or local file"))
             null
         } else {
-            downloadMod(mod, forceRedownload)
+            downloadMod(mod, forceRedownload, fileId)
         }
     } else {
         File(mod.downloadPath!!)
@@ -34,14 +34,15 @@ fun refreshMod(mod: Mod, forceRedownload: Boolean = false) {
     if (downloaded == null) {
         println(red("Failed to download ${mod.name}"))
     } else {
-        addModFile(mod, downloaded, mod.name)
+        addModFile(mod, downloaded, mod.name, mod.latestVersion)
     }
 }
 
-private fun downloadMod(mod: Mod, forceRedownload: Boolean): File? {
+private fun downloadMod(mod: Mod, forceRedownload: Boolean, fileId: Int? = null): File? {
     println("Downloading ${mod.id}: ${mod.name}")
     val cleanName = mod.name.replace(" ", "-")
-    val downloadUrl = runBlocking { getDownloadUrl(toolConfig.apiKey!!, mod.id!!, mod.fileId!!) }
+    val downloadUrl = runBlocking { getDownloadUrl(toolConfig.apiKey!!, mod.id!!, fileId ?: mod.fileId!!) }
+    verbose("Downloading with url $downloadUrl")
     if (downloadUrl == null) {
         println(red("Unable to get download url for ${mod.name}"))
         return null
@@ -155,7 +156,7 @@ fun addModByFile(filePath: String, nameOverride: String?) {
     addModFile(mod, sourceFile, name)
 }
 
-fun addModFile(mod: Mod, sourceFile: File, modName: String) {
+fun addModFile(mod: Mod, sourceFile: File, modName: String, version: String? = mod.latestVersion) {
     if (!sourceFile.exists()) {
         println(red("Could not find ${sourceFile.absolutePath}"))
         return
@@ -176,6 +177,7 @@ fun addModFile(mod: Mod, sourceFile: File, modName: String) {
     } else {
         println(red("Failed to add mod ${mod.name}"))
     }
+    mod.version = version
 }
 
 fun String.cleanModName() = replace(" ", "-").replace("[^A-Za-z\\-]".toRegex(), "")
