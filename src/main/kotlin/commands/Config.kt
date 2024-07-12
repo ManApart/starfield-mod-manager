@@ -81,22 +81,22 @@ fun config(args: List<String>) {
             }
         }
 
-        args.first() == "verbose" -> updateBoolean(args, toolConfig::verbose)
-        args.first() == "autodeploy" -> updateBoolean(args, toolConfig::autoDeploy)
-        args.first() == "use-my-docs" -> updateBoolean(args, toolConfig::useMyDocs)
+        args.first() == "verbose" -> updateFlag(args, toolConfig::verbose)
+        args.first() == "autodeploy" -> updateFlag(args, toolConfig::autoDeploy)
+        args.first() == "use-my-docs" -> updateFlag(args, toolConfig::useMyDocs)
         args.first() == "version" -> viewAppVersion()
 
         else -> println("Unknown args: ${args.joinToString(" ")}")
     }
 }
 
-private fun updateBoolean(args: List<String>, mutable: KMutableProperty0<Boolean>) {
-    val flag = when (args.getOrNull(1)) {
+private fun updateFlag(args: List<String>, flag: KMutableProperty0<Boolean>) {
+    val newValue = when (args.getOrNull(1)) {
         "true" -> true
         "false" -> false
-        else -> !mutable.get()
+        else -> !flag.get()
     }
-    mutable.set(flag)
-    println("Updated ${mutable.name} to ${mutable.get()}")
+    flag.set(newValue)
+    println("Updated ${flag.name} to ${flag.get()}")
     save()
 }
