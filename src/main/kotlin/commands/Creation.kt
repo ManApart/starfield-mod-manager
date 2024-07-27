@@ -8,7 +8,10 @@ import confirm
 import jsonMapper
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNames
+import kotlinx.serialization.json.JsonObject
 import modFolder
 import red
 import save
@@ -38,6 +41,7 @@ val creationDescription = """
    creation add - adds a single creation by its mod file id (like SFBGS021) or content id (like TM_31ccf130-4852-417b-842a-9d82672028e4). Also see add mod
    creation add all - Attempts to add _all_ unmanaged creations found in the content catalog
    creation rm - unmanage this creation, dumping the files back into the data directory (deletes the "mod" but unmanages the files)
+   creation forget - delete the creation's entry in your content catalog, so it doesn't show up as unmanaged (remove the creation before forgetting it)
    creation refresh - copy any creation related files from the data directory, overriding existing mod files. Used to update a creation if there are new files
 """.trimIndent()
 
@@ -47,6 +51,7 @@ val creationUsage = """
    creation add all
    creation rm <index>
    creation rm all
+   cration forget <id>
    creation refresh <index>
    creation refresh all
    
@@ -63,6 +68,7 @@ fun creation(args: List<String>) {
         args.getOrNull(1) == "all" && firstArg == "rm" -> rmAllCreations()
         args.getOrNull(1) == "all" && firstArg == "refresh" -> refreshAllCreations()
         firstArg == "add" -> addCreation(args[1])
+        firstArg == "forget" -> forgetCreation(args[1])
         firstArg == "rm" -> when {
             mod == null -> println("Unable to find a valid mod at index $i")
             !mod.hasTag(Tag.CREATION) -> println("${mod.description()} is not a creation.")
@@ -81,8 +87,18 @@ fun creation(args: List<String>) {
 
 fun parseCreationCatalog(): Map<String, Creation> {
     val rawLines = File(toolConfig.appDataPath + "/ContentCatalog.txt").readLines()
-    val parsable = "{" + rawLines.drop(6).joinToString("\n")
+    val parsable = jsonMapper.decodeFromString<JsonObject>(rawLines.joinToString("\n")).filter { it.key != "ContentCatalog" }.toMap().let { jsonMapper.encodeToString(it) }
     return jsonMapper.decodeFromString<Map<String, Creation>>(parsable).also { it.entries.forEach { (id, creation) -> creation.creationId = id } }
+}
+
+fun updateCreationCatalog(creations: List<Creation>){
+    val rawLines = File(toolConfig.appDataPath + "/ContentCatalog.txt").readLines()
+    val header = "{\n\t\"ContentCatalog\": "+ jsonMapper.decodeFromString<JsonObject>(rawLines.joinToString("\n"))["ContentCatalog"].let { jsonMapper.encodeToString(it) } + ","
+
+    val creationsString = jsonMapper.encodeToString(creations.associateBy { it.creationId }).drop(1)
+    val fullText = header + creationsString +"\n"
+
+    File(toolConfig.appDataPath + "/ContentCatalog.txt").writeText(fullText)
 }
 
 fun parseCreationPlugins(): List<String> {
@@ -192,6 +208,16 @@ private fun rmCreation(mod: Mod, force: Boolean = false) {
                 }
             }
         delete(mod)
+    }
+}
+
+private fun forgetCreation(creationId: String){
+    val creations = parseCreationCatalog()
+    if (!creations.contains(creationId)){
+        println(red("Could not find creation $creationId"))
+    } else {
+        updateCreationCatalog(creations.minus(creationId).values.toList())
+        println("Forgot creation $creationId")
     }
 }
 
