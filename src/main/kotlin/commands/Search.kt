@@ -30,6 +30,7 @@ val searchModsUsage = """
     search unendorsed
     search abstained
     search missing
+    search upgrade
 """.trimIndent()
 
 fun searchMods(args: List<String> = listOf()) {
@@ -58,12 +59,13 @@ fun searchMods(persist: Boolean, args: List<String> = listOf()) {
         else -> null
     }
     val unendorsed = args.contains("unendorsed")
+    val upgrade = args.contains("upgrade")
     val missing = when {
         args.contains("missing") -> true
         else -> null
     }
     val id = args.firstOrNull { it.toIntOrNull() != null }
-    val flagList = listOf("enabled", "disabled", "staged", "unstaged", "endorsed", "abstained", "unendorsed", "tag", "name", "category")
+    val flagList = listOf("enabled", "disabled", "staged", "unstaged", "endorsed", "abstained", "unendorsed", "tag", "name", "category", "upgrade")
     val search = args.filter { !flagList.contains(it) && it.toIntOrNull() == null }.joinToString(" ").lowercase()
 
     val searchType = when {
@@ -74,7 +76,7 @@ fun searchMods(persist: Boolean, args: List<String> = listOf()) {
     }
 
     val mods = toolData.mods.map { mod ->
-        val displayed = mod.isDisplayed(enabled, staged, missing, id, endorsed, unendorsed, searchType, search)
+        val displayed = mod.isDisplayed(enabled, staged, missing, upgrade, id, endorsed, unendorsed, searchType, search)
         if (persist) mod.show = displayed
         mod to displayed
     }
@@ -85,6 +87,7 @@ private fun Mod.isDisplayed(
     enabled: Boolean?,
     staged: Boolean?,
     missing: Boolean?,
+    upgrade: Boolean,
     id: String?,
     endorsed: Boolean?,
     unendorsed: Boolean,
@@ -93,6 +96,7 @@ private fun Mod.isDisplayed(
 ): Boolean {
     return (enabled != null && enabled == this.enabled) ||
             (staged != null && staged == File(filePath).exists()) ||
+            (upgrade == true && this.updateAvailable()) ||
             (missing != null && missing == (this.id == null)) ||
             (id != null && this.id?.toString()?.contains(id) ?: false) ||
             (endorsed != null && endorsed == this.endorsed) || (unendorsed && this.endorsed == null) ||

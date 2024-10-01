@@ -19,6 +19,7 @@ val filterUsage = """
     filter unendorsed
     filter abstained
     filter missing - show missing ids
+    filter upgrade
 """.trimIndent()
 
 fun filterMods(args: List<String> = listOf()) {
