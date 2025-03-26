@@ -1,8 +1,11 @@
 import commands.CommandType
 import commands.getCommand
 
+var lastFullInput = ""
+
 fun readLine(line: String?) {
     val parts = line?.parseArgs() ?: return
+    lastFullInput = line
     when {
         parts.isEmpty() -> CommandType.HELP.usage
         parts.size == 1 && parts.first().startsWith("nxm://") -> addModByNexusProtocol(parts.first())

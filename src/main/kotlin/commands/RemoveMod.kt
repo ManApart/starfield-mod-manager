@@ -7,7 +7,6 @@ import save
 import toolData
 import yellow
 import java.io.File
-import java.nio.file.Files.delete
 
 val removeHelp = """
     Remove a mod from being managed

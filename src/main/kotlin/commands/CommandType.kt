@@ -20,6 +20,7 @@ enum class CommandType(
     ABSTAIN("Abstain from endorsing Mod", Category.EDIT, endorseDescription, "abstain <index>", ::abstain),
     DEPLOY("Deploy enabled mods", Category.DEPLOY, deployDescription, deployUsage, ::deploy, "d"),
     HELP("Explain commands", Category.CONFIG, helpDescription, helpUsage, ::help, "h"),
+    IMPORT("Import from viewer", Category.ADD, importDescription, importUsage, ::importData, "i"),
     FETCH("Fetch Mod Data", Category.ADD, fetchDescription, fetchUsage, ::fetchMod, "f"),
     LIST("List Mods", Category.VIEW, listDescription, listUsage, ::listMods, "ls"),
     DETAIL("View all details of mod", Category.VIEW, detailDescription, detailUsage, ::detailMod, "dd"),

@@ -195,7 +195,7 @@ private fun rmAllCreations(force: Boolean = false) {
     }
 }
 
-private fun rmCreation(mod: Mod, force: Boolean = false) {
+fun rmCreation(mod: Mod, force: Boolean = false) {
     confirm(force, yellow("Remove Creation ${mod.description()} ")) {
         val modRoot = File(mod.filePath).absolutePath + "/"
         mod.getModFiles()

@@ -28,7 +28,7 @@ fun fetchMod(args: List<String>) {
     }
 }
 
-private fun fetchModsById(ids: List<Int>) {
+fun fetchModsById(ids: List<Int>) {
     ids.chunked(toolConfig.chunkSize).forEach { chunk ->
         runBlocking {
             chunk.map { id ->
