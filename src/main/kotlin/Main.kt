@@ -6,7 +6,6 @@ lateinit var toolData: Data
 lateinit var toolConfig: Config
 lateinit var modFolder: File
 val HOME = System.getProperty("user.home")!!
-val CONFIG_PATH = configPath()
 private var confirmation: ((List<String>) -> Unit)? = null
 var testingMode = false
 
@@ -15,13 +14,9 @@ val jsonMapper = kotlinx.serialization.json.Json {
     prettyPrint = true
 }
 
-private fun configPath(): String {
-    return System.getenv("XDG_CONFIG_HOME")?.replace("~", HOME)?.let { "$it/starfield-mod-manager-config.json" } ?: "./config.json"
-}
-
 fun main(args: Array<String>) {
     println(cyan("\nStarfield Mod Manager"))
-    modFolder = File("mods")
+    modFolder = File(gameConfig.modFolder)
     loadData()
     if (args.isEmpty()) {
         CommandType.LIST.apply(listOf())
@@ -41,11 +36,11 @@ fun main(args: Array<String>) {
     }
 }
 
-private fun loadData() {
-    toolConfig = File(CONFIG_PATH).takeIf { it.exists() }?.let {
+fun loadData() {
+    toolConfig = File(gameConfig.configPath).takeIf { it.exists() }?.let {
         jsonMapper.decodeFromString(it.readText())
     } ?: Config()
-    toolData = File("./data.json").takeIf { it.exists() }?.let {
+    toolData = File(gameConfig.dataPath).takeIf { it.exists() }?.let {
         jsonMapper.decodeFromString(it.readText())
     } ?: Data()
     toolData.updateSorts()
@@ -53,8 +48,8 @@ private fun loadData() {
 
 fun save() {
     if (testingMode) return
-    File(CONFIG_PATH).writeText(jsonMapper.encodeToString(toolConfig))
-    File("./data.json").writeText(jsonMapper.encodeToString(toolData))
+    File(gameConfig.configPath).writeText(jsonMapper.encodeToString(toolConfig))
+    File(gameConfig.dataPath).writeText(jsonMapper.encodeToString(toolData))
 }
 
 

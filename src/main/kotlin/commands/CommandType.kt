@@ -31,6 +31,7 @@ enum class CommandType(
     CLI("Open local mod folder in terminal", Category.OPEN, openDescription, "cli <index>", ::cli, "terminal", "term"),
     GAME_PATH("Open game folder", Category.OPEN, openDescription, ::openGamePath, "gamepath", "gg"),
     APPDATA_PATH("Open appdata path folder", Category.OPEN, openDescription, ::openAppDataPath, "appdatapath", "app"),
+    MODE("Switch Games", Category.CONFIG, modeDescription, modeUsage, ::gameMode),
     INI_PATH("Open ini path folder", Category.OPEN, openDescription, ::openIniPath, "inipath", "ini"),
     PLUGINS("Open plugins file", Category.OPEN, openDescription, ::openPluginsTxt, "plugin"),
     JAR_PATH("Open jar path folder", Category.OPEN, openDescription, ::openJarPath, "jarpath", "jar"),
