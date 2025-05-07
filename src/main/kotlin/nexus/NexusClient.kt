@@ -1,5 +1,6 @@
 package nexus
 
+import gameConfig
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -45,7 +46,7 @@ private fun HttpRequestBuilder.commonHeaders(apiKey: String) {
 
 suspend fun getModDetails(apiKey: String, id: Int): ModInfo? {
     return try {
-        client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id.json") {
+        client.get("https://api.nexusmods.com/v1/games/${gameConfig.urlName}/mods/$id.json") {
             commonHeaders(apiKey)
         }.body()
     } catch (e: Exception) {
@@ -57,7 +58,7 @@ suspend fun getModDetails(apiKey: String, id: Int): ModInfo? {
 
 suspend fun getModFiles(apiKey: String, id: Int): ModFileInfo? {
     return try {
-        client.get("https://api.nexusmods.com/v1/games/starfield/mods/$id/files.json") {
+        client.get("https://api.nexusmods.com/v1/games/${gameConfig.urlName}/mods/$id/files.json") {
             commonHeaders(apiKey)
         }.body()
     } catch (e: Exception) {
@@ -70,7 +71,7 @@ suspend fun getModFiles(apiKey: String, id: Int): ModFileInfo? {
 suspend fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): String? {
     return try {
         val links: List<DownloadLink> = with(downloadRequest) {
-            client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json?key=$key&expires=$expires") {
+            client.get("https://api.nexusmods.com/v1/games/${gameConfig.urlName}/mods/$modId/files/$fileId/download_link.json?key=$key&expires=$expires") {
                 commonHeaders(apiKey)
             }.body()
         }
@@ -85,7 +86,7 @@ suspend fun getDownloadUrl(apiKey: String, downloadRequest: DownloadRequest): St
 suspend fun getDownloadUrl(apiKey: String, modId: Int, fileId: Int): String? {
     return try {
         val links: List<DownloadLink> =
-            client.get("https://api.nexusmods.com/v1/games/starfield/mods/$modId/files/$fileId/download_link.json") {
+            client.get("https://api.nexusmods.com/v1/games/${gameConfig.urlName}/mods/$modId/files/$fileId/download_link.json") {
                 commonHeaders(apiKey)
             }.body()
         links.first().URI
@@ -149,7 +150,7 @@ fun downloadMod(initialUrl: String, destination: String, forceRedownload: Boolea
 fun getGameInfo(apiKey: String): GameInfo? {
     return try {
         runBlocking {
-            client.get("https://api.nexusmods.com/v1/games/starfield.json") {
+            client.get("https://api.nexusmods.com/v1/games/${gameConfig.urlName}.json") {
                 commonHeaders(apiKey)
             }.body()
         }
@@ -167,7 +168,7 @@ suspend fun abstainMod(apiKey: String, modId: Int) = endorseMod(apiKey, modId, f
 private suspend fun endorseMod(apiKey: String, modId: Int, endorse: Boolean) {
     val urlPart = if (endorse) "endorse" else "abstain"
     try {
-        client.post("https://api.nexusmods.com/v1/games/starfield/mods/$modId/$urlPart.json") {
+        client.post("https://api.nexusmods.com/v1/games/${gameConfig.urlName}/mods/$modId/$urlPart.json") {
             commonHeaders(apiKey)
         }.body()
     } catch (e: Exception) {

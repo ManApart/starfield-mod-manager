@@ -42,7 +42,11 @@ bin/
 .DS_Store
 mods/
 config.json
+starfield-config.json
+oblivion-remastered-config.json
 data.json
+starfield-data.json
+oblivion-remastered-data.json
 test-game-path
 test-ini-path
 test-appdata-path
