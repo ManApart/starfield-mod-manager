@@ -5,17 +5,16 @@ import Mod
 import Table
 import cleanModName
 import confirm
+import gameConfig
 import jsonMapper
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.json.JsonObject
 import modFolder
 import red
 import save
-import toolConfig
 import toolData
 import verbose
 import yellow
@@ -86,19 +85,19 @@ fun creation(args: List<String>) {
 }
 
 fun parseCreationCatalog(): Map<String, Creation> {
-    val rawLines = File(toolConfig.appDataPath + "/ContentCatalog.txt").readLines()
+    val rawLines = File(gameConfig.appDataPath+ "/ContentCatalog.txt").readLines()
     val parsable = jsonMapper.decodeFromString<JsonObject>(rawLines.joinToString("\n")).filter { it.key != "ContentCatalog" }.toMap().let { jsonMapper.encodeToString(it) }
     return jsonMapper.decodeFromString<Map<String, Creation>>(parsable).also { it.entries.forEach { (id, creation) -> creation.creationId = id } }
 }
 
 fun updateCreationCatalog(creations: List<Creation>){
-    val rawLines = File(toolConfig.appDataPath + "/ContentCatalog.txt").readLines()
+    val rawLines = File(gameConfig.appDataPath+ "/ContentCatalog.txt").readLines()
     val header = "{\n\t\"ContentCatalog\": "+ jsonMapper.decodeFromString<JsonObject>(rawLines.joinToString("\n"))["ContentCatalog"].let { jsonMapper.encodeToString(it) } + ","
 
     val creationsString = jsonMapper.encodeToString(creations.associateBy { it.creationId }).drop(1)
     val fullText = header + creationsString +"\n"
 
-    File(toolConfig.appDataPath + "/ContentCatalog.txt").writeText(fullText)
+    File(gameConfig.appDataPath+ "/ContentCatalog.txt").writeText(fullText)
 }
 
 fun parseCreationPlugins(): List<String> {
@@ -143,7 +142,7 @@ fun addCreation(creationId: String) {
 }
 
 fun addCreation(creation: Creation) {
-    val files = creation.files.map { File(toolConfig.gamePath!! + "/Data/$it") }
+    val files = creation.files.map { File(gameConfig.gamePath!! + "/Data/$it") }
     if (files.isEmpty()) {
         println(red("No files found for ${creation.title}"))
     }
@@ -162,7 +161,7 @@ fun addCreation(creation: Creation) {
         }
     }
 
-    val dataFolderFiles = File(toolConfig.gamePath!! + "/Data").listFiles()!!
+    val dataFolderFiles = File(gameConfig.gamePath!! + "/Data").listFiles()!!
     val dest = File(mod.filePath + "/Data").also { it.mkdirs() }
     files.forEach { initialFile ->
         var file: File? = initialFile
@@ -202,7 +201,7 @@ fun rmCreation(mod: Mod, force: Boolean = false) {
             .forEach { file ->
                 val linkFile = file.absolutePath.replace(modRoot, "")
                 deleteLink(linkFile, mapOf())
-                val destFile = File(file.absolutePath.replace(modRoot, toolConfig.gamePath!! + "/"))
+                val destFile = File(file.absolutePath.replace(modRoot, gameConfig.gamePath!! + "/"))
                 if (!destFile.exists()) {
                     Files.move(file.toPath(), destFile.toPath())
                 }

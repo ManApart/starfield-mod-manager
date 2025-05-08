@@ -3,8 +3,10 @@ import kotlinx.serialization.encodeToString
 import java.io.File
 
 lateinit var toolData: Data
-lateinit var toolConfig: Config
+lateinit var toolConfig: MainConfig
+lateinit var gameConfig: GameConfig
 lateinit var modFolder: File
+var gameMode = GameMode.STARFIELD
 val HOME = System.getProperty("user.home")!!
 private var confirmation: ((List<String>) -> Unit)? = null
 var testingMode = false
@@ -15,9 +17,8 @@ val jsonMapper = kotlinx.serialization.json.Json {
 }
 
 fun main(args: Array<String>) {
-    println(cyan("\nStarfield Mod Manager"))
-    modFolder = File(gameConfig.modFolder)
     loadData()
+    println(cyan("\n${gameMode.displayName} Mod Manager"))
     if (args.isEmpty()) {
         CommandType.LIST.apply(listOf())
         while (true) {
@@ -37,10 +38,17 @@ fun main(args: Array<String>) {
 }
 
 fun loadData() {
-    toolConfig = File(gameConfig.configPath).takeIf { it.exists() }?.let {
+    toolConfig = File(mainConfigPath()).takeIf { it.exists() }?.let {
         jsonMapper.decodeFromString(it.readText())
-    } ?: Config()
-    toolData = File(gameConfig.dataPath).takeIf { it.exists() }?.let {
+    } ?: MainConfig()
+    gameMode = toolConfig.mode
+    modFolder = File(gameMode.modFolder)
+
+    gameConfig = File(gameMode.configPath).takeIf { it.exists() }?.let {
+        jsonMapper.decodeFromString(it.readText())
+    } ?: GameConfig()
+
+    toolData = File(gameMode.dataPath).takeIf { it.exists() }?.let {
         jsonMapper.decodeFromString(it.readText())
     } ?: Data()
     toolData.updateSorts()
@@ -48,8 +56,14 @@ fun loadData() {
 
 fun save() {
     if (testingMode) return
-    File(gameConfig.configPath).writeText(jsonMapper.encodeToString(toolConfig))
-    File(gameConfig.dataPath).writeText(jsonMapper.encodeToString(toolData))
+    File(mainConfigPath()).writeText(jsonMapper.encodeToString(toolConfig))
+    File(gameMode.configPath).writeText(jsonMapper.encodeToString(gameConfig))
+    File(gameMode.dataPath).writeText(jsonMapper.encodeToString(toolData))
+}
+
+fun saveMainConfigOnly() {
+    if (testingMode) return
+    File(mainConfigPath()).writeText(jsonMapper.encodeToString(toolConfig))
 }
 
 

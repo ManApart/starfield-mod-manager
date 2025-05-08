@@ -1,7 +1,6 @@
 package nexus
 
 import kotlinx.serialization.Serializable
-import java.awt.SystemColor.info
 
 data class DownloadRequest(val modId: Int, val fileId: Int, val key: String, val expires: String)
 

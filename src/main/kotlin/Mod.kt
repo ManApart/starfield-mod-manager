@@ -35,7 +35,7 @@ data class Mod(
         }
     }
 
-    fun url() = "https://www.nexusmods.com/starfield/mods/$id"
+    fun url() = "https://www.nexusmods.com/${gameMode.urlName}/mods/$id"
 
     fun updateAvailable() = latestVersion != null && latestVersion != version
 
@@ -52,7 +52,7 @@ data class Mod(
     }
 
     fun category(): String? {
-        return categoryId?.let { toolConfig.categories[it] }
+        return categoryId?.let { gameConfig.categories[it] }
     }
 
     fun add(tag: Tag){

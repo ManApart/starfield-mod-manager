@@ -1,5 +1,6 @@
 package commands
 
+import gameConfig
 import jsonMapper
 import kotlinx.serialization.encodeToString
 import nexus.getGameInfo
@@ -42,20 +43,20 @@ fun config(args: List<String>) {
         }
 
         args.size == 2 && args.first() == "game-path" -> {
-            toolConfig.gamePath = args.last()
-            println("Updated game path to ${toolConfig.gamePath}")
+            gameConfig.gamePath = args.last()
+            println("Updated game path to ${gameConfig.gamePath}")
             save()
         }
 
         args.size == 2 && args.first() == "appdata-path" -> {
-            toolConfig.appDataPath = args.last()
-            println("Updated appdata path to ${toolConfig.appDataPath}")
+            gameConfig.appDataPath= args.last()
+            println("Updated appdata path to ${gameConfig.appDataPath}")
             save()
         }
 
         args.size == 2 && args.first() == "ini-path" -> {
-            toolConfig.iniPath = args.last()
-            println("Updated ini path to ${toolConfig.iniPath}")
+            gameConfig.iniPath = args.last()
+            println("Updated ini path to ${gameConfig.iniPath}")
             save()
         }
 
@@ -74,8 +75,8 @@ fun config(args: List<String>) {
         args.size == 1 && args.first() == "categories" -> {
             getGameInfo(toolConfig.apiKey!!)?.let { info ->
                 if (info.categories.isNotEmpty()) {
-                    toolConfig.categories = info.categories.associate { it.category_id to it.name }
-                    println("Saved ${toolConfig.categories.size} categories")
+                    gameConfig.categories = info.categories.associate { it.category_id to it.name }
+                    println("Saved ${gameConfig.categories.size} categories")
                     save()
                 }
             }

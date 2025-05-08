@@ -1,8 +1,11 @@
 package commands
 
 import GameMode
-import gameConfig
+import gameMode
 import loadData
+import save
+import saveMainConfigOnly
+import toolConfig
 
 val modeDescription = """
    Switch which game you're managing
@@ -27,16 +30,20 @@ fun gameMode(args: List<String>) {
 }
 
 private fun setGameToStarfield() {
-    if (gameConfig != GameMode.STARFIELD) {
-        gameConfig = GameMode.STARFIELD
+    if (gameMode != GameMode.STARFIELD) {
+        gameMode = GameMode.STARFIELD
+        toolConfig.mode = gameMode
+        saveMainConfigOnly()
         loadData()
         CommandType.LIST.apply(listOf())
     }
 }
 
 private fun setGameToOblivionRemastered() {
-    if (gameConfig != GameMode.OBLIVION_REMASTERED) {
-        gameConfig = GameMode.OBLIVION_REMASTERED
+    if (gameMode != GameMode.OBLIVION_REMASTERED) {
+        gameMode = GameMode.OBLIVION_REMASTERED
+        toolConfig.mode = gameMode
+        saveMainConfigOnly()
         loadData()
         CommandType.LIST.apply(listOf())
     }

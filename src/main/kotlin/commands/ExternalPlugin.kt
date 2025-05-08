@@ -4,9 +4,9 @@ import Column
 import Mod
 import Table
 import confirm
+import gameConfig
 import modFolder
 import save
-import toolConfig
 import toolData
 import yellow
 import java.io.File
@@ -95,7 +95,7 @@ fun addExternal(esp: String, name: String? = null) {
 
 fun getExternalMods(): Map<String, Mod?> {
     val creations = parseCreationPlugins()
-    return File(toolConfig.gamePath!! + "/Data").listFiles()!!
+    return File(gameConfig.gamePath!! + "/Data").listFiles()!!
         .asSequence()
         .filter {
             it.extension in espTypes

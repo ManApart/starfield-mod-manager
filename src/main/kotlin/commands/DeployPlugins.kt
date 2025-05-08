@@ -1,16 +1,16 @@
 package commands
 
 import cyan
-import toolConfig
+import gameConfig
 import yellow
 import java.io.File
 
 fun deployPlugins(files: Map<String, File>) {
-    if (toolConfig.appDataPath == null){
+    if (gameConfig.appDataPath== null){
         println("Config must have appdata path to update plugins.txt")
         return
     }
-    val pluginsFile = File(toolConfig.appDataPath!! + "/Plugins.txt")
+    val pluginsFile = File(gameConfig.appDataPath!! + "/Plugins.txt")
     pluginsFile.writeText(createPluginsContent(files))
 
 }

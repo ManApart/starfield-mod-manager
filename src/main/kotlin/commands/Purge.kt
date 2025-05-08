@@ -2,10 +2,10 @@ package commands
 
 import confirm
 import cyan
+import gameConfig
 import getFiles
 import getFolders
 import red
-import toolConfig
 import yellow
 import java.io.File
 import java.nio.file.Files
@@ -38,8 +38,8 @@ fun purge(args: List<String>) {
 }
 
 private fun purgeFiles(dryRun: Boolean) {
-    toolConfig.gamePath?.let { purgeFiles(dryRun, it) }
-    toolConfig.iniPath?.let { purgeFiles(dryRun, it) }
+    gameConfig.gamePath?.let { purgeFiles(dryRun, it) }
+    gameConfig.iniPath?.let { purgeFiles(dryRun, it) }
     if (dryRun) {
         println(cyan("Purge dryrun compete"))
     } else {

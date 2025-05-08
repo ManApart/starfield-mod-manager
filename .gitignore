@@ -47,9 +47,12 @@ oblivion-remastered-config.json
 data.json
 starfield-data.json
 oblivion-remastered-data.json
-test-game-path
-test-ini-path
-test-appdata-path
+test/test-game-path
+test/test-ini-path
+test/test-appdata-path
 .idea/
 manual-data.json
 commit.txt
+test/
+oblivion-remastered-mods/
+starfield-mods/

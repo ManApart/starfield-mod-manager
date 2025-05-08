@@ -1,5 +1,4 @@
 import kotlinx.serialization.Serializable
-import nexus.EndorseStatus
 import nexus.ModInfo
 
 @Serializable

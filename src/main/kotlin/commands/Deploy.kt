@@ -2,7 +2,7 @@ package commands
 
 import Mod
 import cyan
-import toolConfig
+import gameConfig
 import toolData
 import verbose
 import java.io.File
@@ -27,7 +27,7 @@ fun deploy(args: List<String>) {
     when {
         args.firstOrNull() == "dryrun" -> deployDryRun(files)
         args.firstOrNull() == "overrides" -> showOverrides()
-        toolConfig.gamePath == null -> println("No game path configured")
+        gameConfig.gamePath == null -> println("No game path configured")
         files.isEmpty() -> println("No mod files found")
         else -> {
             getDisabledModPaths().forEach { deleteLink(it, files) }
@@ -61,7 +61,7 @@ private fun MutableMap<String, File>.addModFiles(mod: Mod) {
 }
 
 fun makeLink(gamePath: String, modFile: File) {
-    val gameFile = File(toolConfig.usedGamePath(gamePath) + "/$gamePath")
+    val gameFile = File(gameConfig.usedGamePath(gamePath) + "/$gamePath")
     gameFile.parentFile.mkdirs()
     if (Files.isSymbolicLink(gameFile.toPath())) {
         val existingLink = Files.readSymbolicLink(gameFile.toPath())
@@ -86,7 +86,7 @@ fun makeLink(gamePath: String, modFile: File) {
 }
 
 fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
-    val gameFile = File(toolConfig.usedGamePath(gamePath) + "/$gamePath")
+    val gameFile = File(gameConfig.usedGamePath(gamePath) + "/$gamePath")
     if (!modFiles.contains(gamePath) && Files.isSymbolicLink(gameFile.toPath())) {
         verbose("Delete: $gamePath")
         gameFile.delete()

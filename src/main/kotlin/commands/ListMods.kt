@@ -1,8 +1,8 @@
 package commands
 
-import FOLDER
 import Column
 import ENABLED
+import FOLDER
 import Mod
 import THUMBS_DOWN
 import THUMBS_UP
@@ -89,4 +89,3 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
     }.filter { it.second }.map { it.first }
     Table(columns, data).print()
 }
-
