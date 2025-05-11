@@ -40,7 +40,8 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
         StageChange.NONE -> {}
         StageChange.NO_FILES -> println(yellow("No staged files found for $modName"))
         StageChange.CAPITALIZE -> capitalizeData(stageFolder)
-        StageChange.NEST -> nestInData(modName, stageFolder, stagedFiles)
+        StageChange.NEST_IN_DATA -> nestInData(modName, stageFolder, stagedFiles)
+        StageChange.NEST_IN_UE4SS -> nestInUe4ss(modName, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
         StageChange.FOMOD -> println(yellow("FOMOD detected for $modName.") + " You should open the staging folder and pick options yourself.")
         else -> println(yellow("Unable to guess folder path for $modName.") + " You should open the staging folder and make sure it was installed correctly.")
@@ -48,7 +49,7 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
     properlyCasePaths(stageFolder)
 }
 
-enum class StageChange { NONE, NEST, UNNEST, FOMOD, CAPITALIZE, NO_FILES, UNKNOWN }
+enum class StageChange { NONE, NEST_IN_DATA, NEST_IN_UE4SS, UNNEST, FOMOD, CAPITALIZE, NO_FILES, UNKNOWN }
 
 fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
@@ -61,8 +62,9 @@ fun detectStagingChanges(stageFolder: File): StageChange {
         stagedFiles.isEmpty() -> StageChange.NO_FILES
         stagedFiles.any { it.nameWithoutExtension == "data" } -> StageChange.CAPITALIZE
         stagedNames.contains("data") -> StageChange.NONE
-        stagedNames.any { dataTopLevelNames.contains(it) } -> StageChange.NEST
-        stagedExtensions.any { dataTopLevelExtensions.contains(it) } -> StageChange.NEST
+        stagedNames.contains("ue4ss") -> StageChange.NEST_IN_UE4SS
+        stagedNames.any { dataTopLevelNames.contains(it) } -> StageChange.NEST_IN_DATA
+        stagedExtensions.any { dataTopLevelExtensions.contains(it) } -> StageChange.NEST_IN_DATA
         firstFile?.isDirectory ?: false && firstFile?.nameWithoutExtension?.startsWith("sfse_") ?: false -> StageChange.UNNEST
         stagedFiles.size == 1 && firstFile?.isDirectory ?: false && stagedFiles.first().listFiles()
             ?.map { it.nameWithoutExtension.lowercase() }?.contains("data") ?: false -> StageChange.UNNEST
@@ -97,10 +99,12 @@ private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
     }
 }
 
-private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) {
-    println("Nesting files in data for $modName")
+private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, gameMode.dataModPath, stageFolder, stagedFiles)
+private fun nestInUe4ss(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, "/Binaries/Win64", stageFolder, stagedFiles)
+private fun nestInPrefix(modName: String, prefix: String, stageFolder: File, stagedFiles: Array<File>) {
+    println("Nesting files in $prefix for $modName")
     try {
-        val dataFolder = File(stageFolder.path + gameMode.dataModPath).also { it.mkdirs() }
+        val dataFolder = File(stageFolder.path + prefix).also { it.mkdirs() }
         stagedFiles.forEach { file ->
             nest(stageFolder.path, file, dataFolder.path)
         }
@@ -110,6 +114,7 @@ private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<Fi
         verbose(e.stackTraceToString())
     }
 }
+
 
 private fun nest(stageFolderPath: String, file: File, dataPath: String) {
     val newPath = Path(file.path.replace(stageFolderPath, dataPath))
@@ -130,7 +135,7 @@ private fun properlyCasePaths(stageFolder: File) {
 }
 
 private fun case(folder: File) {
-    val ignored = listOf("Content", "Dev", "ObvData", "Data")
+    val ignored = listOf("Content", "Dev", "ObvData", "Data", "Binaries", "Win64", "Mods")
     val newPath = folder.parent + "/" + folder.name.lowercase()
     val next = if (!ignored.contains(folder.name)) {
         Files.move(folder.toPath(), Path(newPath), StandardCopyOption.REPLACE_EXISTING)
