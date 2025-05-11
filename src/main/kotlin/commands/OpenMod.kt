@@ -8,6 +8,7 @@ import toolData
 import java.awt.Desktop
 import java.io.File
 import java.net.URI
+import GamePath.*
 
 val openDescription = """
     Open various folders and filepaths
@@ -20,10 +21,10 @@ fun open(args: List<String>) = openMod(true, args)
 fun local(args: List<String>) = openMod(false, args)
 fun cli(args: List<String>) = openMod(false, args.toMutableList().also { it.add("cli") })
 
-fun openGamePath(args: List<String>) = open(gameConfig.gamePath!!, "game path", args.contains("cli"))
-fun openAppDataPath(args: List<String>) = open(gameConfig.appDataPath!!, "appdata path", args.contains("cli"))
-fun openIniPath(args: List<String>) = open(gameConfig.appDataPath!!, "ini path", args.contains("cli"))
-fun openPluginsTxt(args: List<String>) = open(gameConfig.appDataPath!! +"/Plugins.txt", "plugins file", args.contains("cli"))
+fun openGamePath(args: List<String>) = open(gameConfig[GAME]!!, "game path", args.contains("cli"))
+fun openAppDataPath(args: List<String>) = open(gameConfig[APP_DATA]!!, "appdata path", args.contains("cli"))
+fun openIniPath(args: List<String>) = open(gameConfig[INI]!!, "ini path", args.contains("cli"))
+fun openPluginsTxt(args: List<String>) = open(gameConfig[APP_DATA]!! +"/Plugins.txt", "plugins file", args.contains("cli"))
 fun openJarPath(args: List<String>) = open(".", "jar path", args.contains("cli"))
 fun openManual(args: List<String>) = openInWeb("https://manapart.github.io/starfield-mod-manager-site/manual.html")
 fun openSite(args: List<String>) = openInWeb("https://manapart.github.io/starfield-mod-manager-site/index.html")

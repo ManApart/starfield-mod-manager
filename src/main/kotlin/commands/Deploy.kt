@@ -9,6 +9,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
+import GamePath.*
 
 val deployDescription = """
     Applies all enabled mods to the game folder by creating the appropriate symlinks
@@ -27,7 +28,7 @@ fun deploy(args: List<String>) {
     when {
         args.firstOrNull() == "dryrun" -> deployDryRun(files)
         args.firstOrNull() == "overrides" -> showOverrides()
-        gameConfig.gamePath == null -> println("No game path configured")
+        gameConfig[GAME] == null -> println("No game path configured")
         files.isEmpty() -> println("No mod files found")
         else -> {
             getDisabledModPaths().forEach { deleteLink(it, files) }

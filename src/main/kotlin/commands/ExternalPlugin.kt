@@ -11,6 +11,7 @@ import toolData
 import yellow
 import java.io.File
 import java.nio.file.Files
+import GamePath.*
 
 private val ignoredExternalPlugins = listOf("Starfield", "OldMars", "Constellation", "BlueprintShips-Starfield", "SFBGS003", "SFBGS006", "SFBGS007", "SFBGS008")
 
@@ -95,7 +96,7 @@ fun addExternal(esp: String, name: String? = null) {
 
 fun getExternalMods(): Map<String, Mod?> {
     val creations = parseCreationPlugins()
-    return File(gameConfig.gamePath!! + "/Data").listFiles()!!
+    return File(gameConfig[GAME]!! + "/Data").listFiles()!!
         .asSequence()
         .filter {
             it.extension in espTypes

@@ -8,6 +8,7 @@ import save
 import toolConfig
 import java.io.File
 import kotlin.reflect.KMutableProperty0
+import GamePath.*
 
 val configDescription = """
     Used to configure the mod manager itself. Saved in the config.json file located next to the jar
@@ -43,20 +44,20 @@ fun config(args: List<String>) {
         }
 
         args.size == 2 && args.first() == "game-path" -> {
-            gameConfig.gamePath = args.last()
-            println("Updated game path to ${gameConfig.gamePath}")
+            gameConfig[GAME] = args.last()
+            println("Updated game path to ${gameConfig[GAME]}")
             save()
         }
 
         args.size == 2 && args.first() == "appdata-path" -> {
-            gameConfig.appDataPath= args.last()
-            println("Updated appdata path to ${gameConfig.appDataPath}")
+            gameConfig[APP_DATA] = args.last()
+            println("Updated appdata path to ${gameConfig[APP_DATA]}")
             save()
         }
 
         args.size == 2 && args.first() == "ini-path" -> {
-            gameConfig.iniPath = args.last()
-            println("Updated ini path to ${gameConfig.iniPath}")
+            gameConfig[INI] = args.last()
+            println("Updated ini path to ${gameConfig[INI]}")
             save()
         }
 

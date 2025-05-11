@@ -1,4 +1,5 @@
 import kotlinx.serialization.Serializable
+import GamePath.*
 
 @Serializable
 data class MainConfig(
@@ -13,11 +14,14 @@ data class MainConfig(
 
 @Serializable
 data class GameConfig(
-    var gamePath: String? = null,
-    var appDataPath: String? = null,
-    var iniPath: String? = null,
     var useMyDocs: Boolean = false,
     var categories: Map<Int, String> = mapOf(),
+    val paths: MutableMap<String, String> = mutableMapOf(),
 ) {
-    fun usedGamePath(modGamePath: String) = if (useMyDocs && modGamePath.startsWith("Data", true)) iniPath else gamePath
+    fun usedGamePath(modGamePath: String) = if (useMyDocs && modGamePath.startsWith("Data", true)) this[INI] else this[APP_DATA]
+
+    operator fun get(type: GamePath) = paths[type.name]
+    operator fun set(type: GamePath, value: String){
+        paths[type.name] = value
+    }
 }

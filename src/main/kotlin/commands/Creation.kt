@@ -21,6 +21,7 @@ import yellow
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import GamePath.*
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -85,19 +86,19 @@ fun creation(args: List<String>) {
 }
 
 fun parseCreationCatalog(): Map<String, Creation> {
-    val rawLines = File(gameConfig.appDataPath+ "/ContentCatalog.txt").readLines()
+    val rawLines = File(gameConfig[APP_DATA]+ "/ContentCatalog.txt").readLines()
     val parsable = jsonMapper.decodeFromString<JsonObject>(rawLines.joinToString("\n")).filter { it.key != "ContentCatalog" }.toMap().let { jsonMapper.encodeToString(it) }
     return jsonMapper.decodeFromString<Map<String, Creation>>(parsable).also { it.entries.forEach { (id, creation) -> creation.creationId = id } }
 }
 
 fun updateCreationCatalog(creations: List<Creation>){
-    val rawLines = File(gameConfig.appDataPath+ "/ContentCatalog.txt").readLines()
+    val rawLines = File(gameConfig[APP_DATA]+ "/ContentCatalog.txt").readLines()
     val header = "{\n\t\"ContentCatalog\": "+ jsonMapper.decodeFromString<JsonObject>(rawLines.joinToString("\n"))["ContentCatalog"].let { jsonMapper.encodeToString(it) } + ","
 
     val creationsString = jsonMapper.encodeToString(creations.associateBy { it.creationId }).drop(1)
     val fullText = header + creationsString +"\n"
 
-    File(gameConfig.appDataPath+ "/ContentCatalog.txt").writeText(fullText)
+    File(gameConfig[APP_DATA]+ "/ContentCatalog.txt").writeText(fullText)
 }
 
 fun parseCreationPlugins(): List<String> {
@@ -142,7 +143,7 @@ fun addCreation(creationId: String) {
 }
 
 fun addCreation(creation: Creation) {
-    val files = creation.files.map { File(gameConfig.gamePath!! + "/Data/$it") }
+    val files = creation.files.map { File(gameConfig[GAME]!! + "/Data/$it") }
     if (files.isEmpty()) {
         println(red("No files found for ${creation.title}"))
     }
@@ -161,7 +162,7 @@ fun addCreation(creation: Creation) {
         }
     }
 
-    val dataFolderFiles = File(gameConfig.gamePath!! + "/Data").listFiles()!!
+    val dataFolderFiles = File(gameConfig[GAME]!! + "/Data").listFiles()!!
     val dest = File(mod.filePath + "/Data").also { it.mkdirs() }
     files.forEach { initialFile ->
         var file: File? = initialFile
@@ -201,7 +202,7 @@ fun rmCreation(mod: Mod, force: Boolean = false) {
             .forEach { file ->
                 val linkFile = file.absolutePath.replace(modRoot, "")
                 deleteLink(linkFile, mapOf())
-                val destFile = File(file.absolutePath.replace(modRoot, gameConfig.gamePath!! + "/"))
+                val destFile = File(file.absolutePath.replace(modRoot, gameConfig[GAME]!! + "/"))
                 if (!destFile.exists()) {
                     Files.move(file.toPath(), destFile.toPath())
                 }
