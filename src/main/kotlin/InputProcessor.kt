@@ -24,7 +24,7 @@ fun readLine(line: String?) {
 }
 
 fun String.parseArgs(home: String = HOME): List<String> {
-    return replace("~", home).split("\"").chunked(2).flatMap { parts ->
+    return replace("~/", "$home/").split("\"").chunked(2).flatMap { parts ->
         val second = if (parts.size == 2) listOf(parts.last()) else listOf()
         parts.first().trim().split(" ") + second
     }.filter { it.isNotBlank() }

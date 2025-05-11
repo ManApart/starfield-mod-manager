@@ -9,7 +9,6 @@ import save
 import toolConfig
 import java.io.File
 import kotlin.reflect.KMutableProperty0
-import GamePath.*
 
 val configDescription = """
     Used to configure the mod manager itself. Saved in the config.json file located next to the jar
@@ -25,7 +24,7 @@ val configDescription = """
     version gives the commit that the app was built from
 """.trimIndent()
 val configUsage = """
-    ${GamePath.entries.joinToString("\n"){"|config $it <path-to-folder>"}}
+    ${GamePath.entries.joinToString("\n") { "|config $it <path-to-folder>" }}
     |config api-key <key-from-nexus>
     |config open-in-terminal-command <path-to-folder> 
     |config verbose <true/false>
@@ -36,27 +35,16 @@ val configUsage = """
 """.trimMargin()
 
 fun config(args: List<String>) {
+    val path = args.firstOrNull()?.lowercase()?.let { a -> GamePath.entries.firstOrNull { it.name.lowercase() == a } }
     when {
         args.isEmpty() -> {
             println("Running in ${File(".").absolutePath}")
-            println("Config:\n" + jsonMapper.encodeToString(toolConfig))
+            println("Main Config:\n" + jsonMapper.encodeToString(toolConfig))
+            println("Game Config:\n" + jsonMapper.encodeToString(gameConfig))
         }
-
-        args.size == 2 && args.first() == "game-path" -> {
-            gameConfig[GAME] = args.last()
-            println("Updated game path to ${gameConfig[GAME]}")
-            save()
-        }
-
-        args.size == 2 && args.first() == "appdata-path" -> {
-            gameConfig[APP_DATA] = args.last()
-            println("Updated appdata path to ${gameConfig[APP_DATA]}")
-            save()
-        }
-
-        args.size == 2 && args.first() == "ini-path" -> {
-            gameConfig[INI] = args.last()
-            println("Updated ini path to ${gameConfig[INI]}")
+        args.size == 2 && path != null ->{
+            gameConfig[path] = args.last()
+            println("Updated $path to ${gameConfig[path]}")
             save()
         }
 
