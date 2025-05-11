@@ -47,7 +47,7 @@ private fun downloadMod(mod: Mod, forceRedownload: Boolean, fileId: Int? = null)
         println(red("Unable to get download url for ${mod.name}"))
         return null
     }
-    val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
+    val destination = "$HOME/Downloads/${gameMode.modFolder}/$cleanName${parseFileExtension(downloadUrl)}"
     return downloadMod(downloadUrl, destination, forceRedownload)
 }
 
@@ -129,7 +129,7 @@ fun addModByNexusProtocol(url: String) {
         println(red("Unable to get download url for $modName"))
         return
     }
-    val destination = "$HOME/Downloads/starfield-mods/$cleanName${parseFileExtension(downloadUrl)}"
+    val destination = "$HOME/Downloads/${gameMode.modFolder}/$cleanName${parseFileExtension(downloadUrl)}"
     val downloaded = downloadMod(downloadUrl, destination)
     if (downloaded == null) {
         println(red("Failed to download ${mod.name}"))
