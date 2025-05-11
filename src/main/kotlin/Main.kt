@@ -1,5 +1,7 @@
 import commands.CommandType
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonObject
 import java.io.File
 
 lateinit var toolData: Data
@@ -17,6 +19,7 @@ val jsonMapper = kotlinx.serialization.json.Json {
 }
 
 fun main(args: Array<String>) {
+    checkForUpgrade()
     loadData()
     println(cyan("\n${gameMode.displayName} Mod Manager"))
     if (args.isEmpty()) {
@@ -34,6 +37,17 @@ fun main(args: Array<String>) {
         }
     } else {
         readLine(args.joinToString(" "))
+    }
+}
+
+private fun checkForUpgrade() {
+    File(mainConfigPath()).takeIf { it.exists() }?.let {
+        jsonMapper.decodeFromString<JsonObject>(it.readText())
+    }?.let { legacyConfig ->
+        if (legacyConfig.containsKey("gamePath") || legacyConfig.containsKey("categories")){
+            //We should auto upgrade if possible
+            throw IllegalStateException("Config file setup has changed. Please see https://manapart.github.io/starfield-mod-manager-site/setup.html#Upgrade to upgrade your config to the new format")
+        }
     }
 }
 
