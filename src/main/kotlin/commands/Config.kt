@@ -1,5 +1,6 @@
 package commands
 
+import GamePath
 import gameConfig
 import jsonMapper
 import kotlinx.serialization.encodeToString
@@ -24,17 +25,15 @@ val configDescription = """
     version gives the commit that the app was built from
 """.trimIndent()
 val configUsage = """
-    config game-path <path-to-folder>
-    config appdata-path <path-to-folder>
-    config ini-path <path-to-folder> 
-    config api-key <key-from-nexus>
-    config open-in-terminal-command <path-to-folder> 
-    config verbose <true/false>
-    config autodeploy <true/false>
-    config use-my-docs <true/false> 
-    config categories
-    config version
-""".trimIndent()
+    ${GamePath.entries.joinToString("\n"){"|config $it <path-to-folder>"}}
+    |config api-key <key-from-nexus>
+    |config open-in-terminal-command <path-to-folder> 
+    |config verbose <true/false>
+    |config autodeploy <true/false>
+    |config use-my-docs <true/false> 
+    |config categories
+    |config version
+""".trimMargin()
 
 fun config(args: List<String>) {
     when {
