@@ -100,7 +100,7 @@ private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
 private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Nesting files in data for $modName")
     try {
-        val dataFolder = File(stageFolder.path + "/Data").also { it.mkdirs() }
+        val dataFolder = File(stageFolder.path + gameMode.dataModPath).also { it.mkdirs() }
         stagedFiles.forEach { file ->
             nest(stageFolder.path, file, dataFolder.path)
         }
@@ -130,8 +130,9 @@ private fun properlyCasePaths(stageFolder: File) {
 }
 
 private fun case(folder: File) {
+    val ignored = listOf("Content", "Dev", "ObvData", "Data")
     val newPath = folder.parent + "/" + folder.name.lowercase()
-    val next = if (folder.name != "Data") {
+    val next = if (!ignored.contains(folder.name)) {
         Files.move(folder.toPath(), Path(newPath), StandardCopyOption.REPLACE_EXISTING)
         File(newPath)
     } else folder

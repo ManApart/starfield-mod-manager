@@ -1,6 +1,7 @@
 package commands
 
 import GamePath
+import GamePath.*
 import Mod
 import gameConfig
 import runCommand
@@ -9,8 +10,6 @@ import toolData
 import java.awt.Desktop
 import java.io.File
 import java.net.URI
-import GamePath.*
-import red
 
 val openDescription = """
     Open various folders and filepaths
@@ -62,11 +61,7 @@ fun openInWeb(url: String, urlName: String = url) {
 fun openLocal(mod: Mod, cli: Boolean) = open(mod.filePath, mod.name, cli)
 
 private fun open(path: GamePath, name: String, cli: Boolean) {
-    if (toolConfig.mode.paths.contains(path)) {
-        open(gameConfig[path]!!, name, cli)
-    } else {
-        println(red(toolConfig.mode.displayName + " does not use ${path.name}"))
-    }
+    open(gameConfig[path]!!, name, cli)
 }
 
 private fun open(path: String, name: String, cli: Boolean) {

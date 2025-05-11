@@ -1,5 +1,4 @@
 import commands.CommandType
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonObject
 import java.io.File
@@ -62,7 +61,7 @@ fun loadData() {
         jsonMapper.decodeFromString(it.readText())
     } ?: GameConfig()
 
-    toolData = File(gameMode.dataPath).takeIf { it.exists() }?.let {
+    toolData = File(gameMode.dataJsonPath).takeIf { it.exists() }?.let {
         jsonMapper.decodeFromString(it.readText())
     } ?: Data()
     toolData.updateSorts()
@@ -72,7 +71,7 @@ fun save() {
     if (testingMode) return
     File(mainConfigPath()).writeText(jsonMapper.encodeToString(toolConfig))
     File(gameMode.configPath).writeText(jsonMapper.encodeToString(gameConfig))
-    File(gameMode.dataPath).writeText(jsonMapper.encodeToString(toolData))
+    File(gameMode.dataJsonPath).writeText(jsonMapper.encodeToString(toolData))
 }
 
 fun saveMainConfigOnly() {

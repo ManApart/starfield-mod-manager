@@ -4,6 +4,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.io.File
 
+enum class DeployType { DATA, PAK, UE4SS}
+
 @Serializable
 data class Mod(
     var name: String,
