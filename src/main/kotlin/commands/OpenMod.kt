@@ -1,5 +1,6 @@
 package commands
 
+import GamePath
 import Mod
 import gameConfig
 import runCommand
@@ -9,6 +10,7 @@ import java.awt.Desktop
 import java.io.File
 import java.net.URI
 import GamePath.*
+import red
 
 val openDescription = """
     Open various folders and filepaths
@@ -21,10 +23,10 @@ fun open(args: List<String>) = openMod(true, args)
 fun local(args: List<String>) = openMod(false, args)
 fun cli(args: List<String>) = openMod(false, args.toMutableList().also { it.add("cli") })
 
-fun openGamePath(args: List<String>) = open(gameConfig[GAME]!!, "game path", args.contains("cli"))
-fun openAppDataPath(args: List<String>) = open(gameConfig[APP_DATA]!!, "appdata path", args.contains("cli"))
-fun openIniPath(args: List<String>) = open(gameConfig[INI]!!, "ini path", args.contains("cli"))
-fun openPluginsTxt(args: List<String>) = open(gameConfig[APP_DATA]!! +"/Plugins.txt", "plugins file", args.contains("cli"))
+fun openGamePath(args: List<String>) = open(GAME, "game path", args.contains("cli"))
+fun openAppDataPath(args: List<String>) = open(APP_DATA, "appdata path", args.contains("cli"))
+fun openIniPath(args: List<String>) = open(INI, "ini path", args.contains("cli"))
+fun openPluginsTxt(args: List<String>) = open(gameConfig[APP_DATA]!! + "/Plugins.txt", "plugins file", args.contains("cli"))
 fun openJarPath(args: List<String>) = open(".", "jar path", args.contains("cli"))
 fun openManual(args: List<String>) = openInWeb("https://manapart.github.io/starfield-mod-manager-site/manual.html")
 fun openSite(args: List<String>) = openInWeb("https://manapart.github.io/starfield-mod-manager-site/index.html")
@@ -50,18 +52,26 @@ fun openInWeb(mod: Mod) {
 }
 
 fun openInWeb(url: String, urlName: String = url) {
-        try {
-            Desktop.getDesktop().browse(URI(url))
-        } catch (e: Exception) {
-            println("Unable to open $urlName in web")
-        }
+    try {
+        Desktop.getDesktop().browse(URI(url))
+    } catch (e: Exception) {
+        println("Unable to open $urlName in web")
+    }
 }
 
 fun openLocal(mod: Mod, cli: Boolean) = open(mod.filePath, mod.name, cli)
 
+private fun open(path: GamePath, name: String, cli: Boolean) {
+    if (toolConfig.mode.paths.contains(path)) {
+        open(gameConfig[path]!!, name, cli)
+    } else {
+        println(red(toolConfig.mode.displayName + " does not use ${path.name}"))
+    }
+}
+
 private fun open(path: String, name: String, cli: Boolean) {
     try {
-        if (cli){
+        if (cli) {
             val command = toolConfig.openInTerminalCommand?.replace("{pwd}", path) ?: "gnome-terminal"
             File(path).runCommand(command)
         } else {
