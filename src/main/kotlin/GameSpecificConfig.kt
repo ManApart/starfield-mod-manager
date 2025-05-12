@@ -29,3 +29,6 @@ fun mainConfigPath() = System.getenv("XDG_CONFIG_HOME")?.replace("~", HOME)?.let
 enum class GamePath {
     GAME, APP_DATA, INI
 }
+
+const val win64 = "/Binaries/Win64"
+const val paks = "/Content/Paks/~mods"

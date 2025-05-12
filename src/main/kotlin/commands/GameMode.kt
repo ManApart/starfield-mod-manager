@@ -18,7 +18,7 @@ val modeUsage = """
    mode or
 """.trimIndent()
 
-fun gameMode(args: List<String>) {
+fun selectGameMode(args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     when {
         args.isEmpty() -> println(modeDescription)

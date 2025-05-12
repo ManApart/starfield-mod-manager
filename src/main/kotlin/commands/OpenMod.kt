@@ -4,6 +4,7 @@ import GamePath
 import GamePath.*
 import Mod
 import gameConfig
+import gameMode
 import runCommand
 import toolConfig
 import toolData
@@ -25,7 +26,10 @@ fun cli(args: List<String>) = openMod(false, args.toMutableList().also { it.add(
 fun openGamePath(args: List<String>) = open(GAME, "game path", args.contains("cli"))
 fun openAppDataPath(args: List<String>) = open(APP_DATA, "appdata path", args.contains("cli"))
 fun openIniPath(args: List<String>) = open(INI, "ini path", args.contains("cli"))
-fun openPluginsTxt(args: List<String>) = open(gameConfig[APP_DATA]!! + "/Plugins.txt", "plugins file", args.contains("cli"))
+fun openPluginsTxt(args: List<String>){
+    val folder = if (gameMode == GameMode.STARFIELD) gameConfig[APP_DATA]!! else gameConfig[GAME]!! + gameMode.dataModPath
+    open("$folder/Plugins.txt", "plugins file", args.contains("cli"))
+}
 fun openJarPath(args: List<String>) = open(".", "jar path", args.contains("cli"))
 fun openManual(args: List<String>) = openInWeb("https://manapart.github.io/starfield-mod-manager-site/manual.html")
 fun openSite(args: List<String>) = openInWeb("https://manapart.github.io/starfield-mod-manager-site/index.html")
