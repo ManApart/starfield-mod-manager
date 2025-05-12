@@ -11,6 +11,7 @@ fun deployPlugins(files: Map<String, File>) {
         println("Config must have appdata path to update plugins.txt")
         return
     }
+    //TODO
     val pluginsFile = File(gameConfig[APP_DATA]!! + "/Plugins.txt")
     pluginsFile.writeText(createPluginsContent(files))
 
@@ -29,6 +30,7 @@ private fun createPluginsContent(files: Map<String, File>): String {
         println(yellow("WARNING: There are duplicate plugin files"))
     }
 
+    //TODO - make this game specific
     return """
         |# This file is used by Starfield to keep track of your downloaded content.
         |# Please do not modify this file.

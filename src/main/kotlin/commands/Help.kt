@@ -50,8 +50,12 @@ private fun printGeneralHelp() {
 
 private fun printDetailedHelp() {
     println(CommandType.entries.filterNot { it == CommandType.HELP }.joinToString("\n\n") {
-        val descriptionString = it.description.replace("\n", "\n\t")
-        val usageString = it.usage.replace("\n", "\n\t")
-        "${cyan(it.cleanName)}: ${it.summary}\n\t$descriptionString\n\n\t$usageString"
+       it.detailedHelp()
     })
+}
+
+private fun CommandType.detailedHelp(): String{
+    val descriptionString = description.replace("\n", "\n\t")
+    val usageString = usage.replace("\n", "\n\t")
+    return "${cyan(cleanName)}: ${summary}\n\t$descriptionString\n\n\t$usageString"
 }
