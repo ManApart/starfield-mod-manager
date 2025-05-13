@@ -12,10 +12,10 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 19
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '19'
+          java-version: '21'
           distribution: 'adopt'
       - name: Cache Gradle packages
         uses: actions/cache@v4
