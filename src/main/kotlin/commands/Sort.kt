@@ -20,7 +20,7 @@ val sortUsage = """
     sort staged
 """.trimIndent()
 
-fun sortMods(args: List<String> = listOf()) {
+fun sortMods(command: String, args: List<String> = listOf()) {
     val reverse = args.lastOrNull() == "reverse"
     when (args.firstOrNull()) {
         "name" -> sort(reverse) { it.name }
@@ -42,5 +42,5 @@ private inline fun <R : Comparable<R>> sort(reverse: Boolean, crossinline select
     }
     toolData.updateSorts()
     save()
-    listMods()
+    listMods("")
 }

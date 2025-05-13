@@ -33,14 +33,14 @@ val searchModsUsage = """
     search upgrade
 """.trimIndent()
 
-fun searchMods(args: List<String> = listOf()) {
+fun searchMods(command: String, args: List<String> = listOf()) {
     searchMods(false, args)
 }
 
 fun searchMods(persist: Boolean, args: List<String> = listOf()) {
     if (args.firstOrNull() == "all" || args.firstOrNull() == "clear") {
         toolData.mods.forEach { it.show = true }
-        listMods()
+        listMods("")
         return
     }
     val enabled = when {

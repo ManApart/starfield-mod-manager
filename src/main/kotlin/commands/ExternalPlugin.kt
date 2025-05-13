@@ -30,7 +30,7 @@ val externalModUsage = """
    external add all
 """.trimIndent()
 
-fun externalMod(args: List<String>) {
+fun externalMod(command: String, args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     when {
         args.isEmpty() -> println(externalModDescription)

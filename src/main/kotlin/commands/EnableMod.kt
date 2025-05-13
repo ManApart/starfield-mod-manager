@@ -27,9 +27,9 @@ val disableUsage = """
     disable all
 """.trimIndent()
 
-fun enable(args: List<String>) = enableMod(true, args)
+fun enable(command: String, args: List<String>) = enableMod(true, args)
 
-fun disable(args: List<String>) = enableMod(false, args)
+fun disable(command: String, args: List<String>) = enableMod(false, args)
 
 private fun enableMod(enable: Boolean = true, args: List<String>) {
     when {
@@ -38,7 +38,7 @@ private fun enableMod(enable: Boolean = true, args: List<String>) {
         args.size == 1 && args.first() == "all" -> enableRange(enable, listOf("0-${toolData.mods.size - 1}"))
         else -> enableList(enable, args)
     }
-    if (args.isNotEmpty() && toolConfig.autoDeploy) deploy(listOf())
+    if (args.isNotEmpty() && toolConfig.autoDeploy) deploy("", listOf())
 }
 
 private fun enableList(enable: Boolean, args: List<String>) {

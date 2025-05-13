@@ -10,7 +10,7 @@ val helpUsage = """
     help <command>
 """.trimIndent()
 
-fun help(args: List<String> = listOf()) {
+fun help(command: String, args: List<String> = listOf()) {
     val helpCommand = args.firstOrNull()?.let { getCommand(it) }
     when {
         args.isEmpty() -> printGeneralHelp()

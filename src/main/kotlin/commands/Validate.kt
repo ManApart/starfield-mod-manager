@@ -29,7 +29,7 @@ val validateUsage = """
     validate check 1
 """.trimIndent()
 
-fun validateMods(args: List<String>) {
+fun validateMods(command: String, args: List<String>) {
     val i = args.getOrNull(args.size - 1)?.toIntOrNull()
     when {
         args.isEmpty() -> toolData.mods.filter { it.enabled }.validate()

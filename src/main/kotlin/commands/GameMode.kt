@@ -18,7 +18,7 @@ val modeUsage = """
    mode or
 """.trimIndent()
 
-fun selectGameMode(args: List<String>) {
+fun selectGameMode(command: String, args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     when {
         args.isEmpty() -> println(modeDescription)
@@ -34,7 +34,7 @@ private fun setGameToStarfield() {
         toolConfig.mode = gameMode
         saveMainConfigOnly()
         loadData()
-        CommandType.LIST.apply(listOf())
+        CommandType.LIST.apply("ls", listOf())
     }
 }
 
@@ -44,6 +44,6 @@ private fun setGameToOblivionRemastered() {
         toolConfig.mode = gameMode
         saveMainConfigOnly()
         loadData()
-        CommandType.LIST.apply(listOf())
+        CommandType.LIST.apply("ls", listOf())
     }
 }

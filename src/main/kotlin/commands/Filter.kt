@@ -22,6 +22,6 @@ val filterUsage = """
     filter upgrade
 """.trimIndent()
 
-fun filterMods(args: List<String> = listOf()) {
+fun filterMods(command: String, args: List<String> = listOf()) {
     searchMods(true, args)
 }

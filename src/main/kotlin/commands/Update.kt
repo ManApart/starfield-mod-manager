@@ -23,7 +23,7 @@ val updateUsage = """
     update enabled
 """.trimIndent()
 
-fun update(args: List<String>) {
+fun update(command: String, args: List<String>) {
     doCommand(args, List<Mod>::updateMods)
 }
 

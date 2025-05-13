@@ -24,7 +24,7 @@ val addModUsage = """
    add <path-to-mod-zip> <name-of-mod>*
 """.trimIndent()
 
-fun addMod(args: List<String>) {
+fun addMod(command: String, args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     val firstLower = firstArg.lowercase()
     when {

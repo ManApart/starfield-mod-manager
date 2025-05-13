@@ -15,11 +15,7 @@ enum class Tag(val tag: String) {
 }
 
 val tagDescription = """
-Tools for managing external plugins
-external ls - lists unmanaged plugins by examining your game data folder
-external add - adds a single plugin by its id (like SFBGS003). Also see add mod
-external add all - Attempts to add _all_ unmanaged plugins found in the data folder
-
+Add and remove tags
 """.trimIndent()
 
 val tagUsage = """
@@ -28,17 +24,17 @@ val tagUsage = """
    tag 1 rm 0
 """.trimIndent()
 
-fun tag(args: List<String>) {
+fun tag(command: String, args: List<String>) {
     val i = args.firstOrNull()?.toIntOrNull()
     val mod = i?.let { toolData.byIndex(it) }
-    val command = args.getOrNull(1)?.replace("rm", "remove")
+    val subCommand = args.getOrNull(1)?.replace("rm", "remove")
     val tagArg = args.getOrNull(2)
     when {
         args.isEmpty() -> println(tagDescription)
         mod == null -> println("Must provide the index of a valid mod to update")
-        command == "add" -> addTag(mod, tagArg)
-        command == "remove" && tagArg?.toIntOrNull() != null -> removeTag(mod, tagArg.toInt())
-        command == "remove" && tagArg != null -> removeTag(mod, tagArg)
+        subCommand == "add" -> addTag(mod, tagArg)
+        subCommand == "remove" && tagArg?.toIntOrNull() != null -> removeTag(mod, tagArg.toInt())
+        subCommand == "remove" && tagArg != null -> removeTag(mod, tagArg)
 
         else -> println("Unknown args: ${args.joinToString(" ")}")
     }

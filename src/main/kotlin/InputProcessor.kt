@@ -4,7 +4,7 @@ import commands.getCommand
 var lastFullInput = ""
 
 fun readLine(line: String?) {
-    val parts = line?.parseArgs() ?: return
+    val parts = line?.parseArgs()?.map { it.lowercase() } ?: return
     lastFullInput = line
     when {
         parts.isEmpty() -> CommandType.HELP.usage
@@ -15,7 +15,7 @@ fun readLine(line: String?) {
 
             val command = getCommand(commandString)
             if (command != null) {
-                command.apply(args)
+                command.apply(commandString, args)
             } else {
                 println("Unknown Command $commandString")
             }

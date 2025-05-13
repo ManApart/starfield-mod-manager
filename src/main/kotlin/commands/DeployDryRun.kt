@@ -5,7 +5,7 @@ import cyan
 import toolData
 import java.io.File
 
-fun deployDryRun(files: Map<String, File>) {
+fun deployDryRun(command: String, files: Map<String, File>) {
     getAnnotatedModFiles().forEach { entry ->
         println(entry.key)
         val winner = entry.value.first()

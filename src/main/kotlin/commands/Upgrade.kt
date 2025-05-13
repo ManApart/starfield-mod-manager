@@ -19,7 +19,7 @@ val upgradeUsage = """
     upgrade all
 """.trimIndent()
 
-fun upgrade(args: List<String>) {
+fun upgrade(command: String, args: List<String>) {
     if (args.isEmpty()) {
         println(upgradeDescription + "\n")
         val updatable = toolData.mods.map { it to it.updateAvailable() }

@@ -8,7 +8,7 @@ enum class GameMode(
     val modFolder: String,
     val urlName: String,
     val gamePaths: List<GamePath>,
-    val generatedPaths: List<GeneratedPath>
+    val generatedPaths: Map<String, GeneratedPath>
 ) {
     STARFIELD(
         "Starfield",

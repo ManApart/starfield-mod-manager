@@ -25,7 +25,7 @@ val purgeUsage = """
     purge dryrun
 """.trimIndent()
 
-fun purge(args: List<String>) {
+fun purge(command: String, args: List<String>) {
     val dryRun = args.lastOrNull() == "dryrun"
 
     if (!dryRun) {

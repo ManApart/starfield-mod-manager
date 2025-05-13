@@ -23,7 +23,7 @@ val profileUsage = """
     profile compare <index>
 """.trimIndent()
 
-fun profile(args: List<String> = listOf()) {
+fun profile(command: String, args: List<String> = listOf()) {
     val subCommand = args.firstOrNull()
     val index = args.lastOrNull()?.toIntOrNull()
     when {

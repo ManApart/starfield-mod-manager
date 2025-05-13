@@ -19,8 +19,8 @@ val endorseUsage = """
     endorse 1-4
 """.trimIndent()
 
-fun endorse(args: List<String>) = endorseMod(true, args)
-fun abstain(args: List<String>) = endorseMod(false, args)
+fun endorse(command: String, args: List<String>) = endorseMod(true, args)
+fun abstain(command: String, args: List<String>) = endorseMod(false, args)
 
 private fun endorseMod(abstain: Boolean = true, args: List<String>) {
     when {

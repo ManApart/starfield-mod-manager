@@ -24,7 +24,7 @@ val listUsage = """
     list <start> <amount>
 """.trimIndent()
 
-fun listMods(args: List<String> = listOf()) {
+fun listMods(command: String, args: List<String> = listOf()) {
     val ranges = args.mapNotNull { it.toIntOrNull() }
     when {
         ranges.isNotEmpty() -> displayAmount(ranges)

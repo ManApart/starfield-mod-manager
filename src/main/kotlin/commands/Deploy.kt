@@ -23,10 +23,10 @@ val deployUsage = """
     deploy dryrun
 """.trimIndent()
 
-fun deploy(args: List<String>) {
+fun deploy(command: String, args: List<String>) {
     val files = getAllModFiles()
     when {
-        args.firstOrNull() == "dryrun" -> deployDryRun(files)
+        args.firstOrNull() == "dryrun" -> deployDryRun(command, files)
         args.firstOrNull() == "overrides" -> showOverrides()
         gameConfig[GAME] == null -> println("No game path configured")
         files.isEmpty() -> println("No mod files found")

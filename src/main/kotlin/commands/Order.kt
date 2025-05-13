@@ -24,7 +24,7 @@ val orderUsage = """
 
 data class Args(val index: Int, val subCommand: String, val amount: Int?)
 
-fun order(args: List<String>) {
+fun order(command: String, args: List<String>) {
     val arguments = parseArgs(args)
         ?: if (args.size == 1 && args.last().toIntOrNull() != null) {
             toolData.mods.getOrNull(args.last().toInt())?.let { showOverrides(it) }

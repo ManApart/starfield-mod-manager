@@ -17,7 +17,7 @@ val importUsage = """
     import <json>
 """.trimIndent()
 
-fun importData(args: List<String> = listOf()) {
+fun importData(command: String, args: List<String> = listOf()) {
     val input = if (lastFullInput.startsWith("import")) lastFullInput.substring("import ".length) else lastFullInput.substring(2)
     println("Importing $input")
     var changes: Changes? = null

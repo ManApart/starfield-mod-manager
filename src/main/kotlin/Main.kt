@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
     loadData()
     println(cyan("\n${gameMode.displayName} Mod Manager"))
     if (args.isEmpty()) {
-        CommandType.LIST.apply(listOf())
+        CommandType.LIST.apply("", listOf())
         while (true) {
             readLine(readlnOrNull())
             while (confirmation != null) {

@@ -17,7 +17,7 @@ val removeDescription = """
     rm <index>
 """.trimIndent()
 
-fun remove(args: List<String>) {
+fun remove(command: String, args: List<String>) {
     if (args.size == 1 && args.first().toIntOrNull() != null) {
         removeMod(args.first().toInt())
     } else {

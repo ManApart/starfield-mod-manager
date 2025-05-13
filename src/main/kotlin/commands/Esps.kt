@@ -32,7 +32,7 @@ val espUsage = """
     esp 1 sub 1 set 0
 """.trimIndent()
 
-fun esp(args: List<String>) {
+fun esp(command: String, args: List<String>) {
     val arguments = parseArgs(args)
         ?: when {
             args.size == 1 && args.last() == "ls" -> {

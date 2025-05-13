@@ -10,7 +10,7 @@ val detailUsage = """
    detail <mod id>
 """.trimIndent()
 
-fun detailMod(args: List<String>) {
+fun detailMod(command: String, args: List<String>) {
     if (args.isEmpty()) {
         println(detailDescription)
     } else {

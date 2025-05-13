@@ -22,7 +22,7 @@ val refreshUsage = """
     refresh disabled
 """.trimIndent()
 
-fun refresh(args: List<String>) {
+fun refresh(command: String, args: List<String>) {
     doCommand(args, List<Mod>::refreshMods)
 }
 

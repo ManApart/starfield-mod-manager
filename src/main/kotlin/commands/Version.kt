@@ -17,7 +17,7 @@ val versionUsage = """
     version <index> set <new-version>
 """.trimIndent()
 
-fun version(args: List<String>) {
+fun version(command: String, args: List<String>) {
     when {
         args.isEmpty() -> {
             viewAppVersion()
@@ -50,4 +50,3 @@ fun viewAppVersion() {
         .let { BufferedReader(InputStreamReader(it!!)).lines().toList().joinToString("\n") }
     println("Running Commit: $version")
 }
-

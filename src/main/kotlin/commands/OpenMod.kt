@@ -16,38 +16,43 @@ val openDescription = """
     Open various folders and filepaths
     You can open a mod locally or on the nexus, or open the various config paths
     If you pass 'cli' it will open in terminal instead of local folder
-""".trimIndent()
+""".trimIndent() +
+        OpenType.entries.joinToString("\n") { it.aliases.first() + " - " + it.description } + "\n" +
+        GameMode.entries.flatMap { it.generatedPaths.values }.toSet().joinToString("\n") { it.aliases.first() + " - " + it.description }
 
-val openUsage = GameMode.entries.flatMap { it.generatedPaths }.toSet().joinToString("\n") {
-    val otherAliases = if (it.aliases.size > 1) " (" + it.aliases.drop(1).joinToString(",") + ")" else ""
-    it.aliases.first() + otherAliases + " " + it.description
+val openUsage = """
+    open <index>
+""".trimIndent() +
+        OpenType.entries.joinToString("\n") { it.aliases.first() } + "\n" +
+        GameMode.entries.flatMap { it.generatedPaths.values }.toSet().joinToString("\n") { it.aliases.first() }
+
+val openAliases = (OpenType.entries.flatMap { it.aliases } + GameMode.entries.flatMap { mode -> mode.generatedPaths.values.flatMap { it.aliases } }).toSet().toTypedArray()
+
+enum class OpenType(
+    val aliases: List<String>,
+    val description: String,
+    val invoke: (List<String>) -> Unit
+) {
+    MANUAL(listOf("manual", "man"), "Online Manual of commands", { openInWeb("https://manapart.github.io/starfield-mod-manager-site/manual.html") }),
+    SITE(listOf("site", "man"), "Open manager's main site", { openInWeb("https://manapart.github.io/starfield-mod-manager-site/index.html") }),
+    SOURCE(listOf("git", "github", "source"), "Open source for mod manager", { openInWeb("https://github.com/ManApart/starfield-mod-manager") }),
+    NEXUS(listOf("nexus"), "Open the mod on nexus mods", ::openNexus),
 }
 
-val openAliases = GameMode.entries.flatMap { mode -> mode.generatedPaths.flatMap { it.aliases } }.toSet().toTypedArray()
+fun open(command: String, args: List<String>) {
+    val openType = OpenType.entries.firstOrNull { it.aliases.contains(command) }
+    val gamePath = gameMode.generatedPaths.values.firstOrNull { it.aliases.contains(command) }
+    if (openType != null) {
+        openType.invoke(args)
+    } else if (gamePath != null) {
+        open(gamePath.path(), gamePath.name, args.contains("cli"))
+    } else {
+        openMod(true, args)
+    }
+}
 
-//enum class OpenType(
-//    val aliases: List<String>,
-//    val description: String,
-//    val invoke: (List<String>) -> Unit
-//) {
-//    GAME(listOf("gamepath", "gg"), "Where the game is installed", { args -> open(GamePath.GAME, "game path", args.contains("cli")) }),
-//    APP_DATA(listOf("appdatapath", "app"), "Where the appdadata is", { args -> open(GamePath.APP_DATA, "appdata path", args.contains("cli")) }),
-//    INI(listOf("inipath", "ini"), "Game ini folder path", { args -> open(GamePath.INI, "ini path", args.contains("cli")) }),
-//    PLUGINS(listOf("plugins", "plugin"), "Location of plugins.txt", { args ->
-//        val folder = if (gameMode == GameMode.STARFIELD) gameConfig[GamePath.APP_DATA]!! else gameConfig[GamePath.GAME]!! + gameMode.dataModPath
-//        open("$folder/Plugins.txt", "plugins file", args.contains("cli"))
-//    }),
-//    JAR(listOf("jarpath", "jar"), "Location the mod manager is running from", { args -> open(".", "jar path", args.contains("cli")) }),
-//    MANUAL(listOf("manual", "man"), "Online Manual of commands", { openInWeb("https://manapart.github.io/starfield-mod-manager-site/manual.html") }),
-//    SITE(listOf("manual", "man"), "Open manager's main site", { openInWeb("https://manapart.github.io/starfield-mod-manager-site/index.html") }),
-//    SOURCE(listOf("manual", "man"), "Open source for mod manager", { openInWeb("https://github.com/ManApart/starfield-mod-manager") }),
-//    NEXUS(listOf("manual", "man"), "Open the mod on nexus mods", ::openNexus),
-//}
-
-//TODO - open based on open type if alias
-fun open(args: List<String>) = openMod(true, args)
-fun local(args: List<String>) = openMod(false, args)
-fun cli(args: List<String>) = openMod(false, args.toMutableList().also { it.add("cli") })
+fun local(command: String, args: List<String>) = openMod(false, args)
+fun cli(command: String, args: List<String>) = openMod(false, args.toMutableList().also { it.add("cli") })
 
 private fun openNexus(args: List<String>) {
     if (args.size != 2 || args[1].toIntOrNull() != null) {

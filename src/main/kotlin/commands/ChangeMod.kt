@@ -20,11 +20,11 @@ val changeUsage = """
     mod <index> name <new name>
 """.trimIndent()
 
-fun moveMod(args: List<String>){
-    changeMod(listOf(args.first(), "name") + args.drop(1))
+fun moveMod(command: String, args: List<String>){
+    changeMod(command, listOf(args.first(), "name") + args.drop(1))
 }
 
-fun changeMod(args: List<String>) {
+fun changeMod(command: String, args: List<String>) {
     val i = args.firstOrNull()?.toIntOrNull()
     when {
         args.isEmpty() -> println(changeDescription)

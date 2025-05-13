@@ -11,6 +11,6 @@ val startGameUsage = """
     start
 """.trimIndent()
 
-fun startGame(args: List<String>) {
+fun startGame(command: String, args: List<String>) {
     File(".").runCommand("steam steam://rungameid/1716740")
 }

@@ -7,7 +7,7 @@ enum class CommandType(
     val category: Category,
     val description: String,
     val usage: String,
-    val apply: (List<String>) -> Unit,
+    val apply: (String, List<String>) -> Unit,
     vararg val aliases: String = arrayOf(),
 ) {
     ADD("Add a new mod", Category.ADD, addModDescription, addModUsage, ::addMod, "a"),
@@ -50,7 +50,7 @@ enum class CommandType(
         "Exit Program", Category.CONFIG,
         "Exit the process",
         "Exit the process",
-        { kotlin.system.exitProcess(0) }
+        { _, _ -> kotlin.system.exitProcess(0) }
     ),
     ;
 
@@ -58,7 +58,7 @@ enum class CommandType(
         summary: String,
         category: Category,
         description: String,
-        apply: (List<String>) -> Unit,
+        apply: (String, List<String>) -> Unit,
         vararg aliases: String = arrayOf()
     ) : this(summary, category, description, summary, apply, aliases = aliases)
 

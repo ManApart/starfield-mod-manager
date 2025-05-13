@@ -11,7 +11,7 @@ val findUsage = """
     find <search text> 
 """.trimIndent()
 
-fun find(args: List<String> = listOf()) {
+fun find(command: String, args: List<String> = listOf()) {
     toolData.mods
         .map { mod -> mod to mod.getModFiles().map { it.path }.filter { file -> args.any { file.contains(it) } } }
         .filter { it.second.isNotEmpty() }

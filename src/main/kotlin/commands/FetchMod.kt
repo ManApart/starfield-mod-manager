@@ -18,7 +18,7 @@ val fetchUsage = """
    fetch 111 222 333
 """.trimIndent()
 
-fun fetchMod(args: List<String>) {
+fun fetchMod(command: String, args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     when {
         args.isEmpty() -> println(fetchDescription)

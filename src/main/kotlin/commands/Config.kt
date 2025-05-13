@@ -2,6 +2,7 @@ package commands
 
 import GamePath
 import gameConfig
+import gameMode
 import jsonMapper
 import kotlinx.serialization.encodeToString
 import nexus.getGameInfo
@@ -10,6 +11,7 @@ import toolConfig
 import java.io.File
 import kotlin.reflect.KMutableProperty0
 
+//TODO - update these using paths
 val configDescription = """
     Used to configure the mod manager itself. Saved in the config.json file located next to the jar
     game-path should be the path to the folder under steam containing the starfield Data folder and exe
@@ -34,13 +36,14 @@ val configUsage = """
     |config version
 """.trimMargin()
 
-fun config(args: List<String>) {
+fun config(command: String, args: List<String>) {
     val path = args.firstOrNull()?.lowercase()?.let { a -> GamePath.entries.firstOrNull { it.name.lowercase() == a } }
     when {
         args.isEmpty() -> {
             println("Running in ${File(".").absolutePath}")
             println("Main Config:\n" + jsonMapper.encodeToString(toolConfig))
             println("Game Config:\n" + jsonMapper.encodeToString(gameConfig))
+            println("Needed Game Paths with Examples:\n" + gameMode.gamePaths.joinToString("\n"){"${it.name}: ${it.examples.joinToString()}"})
         }
         args.size == 2 && path != null ->{
             gameConfig[path] = args.last()

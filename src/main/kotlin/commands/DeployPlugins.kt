@@ -5,14 +5,14 @@ import gameConfig
 import yellow
 import java.io.File
 import GamePath.*
+import gameMode
 
 fun deployPlugins(files: Map<String, File>) {
     if (gameConfig[APP_DATA]== null){
         println("Config must have appdata path to update plugins.txt")
         return
     }
-    //TODO
-    val pluginsFile = File(gameConfig[APP_DATA]!! + "/Plugins.txt")
+    val pluginsFile = File(gameMode.generatedPaths["plugins"]!!.path())
     pluginsFile.writeText(createPluginsContent(files))
 
 }
@@ -30,10 +30,31 @@ private fun createPluginsContent(files: Map<String, File>): String {
         println(yellow("WARNING: There are duplicate plugin files"))
     }
 
-    //TODO - make this game specific
+    val header = if (gameMode == GameMode.STARFIELD) starfieldHeader else oblivionRemasteredHeader
     return """
-        |# This file is used by Starfield to keep track of your downloaded content.
-        |# Please do not modify this file.
+        |$header
         $pluginLines
     """.trimMargin()
 }
+
+private const val starfieldHeader = """
+|# This file is used by Starfield to keep track of your downloaded content.
+|# Please do not modify this file.
+"""
+
+private const val oblivionRemasteredHeader = """
+|Oblivion.esm
+|DLCBattlehornCastle.esp
+|DLCFrostcrag.esp
+|DLCHorseArmor.esp
+|DLCMehrunesRazor.esp
+|DLCOrrery.esp
+|DLCShiveringIsles.esp
+|DLCSpellTomes.esp
+|DLCThievesDen.esp
+|DLCVileLair.esp
+|Knights.esp
+|AltarESPMain.esp
+|AltarDeluxe.esp
+|AltarESPLocal.esp
+"""

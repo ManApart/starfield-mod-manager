@@ -57,7 +57,7 @@ val creationUsage = """
    
 """.trimIndent()
 
-fun creation(args: List<String>) {
+fun creation(command: String, args: List<String>) {
     val firstArg = args.firstOrNull() ?: ""
     val i = args.getOrNull(1)?.toIntOrNull()
     val mod = i?.let { toolData.byIndex(it) }
