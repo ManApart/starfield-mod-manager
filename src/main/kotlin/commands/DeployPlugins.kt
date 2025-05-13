@@ -1,14 +1,13 @@
 package commands
 
+import GameMode
 import cyan
-import gameConfig
+import gameMode
 import yellow
 import java.io.File
-import GamePath.*
-import gameMode
 
 fun deployPlugins(files: Map<String, File>) {
-    if (gameConfig[APP_DATA]== null){
+    if (gameMode.generatedPaths["plugins"] == null) {
         println("Config must have appdata path to update plugins.txt")
         return
     }
@@ -24,9 +23,11 @@ fun deployPluginsDryRun(files: Map<String, File>) {
 
 private fun createPluginsContent(files: Map<String, File>): String {
     val pluginList = files.entries.filter { it.value.extension.lowercase() in listOf("esp", "esm", "esl") }.map { it.value.name }
-    val pluginLines = pluginList.joinToString("\n") { "|*$it"  }
+    val pluginLines = pluginList.joinToString("\n") {
+        if (gameMode == GameMode.STARFIELD) "|*$it" else "|$it"
+    }
 
-    if (pluginList.toSet().size != pluginList.size){
+    if (pluginList.toSet().size != pluginList.size) {
         println(yellow("WARNING: There are duplicate plugin files"))
     }
 
@@ -34,7 +35,7 @@ private fun createPluginsContent(files: Map<String, File>): String {
     return """
         |$header
         $pluginLines
-    """.trimMargin()
+    """.trimMargin().split("\n").filter { it.isNotBlank() }.joinToString("\n")
 }
 
 private const val starfieldHeader = """

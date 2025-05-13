@@ -5,6 +5,7 @@ import StageChange
 import cyan
 import detectStagingChanges
 import doCommand
+import gameMode
 import green
 import red
 import toolData
@@ -40,12 +41,13 @@ fun validateMods(command: String, args: List<String>) {
             }
         }
 
-        args.first() == "check" && i != null ->{
+        args.first() == "check" && i != null -> {
             toolData.byIndex(i)?.let {
                 it.remove(Tag.SKIP_VALIDATE)
                 println("Considering ${it.description()} for validation")
             }
         }
+
         else -> doCommand(args, List<Mod>::validate)
     }
 }
@@ -64,8 +66,10 @@ fun List<Mod>.validate() {
     modsWithFiles.detectTopLevelFiles(errorMap)
     checkPlugins(errorMap, helpMessages)
 
-    checkCreations(nonModErrors, helpMessages)
-    checkExternalMods(nonModErrors, helpMessages)
+    if (gameMode == GameMode.STARFIELD) {
+        checkCreations(nonModErrors, helpMessages)
+        checkExternalMods(nonModErrors, helpMessages)
+    }
 
     val filteredErrors = errorMap.filter { it.value.first in this }.toMap()
     if (filteredErrors.isNotEmpty()) {
