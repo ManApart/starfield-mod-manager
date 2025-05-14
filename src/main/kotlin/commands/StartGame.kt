@@ -1,5 +1,6 @@
 package commands
 
+import gameMode
 import runCommand
 import java.io.File
 
@@ -12,5 +13,5 @@ val startGameUsage = """
 """.trimIndent()
 
 fun startGame(command: String, args: List<String>) {
-    File(".").runCommand("steam steam://rungameid/1716740")
+    File(".").runCommand("steam steam://rungameid/${gameMode.steamId}")
 }
