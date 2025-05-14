@@ -22,6 +22,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import GamePath.*
+import gameMode
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -86,19 +87,20 @@ fun creation(command: String, args: List<String>) {
 }
 
 fun parseCreationCatalog(): Map<String, Creation> {
-    val rawLines = File(gameConfig[APP_DATA]+ "/ContentCatalog.txt").readLines()
+
+    val rawLines = File(gameMode.path(PathType.APP_DATA) + "/ContentCatalog.txt").readLines()
     val parsable = jsonMapper.decodeFromString<JsonObject>(rawLines.joinToString("\n")).filter { it.key != "ContentCatalog" }.toMap().let { jsonMapper.encodeToString(it) }
     return jsonMapper.decodeFromString<Map<String, Creation>>(parsable).also { it.entries.forEach { (id, creation) -> creation.creationId = id } }
 }
 
-fun updateCreationCatalog(creations: List<Creation>){
-    val rawLines = File(gameConfig[APP_DATA]+ "/ContentCatalog.txt").readLines()
-    val header = "{\n\t\"ContentCatalog\": "+ jsonMapper.decodeFromString<JsonObject>(rawLines.joinToString("\n"))["ContentCatalog"].let { jsonMapper.encodeToString(it) } + ","
+fun updateCreationCatalog(creations: List<Creation>) {
+    val rawLines = File(gameMode.path(PathType.APP_DATA) + "/ContentCatalog.txt").readLines()
+    val header = "{\n\t\"ContentCatalog\": " + jsonMapper.decodeFromString<JsonObject>(rawLines.joinToString("\n"))["ContentCatalog"].let { jsonMapper.encodeToString(it) } + ","
 
     val creationsString = jsonMapper.encodeToString(creations.associateBy { it.creationId }).drop(1)
-    val fullText = header + creationsString +"\n"
+    val fullText = header + creationsString + "\n"
 
-    File(gameConfig[APP_DATA]+ "/ContentCatalog.txt").writeText(fullText)
+    File(gameMode.path(PathType.APP_DATA) + "/ContentCatalog.txt").writeText(fullText)
 }
 
 fun parseCreationPlugins(): List<String> {
@@ -211,9 +213,9 @@ fun rmCreation(mod: Mod, force: Boolean = false) {
     }
 }
 
-private fun forgetCreation(creationId: String){
+private fun forgetCreation(creationId: String) {
     val creations = parseCreationCatalog()
-    if (!creations.contains(creationId)){
+    if (!creations.contains(creationId)) {
         println(red("Could not find creation $creationId"))
     } else {
         updateCreationCatalog(creations.minus(creationId).values.toList())

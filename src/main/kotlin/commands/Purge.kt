@@ -12,6 +12,7 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
 import GamePath.*
+import gameMode
 
 val purgeDescription = """
     Purge your game data folder and delete all symlinks and rename override files.
@@ -40,7 +41,7 @@ fun purge(command: String, args: List<String>) {
 
 private fun purgeFiles(dryRun: Boolean) {
     gameConfig[GAME]?.let { purgeFiles(dryRun, it) }
-    gameConfig[INI]?.let { purgeFiles(dryRun, it) }
+    gameMode.path(PathType.INI)?.let { purgeFiles(dryRun, it) }
     if (dryRun) {
         println(cyan("Purge dryrun compete"))
     } else {

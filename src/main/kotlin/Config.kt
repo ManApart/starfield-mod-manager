@@ -18,10 +18,10 @@ data class GameConfig(
     var categories: Map<Int, String> = mapOf(),
     val paths: MutableMap<String, String> = mutableMapOf(),
 ) {
-    fun usedGamePath(modGamePath: String) = if (useMyDocs && modGamePath.startsWith("Data", true)) this[INI] else this[APP_DATA]
+    fun usedGamePath(modGamePath: String) = (if (useMyDocs && modGamePath.startsWith("Data", true)) PathType.INI else PathType.APP_DATA).let { gameMode.path(it)!! }
 
     operator fun get(type: GamePath) = paths[type.name]
-    operator fun set(type: GamePath, value: String){
+    operator fun set(type: GamePath, value: String) {
         paths[type.name] = value
     }
 }

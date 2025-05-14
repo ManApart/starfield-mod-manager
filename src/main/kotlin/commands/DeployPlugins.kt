@@ -7,11 +7,11 @@ import yellow
 import java.io.File
 
 fun deployPlugins(files: Map<String, File>) {
-    if (gameMode.generatedPaths["plugins"] == null) {
+    if (gameMode.path(PathType.PLUGINS) == null) {
         println("Config must have appdata path to update plugins.txt")
         return
     }
-    val pluginsFile = File(gameMode.generatedPaths["plugins"]!!.path())
+    val pluginsFile = File(gameMode.path(PathType.PLUGINS)!!)
     pluginsFile.writeText(createPluginsContent(files))
 
 }

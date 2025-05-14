@@ -18,13 +18,13 @@ val openDescription = """
     If you pass 'cli' it will open in terminal instead of local folder
 """.trimIndent() +
         OpenType.entries.joinToString("\n") { it.aliases.first() + " - " + it.description } + "\n" +
-        GameMode.entries.flatMap { it.generatedPaths.values }.toSet().joinToString("\n") { it.aliases.first() + " - " + it.description }
+        GameMode.entries.flatMap { it.generatedPaths.values }.map { it.aliases.first() + " - " + it.type.description }.toSet().joinToString("\n")
 
 val openUsage = """
     open <index>
 """.trimIndent() +
         OpenType.entries.joinToString("\n") { it.aliases.first() } + "\n" +
-        GameMode.entries.flatMap { it.generatedPaths.values }.toSet().joinToString("\n") { it.aliases.first() }
+        GameMode.entries.flatMap { it.generatedPaths.values }.map { it.aliases.first() }.toSet().joinToString("\n")
 
 val openAliases = (OpenType.entries.flatMap { it.aliases } + GameMode.entries.flatMap { mode -> mode.generatedPaths.values.flatMap { it.aliases } }).toSet().toTypedArray()
 
@@ -45,7 +45,7 @@ fun open(command: String, args: List<String>) {
     if (openType != null) {
         openType.invoke(args)
     } else if (gamePath != null) {
-        open(gamePath.path(), gamePath.name, args.contains("cli"))
+        open(gamePath.path(), gamePath.type.name, args.contains("cli"))
     } else {
         openMod(true, args)
     }

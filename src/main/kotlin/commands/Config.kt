@@ -43,7 +43,6 @@ fun config(command: String, args: List<String>) {
             println("Running in ${File(".").absolutePath}")
             println("Main Config:\n" + jsonMapper.encodeToString(toolConfig))
             println("Game Config:\n" + jsonMapper.encodeToString(gameConfig))
-            println("Needed Game Paths with Examples:\n" + gameMode.gamePaths.joinToString("\n"){"${it.name}: ${it.examples.joinToString()}"})
         }
         args.size == 2 && path != null ->{
             gameConfig[path] = args.last()

@@ -7,8 +7,7 @@ enum class GameMode(
     val dataModPath: String,
     val modFolder: String,
     val urlName: String,
-    val gamePaths: List<GamePath>,
-    val generatedPaths: Map<String, GeneratedPath>
+    val generatedPaths: Map<PathType, GeneratedPath>
 ) {
     STARFIELD(
         "Starfield",
@@ -17,7 +16,6 @@ enum class GameMode(
         "/Data",
         "starfield-mods",
         "starfield",
-        listOf(GamePath.GAME, GamePath.APP_DATA, GamePath.INI),
         starfieldPaths(),
     ),
     OBLIVION_REMASTERED(
@@ -27,9 +25,10 @@ enum class GameMode(
         "/Content/Dev/ObvData/Data",
         "oblivion-remastered-mods",
         "oblivionremastered",
-        listOf(GamePath.GAME, GamePath.COMPAT_DATA),
        oblivionRemasteredPaths(),
-    )
+    );
+
+    fun path(type: PathType) = generatedPaths[type]?.path?.invoke()
 }
 
 fun mainConfigPath() = System.getenv("XDG_CONFIG_HOME")?.replace("~", HOME)?.let { "$it/mod-manager-config.json" } ?: "./config.json"
