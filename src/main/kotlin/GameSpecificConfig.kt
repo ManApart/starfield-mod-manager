@@ -31,7 +31,7 @@ enum class GameMode(
        oblivionRemasteredPaths(),
     );
 
-    fun path(type: PathType) = generatedPaths[type]?.path?.invoke()
+    fun path(type: PathType) = generatedPaths[type]?.path()
 }
 
 fun mainConfigPath() = System.getenv("XDG_CONFIG_HOME")?.replace("~", HOME)?.let { "$it/mod-manager-config.json" } ?: "./config.json"

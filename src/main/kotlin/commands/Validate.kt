@@ -160,15 +160,18 @@ private fun List<Mod>.detectDupePlugins() {
 private fun List<Mod>.detectIncorrectCasing(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
+    val goodPaths = listOf("Data") + gameMode.generatedPaths.values.map { it.suffix }
     forEach { mod ->
         val modsPaths = mod.getModFiles()
+            .asSequence()
             .map { it.parent }
             .mapNotNull { file ->
-                val start = file.indexOf("Data") + 4
+                val start = goodPaths.maxOf { file.indexOf(it) + it.length }
                 val end = file.lastIndexOf("/")
                 if (start < end) file.substring(start, end) else null
             }.toSet()
-            .filter { it != it.lowercase() }
+            .filter { it.isNotEmpty() &&  it != it.lowercase() }
+            .toList()
         if (modsPaths.isNotEmpty()) {
             errorMap.putIfAbsent(mod.index, mod to mutableListOf())
             errorMap[mod.index]?.second?.add("Filepaths should be lowercase between data and filename:")
