@@ -145,7 +145,7 @@ fun addCreation(creationId: String) {
 }
 
 fun addCreation(creation: Creation) {
-    val files = creation.files.map { File(gameConfig[GAME]!! + "/Data/$it") }
+    val files = creation.files.map { File(gameConfig[GAME] + "/Data/$it") }
     if (files.isEmpty()) {
         println(red("No files found for ${creation.title}"))
     }
@@ -164,7 +164,7 @@ fun addCreation(creation: Creation) {
         }
     }
 
-    val dataFolderFiles = File(gameConfig[GAME]!! + "/Data").listFiles()!!
+    val dataFolderFiles = File(gameConfig[GAME] + "/Data").listFiles()!!
     val dest = File(mod.filePath + "/Data").also { it.mkdirs() }
     files.forEach { initialFile ->
         var file: File? = initialFile
@@ -204,7 +204,7 @@ fun rmCreation(mod: Mod, force: Boolean = false) {
             .forEach { file ->
                 val linkFile = file.absolutePath.replace(modRoot, "")
                 deleteLink(linkFile, mapOf())
-                val destFile = File(file.absolutePath.replace(modRoot, gameConfig[GAME]!! + "/"))
+                val destFile = File(file.absolutePath.replace(modRoot, gameConfig[GAME] + "/"))
                 if (!destFile.exists()) {
                     Files.move(file.toPath(), destFile.toPath())
                 }

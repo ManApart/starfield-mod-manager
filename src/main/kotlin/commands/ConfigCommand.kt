@@ -1,6 +1,7 @@
 package commands
 
 import GamePath
+import cyan
 import gameConfig
 import jsonMapper
 import kotlinx.serialization.encodeToString
@@ -10,22 +11,22 @@ import toolConfig
 import java.io.File
 import kotlin.reflect.KMutableProperty0
 
-//TODO - update these using paths
 val configDescription = """
-    Used to configure the mod manager itself. Saved in the config.json file located next to the jar
-    game-path should be the path to the folder under steam containing the starfield Data folder and exe
-    appdata-path should be the path to the folder under your appdata that will contain Plugins.txt. Needed for updating mod load order
-    ini-path should be the path to the folder under your documents that contains StarfieldCustom.ini. It's optionally used to deploy to your my docs folder instead of the game path
+    Used to configure the mod manager itself. Saved in the config.json (and game specific starfield-config.json etc) files located next to the jar
     open-in-terminal-command is optional and only needed if you don't use `gnome-terminal`. This value will be used as the command when opening folders in the terminal. Will be run in the relevant folder, but if you need to specify the directory in the command, you can use `{pwd}` and it will be replaced by the relevant path.
     verbose gives additional output (for debugging) if set to true
     autodeploy automatically runs deploy when enabling or disabling mods. Defaults to true
     use-my-docs optionally allows deploying mod files under Data to my documents instead of the game folder. (Defaults to false) 
     categories is used to download category names from nexus
+    config path is used to set game specific paths
+    config paths tells you what paths are needed
     If your paths have spaces, make sure to quote them
     version gives the commit that the app was built from
 """.trimIndent()
+
 val configUsage = """
-    ${GamePath.entries.joinToString("\n") { "|config $it <path-to-folder>" }}
+    |config paths
+    ${GamePath.entries.joinToString("\n") { "|config path $it <path-to-folder>" }}
     |config api-key <key-from-nexus>
     |config open-in-terminal-command <path-to-folder> 
     |config verbose <true/false>
@@ -36,14 +37,17 @@ val configUsage = """
 """.trimMargin()
 
 fun config(command: String, args: List<String>) {
-    val path = args.firstOrNull()?.lowercase()?.let { a -> GamePath.entries.firstOrNull { it.name.lowercase() == a } }
+    val path = args.getOrNull(1)?.lowercase()?.let { a -> GamePath.entries.firstOrNull { it.name.lowercase() == a } }
     when {
         args.isEmpty() -> {
             println("Running in ${File(".").absolutePath}")
             println("Main Config:\n" + jsonMapper.encodeToString(toolConfig))
             println("Game Config:\n" + jsonMapper.encodeToString(gameConfig))
         }
-        args.size == 2 && path != null ->{
+
+        args.size == 1 && args.last() == "paths" -> describePaths()
+
+        args.size == 3 && args[0] == "path" && path != null -> {
             gameConfig[path] = args.last()
             println("Updated $path to ${gameConfig[path]}")
             save()
@@ -89,4 +93,11 @@ private fun updateFlag(args: List<String>, flag: KMutableProperty0<Boolean>) {
     flag.set(newValue)
     println("Updated ${flag.name} to ${flag.get()}")
     save()
+}
+
+private fun describePaths() {
+    GamePath.entries.forEach { path ->
+        println(cyan(path.name) + ": ${path.discription}")
+        println("\t" + path.examples.joinToString("\n\t"))
+    }
 }

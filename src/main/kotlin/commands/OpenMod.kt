@@ -1,9 +1,7 @@
 package commands
 
 import GameMode
-import GamePath
 import Mod
-import gameConfig
 import gameMode
 import runCommand
 import toolConfig
@@ -17,16 +15,17 @@ val openDescription = """
     You can open a mod locally or on the nexus, or open the various config paths
     If you pass 'cli' it will open in terminal instead of local folder
 """.trimIndent() +
-        OpenType.entries.joinToString("\n") { it.aliases.first() + " - " + it.description } + "\n" +
-        GameMode.entries.flatMap { it.generatedPaths.values }.map { it.aliases.first() + " - " + it.type.description }.toSet().joinToString("\n")
+        OpenType.entries.sortedBy { it.aliases.first() }.joinToString("\n") { it.aliases.first() + " - " + it.description } + "\n" +
+        GameMode.entries.asSequence().flatMap { it.generatedPaths.values }.map { it.aliases.first() + " - " + it.type.description }.toSet().sorted().joinToString("\n")
 
 val openUsage = """
     open <index>
+    
 """.trimIndent() +
-        OpenType.entries.joinToString("\n") { it.aliases.first() } + "\n" +
-        GameMode.entries.flatMap { it.generatedPaths.values }.map { it.aliases.first() }.toSet().joinToString("\n")
+        OpenType.entries.sortedBy { it.aliases.first() }.joinToString("\n") { it.aliases.first() } + "\n" +
+        GameMode.entries.asSequence().flatMap { it.generatedPaths.values }.map { it.aliases.first() }.toSet().sorted().joinToString("\n")
 
-val openAliases = (OpenType.entries.flatMap { it.aliases } + GameMode.entries.flatMap { mode -> mode.generatedPaths.values.flatMap { it.aliases } }).toSet().toTypedArray()
+val openAliases = (listOf("paths", "path", "o") + OpenType.entries.flatMap { it.aliases } + GameMode.entries.flatMap { mode -> mode.generatedPaths.values.flatMap { it.aliases } }).toSet().toTypedArray()
 
 enum class OpenType(
     val aliases: List<String>,
@@ -100,7 +99,6 @@ fun openInWeb(url: String, urlName: String = url) {
 
 fun openLocal(mod: Mod, cli: Boolean) = open(mod.filePath, mod.name, cli)
 
-private fun open(path: GamePath, name: String, cli: Boolean) = open(gameConfig[path]!!, name, cli)
 private fun open(path: String, name: String, cli: Boolean) {
     try {
         if (cli) {

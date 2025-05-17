@@ -96,7 +96,7 @@ fun addExternal(esp: String, name: String? = null) {
 
 fun getExternalMods(): Map<String, Mod?> {
     val creations = parseCreationPlugins()
-    return File(gameConfig[GAME]!! + "/Data").listFiles()!!
+    return File(gameConfig[GAME] + "/Data").listFiles()!!
         .asSequence()
         .filter {
             it.extension in espTypes

@@ -3,24 +3,24 @@ import PathType.*
 const val win64 = "/Binaries/Win64"
 const val paks = "/Content/Paks/~mods"
 
-enum class GamePath(vararg val examples: String) {
-    GAME("/mnt/c/SteamLibrary/steamapps/common/Starfield", "/mnt/c/SteamLibrary/steamapps/common/Oblivion Remastered/OblivionRemastered/"),
-    COMPAT_DATA("/mnt/c/SteamLibrary/steamapps/compatdata/2623190")
+enum class GamePath(val discription: String, vararg val examples: String) {
+    GAME("The path to the folder under steam containing the Data folder. Note its nesting in Oblivion Remastered","/mnt/c/SteamLibrary/steamapps/common/Starfield", "/mnt/c/SteamLibrary/steamapps/common/Oblivion Remastered/OblivionRemastered/"),
+    COMPAT_DATA("The folder is the steam app id under steam compat data","/mnt/c/SteamLibrary/steamapps/compatdata/2623190")
 }
 
 enum class PathType(val description: String) {
     GAME("Where the game is installed"),
     JAR("Location the mod manager is running from"),
-    DATA(""),
-    APP_DATA(""),
-    INI(""),
-    DATA_INI(""),
-    UNREAL_INI(""),
-    PLUGINS(""),
+    DATA("The data path that esps live in"),
+    APP_DATA("Appdata in windows. Contains Plugins and ContentCatalog for Starfield. Used for updating mod load order"),
+    INI("My Documents in windows. Contains ini files and saves for Starfield. It's optionally used to deploy to your my docs folder instead of the game path"),
+    DATA_INI("Ini files above the data folder"),
+    UNREAL_INI("Ini files for unreal engine"),
+    PLUGINS("The plugins file that activates esps"),
     WIN64("Where the unreal engine binary lives"),
-    UE4SS_Mods(""),
+    UE4SS_Mods("Folder that UE4SS mods are deployed to"),
     PAKS("Where the unreal engine mods live"),
-    SAVES(""),
+    SAVES("Where your save files are located"),
 }
 
 class GeneratedPath(
@@ -33,16 +33,16 @@ class GeneratedPath(
     fun path() = genPath?.invoke() ?: (prefix?.let { gameConfig[it] } + suffix)
 }
 
-private val gamePath = GeneratedPath(GAME, listOf("gamepath", "gg")) { gameConfig[GamePath.GAME]!! }
+private val gamePath = GeneratedPath(GAME, listOf("gamepath", "gg")) { gameConfig[GamePath.GAME] }
 private val jarPath = GeneratedPath(JAR, listOf("jarpath", "jar")) { "." }
 
 fun starfieldPaths(): Map<PathType, GeneratedPath> {
     return listOf(
         gamePath,
         jarPath,
-        GeneratedPath(DATA, listOf("data", "data")) { gameConfig[GamePath.GAME]!! + GameMode.STARFIELD.deployedModPath },
-        GeneratedPath(APP_DATA, listOf("appdatapath", "app"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/AppData/Local/Starfield"),
-        GeneratedPath(INI, listOf("inipath", "ini"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/Documents/My Games/Starfield"),
+        GeneratedPath(DATA, listOf("data")) { gameConfig[GamePath.GAME] + GameMode.STARFIELD.deployedModPath },
+        GeneratedPath(APP_DATA, listOf("app", "appdatapath"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/AppData/Local/Starfield"),
+        GeneratedPath(INI, listOf("ini", "inipath"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/Documents/My Games/Starfield"),
         GeneratedPath(PLUGINS, listOf("plugins", "plugin"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/AppData/Local/Starfield/Plugins.txt"),
         GeneratedPath(SAVES, listOf("saves"), GamePath.COMPAT_DATA, "pfx/drive_c/users/steamuser/Documents/My Games/Starfield/Saves"),
     ).associateBy { it.type }
@@ -52,8 +52,8 @@ fun oblivionRemasteredPaths(): Map<PathType, GeneratedPath> {
     return listOf(
         gamePath,
         jarPath,
-        GeneratedPath(DATA, listOf("data", "data")) { gameConfig[GamePath.GAME]!! + GameMode.OBLIVION_REMASTERED.deployedModPath },
-        GeneratedPath(DATA_INI, listOf("inipath", "ini"), GamePath.GAME, "/Content/Dev/ObvData/"),
+        GeneratedPath(DATA, listOf("data")) { gameConfig[GamePath.GAME] + GameMode.OBLIVION_REMASTERED.deployedModPath },
+        GeneratedPath(DATA_INI, listOf("ini", "inipath"), GamePath.GAME, "/Content/Dev/ObvData/"),
         GeneratedPath(UNREAL_INI, listOf("unrealini", "engineini"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/Documents/My Games/Oblivion Remastered/Saved/Config/Windows"),
         GeneratedPath(PLUGINS, listOf("plugins", "plugin"), GamePath.GAME, "/Plugins.txt"),
         GeneratedPath(WIN64, listOf("win64"), GamePath.GAME, "/Binaries/Win64"),

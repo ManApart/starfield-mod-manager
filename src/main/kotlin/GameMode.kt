@@ -1,5 +1,4 @@
 
-
 enum class GameMode(
     val displayName: String,
     val steamId: String,

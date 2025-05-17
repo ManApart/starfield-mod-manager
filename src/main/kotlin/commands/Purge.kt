@@ -40,7 +40,7 @@ fun purge(command: String, args: List<String>) {
 }
 
 private fun purgeFiles(dryRun: Boolean) {
-    gameConfig[GAME]?.let { purgeFiles(dryRun, it) }
+    purgeFiles(dryRun, gameConfig[GAME])
     gameMode.path(PathType.INI)?.let { purgeFiles(dryRun, it) }
     if (dryRun) {
         println(cyan("Purge dryrun compete"))

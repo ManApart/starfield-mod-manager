@@ -28,7 +28,6 @@ fun deploy(command: String, args: List<String>) {
     when {
         args.firstOrNull() == "dryrun" -> deployDryRun(command, files)
         args.firstOrNull() == "overrides" -> showOverrides()
-        gameConfig[GAME] == null -> println("No game path configured")
         files.isEmpty() -> println("No mod files found")
         else -> {
             getDisabledModPaths().forEach { deleteLink(it, files) }
