@@ -40,7 +40,7 @@ fun starfieldPaths(): Map<PathType, GeneratedPath> {
     return listOf(
         gamePath,
         jarPath,
-        GeneratedPath(DATA, listOf("data", "data")) { gameConfig[GamePath.GAME]!! + GameMode.STARFIELD.dataModPath },
+        GeneratedPath(DATA, listOf("data", "data")) { gameConfig[GamePath.GAME]!! + GameMode.STARFIELD.deployedModPath },
         GeneratedPath(APP_DATA, listOf("appdatapath", "app"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/AppData/Local/Starfield"),
         GeneratedPath(INI, listOf("inipath", "ini"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/Documents/My Games/Starfield"),
         GeneratedPath(PLUGINS, listOf("plugins", "plugin"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/AppData/Local/Starfield/Plugins.txt"),
@@ -52,7 +52,7 @@ fun oblivionRemasteredPaths(): Map<PathType, GeneratedPath> {
     return listOf(
         gamePath,
         jarPath,
-        GeneratedPath(DATA, listOf("data", "data")) { gameConfig[GamePath.GAME]!! + GameMode.OBLIVION_REMASTERED.dataModPath },
+        GeneratedPath(DATA, listOf("data", "data")) { gameConfig[GamePath.GAME]!! + GameMode.OBLIVION_REMASTERED.deployedModPath },
         GeneratedPath(DATA_INI, listOf("inipath", "ini"), GamePath.GAME, "/Content/Dev/ObvData/"),
         GeneratedPath(UNREAL_INI, listOf("unrealini", "engineini"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/Documents/My Games/Oblivion Remastered/Saved/Config/Windows"),
         GeneratedPath(PLUGINS, listOf("plugins", "plugin"), GamePath.GAME, "/Plugins.txt"),

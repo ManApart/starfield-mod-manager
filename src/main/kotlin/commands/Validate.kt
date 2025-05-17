@@ -160,7 +160,7 @@ private fun List<Mod>.detectDupePlugins() {
 private fun List<Mod>.detectIncorrectCasing(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
-    val goodPaths = listOf("Data") + gameMode.generatedPaths.values.map { it.suffix }
+    val goodPaths = (gameMode.generatedPaths.values.map { it.suffix } + gameMode.deployedModPath).filter { it.isNotBlank() }.toSet()
     forEach { mod ->
         val modsPaths = mod.getModFiles()
             .asSequence()
@@ -170,7 +170,7 @@ private fun List<Mod>.detectIncorrectCasing(
                 val end = file.lastIndexOf("/")
                 if (start < end) file.substring(start, end) else null
             }.toSet()
-            .filter { it.isNotEmpty() &&  it != it.lowercase() }
+            .filter { it.isNotEmpty() && it != it.lowercase() }
             .toList()
         if (modsPaths.isNotEmpty()) {
             errorMap.putIfAbsent(mod.index, mod to mutableListOf())
@@ -186,10 +186,11 @@ private fun Map<Mod, List<File>>.detectTopLevelFiles(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
     val excludeList = listOf("sfse_loader.exe")
+    val goodPaths = (gameMode.generatedPaths.values.map { it.suffix } + gameMode.deployedModPath).filter { it.isNotBlank() }.toSet()
     filter { (mod, files) ->
         !mod.hasTag(Tag.SKIP_VALIDATE) &&
                 files.none { excludeList.contains(it.name) } &&
-                files.any { !it.path.contains("Data/") }
+                files.any { file -> goodPaths.none { file.path.contains(it) } }
     }.forEach { (mod, _) ->
         errorMap.putIfAbsent(mod.index, mod to mutableListOf())
         errorMap[mod.index]?.second?.add("Has files outside the Data folder")

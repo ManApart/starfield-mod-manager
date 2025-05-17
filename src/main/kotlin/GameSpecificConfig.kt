@@ -5,7 +5,7 @@ enum class GameMode(
     val steamId: String,
     val configPath: String,
     val dataJsonPath: String,
-    val dataModPath: String,
+    val deployedModPath: String,
     val modFolder: String,
     val urlName: String,
     val generatedPaths: Map<PathType, GeneratedPath>
