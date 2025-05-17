@@ -18,8 +18,6 @@ data class GameConfig(
     var categories: Map<Int, String> = mapOf(),
     val paths: MutableMap<String, String> = mutableMapOf(),
 ) {
-    fun usedGamePath(modGamePath: String) = (if (useMyDocs && modGamePath.startsWith("Data", true)) PathType.INI else PathType.APP_DATA).let { gameMode.path(it)!! }
-
     operator fun get(type: GamePath) = paths[type.name] ?: throw IllegalStateException("Missing ${type.name} use 'config path $type <path>' to set it")
     operator fun set(type: GamePath, value: String) {
         paths[type.name] = value

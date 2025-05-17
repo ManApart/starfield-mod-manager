@@ -9,7 +9,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
-import GamePath.*
+import gameMode
 
 val deployDescription = """
     Applies all enabled mods to the game folder by creating the appropriate symlinks
@@ -61,7 +61,7 @@ private fun MutableMap<String, File>.addModFiles(mod: Mod) {
 }
 
 fun makeLink(gamePath: String, modFile: File) {
-    val gameFile = File(gameConfig.usedGamePath(gamePath) + "/$gamePath")
+    val gameFile = File(gameMode.usedGamePath(gamePath, gameConfig.useMyDocs) + "/$gamePath")
     gameFile.parentFile.mkdirs()
     if (Files.isSymbolicLink(gameFile.toPath())) {
         val existingLink = Files.readSymbolicLink(gameFile.toPath())
@@ -86,7 +86,7 @@ fun makeLink(gamePath: String, modFile: File) {
 }
 
 fun deleteLink(gamePath: String, modFiles: Map<String, File>) {
-    val gameFile = File(gameConfig.usedGamePath(gamePath) + "/$gamePath")
+    val gameFile = File(gameMode.usedGamePath(gamePath, gameConfig.useMyDocs) + "/$gamePath")
     if (!modFiles.contains(gamePath) && Files.isSymbolicLink(gameFile.toPath())) {
         verbose("Delete: $gamePath")
         gameFile.delete()
