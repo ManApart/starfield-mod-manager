@@ -16,7 +16,11 @@ val openDescription = """
     If you pass 'cli' it will open in terminal instead of local folder
 """.trimIndent() +
         OpenType.entries.sortedBy { it.aliases.first() }.joinToString("\n") { it.aliases.first() + " - " + it.description } + "\n" +
-        GameMode.entries.asSequence().flatMap { it.generatedPaths.values }.map { it.aliases.first() + " - " + it.type.description }.toSet().sorted().joinToString("\n")
+        GameMode.entries.asSequence().flatMap { mode -> mode.generatedPaths.values.map { mode to it } }.groupBy { it.second.aliases.first() + it.second.type.description }.map { (_, paths) ->
+            val modes = paths.map { it.first }.joinToString{it.abbreviation}
+            val first = paths.first().second
+            first.aliases.first() +" ($modes) - " + first.type.description
+        }.sorted().joinToString("\n")
 
 val openUsage = """
     open <index>
