@@ -102,7 +102,7 @@ fun openInWeb(url: String, urlName: String = url) {
 
 fun openLocal(mod: Mod, cli: Boolean) = open(mod.filePath, mod.name, cli)
 
-private fun open(path: String, name: String, cli: Boolean) {
+fun open(path: String, name: String, cli: Boolean) {
     try {
         if (cli) {
             val command = toolConfig.openInTerminalCommand?.replace("{pwd}", path) ?: "gnome-terminal"

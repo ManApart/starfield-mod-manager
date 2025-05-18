@@ -105,7 +105,7 @@ private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
 private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, gameMode.deployedModPath, stageFolder, stagedFiles)
 private fun nestInWin64(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, win64, stageFolder, stagedFiles)
 private fun nestInPAK(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, paks, stageFolder, stagedFiles)
-private fun nestInPrefix(modName: String, prefix: String, stageFolder: File, stagedFiles: Array<File>) {
+fun nestInPrefix(modName: String, prefix: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Nesting files in $prefix for $modName")
     try {
         val dataFolder = File(stageFolder.path + prefix).also { it.mkdirs() }
