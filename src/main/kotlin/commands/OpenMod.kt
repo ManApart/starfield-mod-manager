@@ -23,11 +23,10 @@ val openDescription = """
         }.sorted().joinToString("\n")
 
 val openUsage = """
-    open <index>
-    
+    open <index>, 
 """.trimIndent() +
-        OpenType.entries.sortedBy { it.aliases.first() }.joinToString("\n") { it.aliases.first() } + "\n" +
-        GameMode.entries.asSequence().flatMap { it.generatedPaths.values }.map { it.aliases.first() }.toSet().sorted().joinToString("\n")
+        OpenType.entries.sortedBy { it.aliases.first() }.joinToString(", ") { it.aliases.first() } + ", " +
+        GameMode.entries.asSequence().flatMap { it.generatedPaths.values }.map { it.aliases.first() }.toSet().sorted().joinToString(", ")
 
 val openAliases = (listOf("paths", "path", "o") + OpenType.entries.flatMap { it.aliases } + GameMode.entries.flatMap { mode -> mode.generatedPaths.values.flatMap { it.aliases } }).toSet().toTypedArray()
 

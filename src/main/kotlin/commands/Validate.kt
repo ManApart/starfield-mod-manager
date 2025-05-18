@@ -84,7 +84,7 @@ fun List<Mod>.validate() {
         helpMessages.forEach { println(it) }
         println()
     }
-    println(cyan("Validated $size mods"))
+    println(cyan("Validated $size mods, ${errorMap.keys.size} mods failed validation"))
 }
 
 private fun List<Mod>.addDupeIds(
