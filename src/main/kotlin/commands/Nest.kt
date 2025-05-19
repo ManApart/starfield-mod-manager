@@ -1,6 +1,5 @@
 package commands
 
-import GeneratedPath
 import Mod
 import PathType
 import gameMode
@@ -8,7 +7,6 @@ import nestInPrefix
 import toolData
 import java.io.File
 
-//TODO - if folder path is same as parent remove top level folder and then attempt to understand it
 val nestDescription = """
     Nests all mod files under the given path and then opens the folder locally
     Used to make fixing mod installs to unrecognized paths
