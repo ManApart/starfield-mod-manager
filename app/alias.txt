@@ -1,1 +1,1 @@
-alias smm='pushd <path-to-jar-file-folder> && java -jar <path-to-jar-file-folder>/starfield-mod-manager.jars; popd'
+alias mmm='pushd <path-to-jar-file-folder> && java -jar <path-to-jar-file-folder>/manapart-mod-manager.jars; popd'
