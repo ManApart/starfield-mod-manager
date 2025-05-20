@@ -57,7 +57,7 @@ fun oblivionRemasteredPaths(): Map<PathType, GeneratedPath> {
         GeneratedPath(DATA_INI, listOf("ini", "inipath"), GamePath.GAME, "/Content/Dev/ObvData/"),
         GeneratedPath(UNREAL_INI, listOf("unrealini", "engineini"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/Documents/My Games/Oblivion Remastered/Saved/Config/Windows"),
         GeneratedPath(PLUGINS, listOf("plugins", "plugin"), GamePath.GAME, "/Plugins.txt"),
-        GeneratedPath(WIN64, listOf("win64"), GamePath.GAME, "/Binaries/Win64"),
+        GeneratedPath(WIN64, listOf("win64"), GamePath.GAME, win64),
         GeneratedPath(UE4SS_Mods, listOf("ue4ss"), GamePath.GAME, ue4ss),
         GeneratedPath(PAKS, listOf("paks", "unreal-mods"), GamePath.GAME, paks),
         GeneratedPath(SAVES, listOf("saves"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/Documents/My Games/Oblivion Remastered/Saved/SaveGames"),

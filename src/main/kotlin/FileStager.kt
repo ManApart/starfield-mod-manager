@@ -44,10 +44,10 @@ private fun fixFolderPath(modName: String, stageFolder: File, count: Int = 0) {
         StageChange.NONE -> {}
         StageChange.NO_FILES -> println(yellow("No staged files found for $modName"))
         StageChange.CAPITALIZE -> capitalizeData(stageFolder)
-        StageChange.NEST_IN_DATA -> nestInData(modName, stageFolder, stagedFiles)
-        StageChange.NEST_IN_WIN64 -> nestInWin64(modName, stageFolder, stagedFiles)
-        StageChange.NEST_IN_PAK -> nestInPAK(modName, stageFolder, stagedFiles)
-        StageChange.NEST_IN_UE4SS -> nestInUE4SS(modName, stageFolder, stagedFiles)
+        StageChange.NEST_IN_DATA -> nestInPrefix(modName, gameMode.deployedModPath, stageFolder, stagedFiles)
+        StageChange.NEST_IN_WIN64 -> nestInPrefix(modName, win64, stageFolder, stagedFiles)
+        StageChange.NEST_IN_PAK -> nestInPrefix(modName, paks, stageFolder, stagedFiles)
+        StageChange.NEST_IN_UE4SS -> nestInPrefix(modName, ue4ss, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
         StageChange.ADD_TOP_FOLDER -> {
             nestInPrefix(modName, "/" + stageFolder.name, stageFolder, stagedFiles)
@@ -90,6 +90,7 @@ fun detectStagingChanges(stageFolder: File): StageChange {
         stagedExtensions.any { "pak" == it } -> StageChange.NEST_IN_PAK
         firstFile?.isDirectory ?: false && firstFile?.nameWithoutExtension?.startsWith("sfse_") ?: false -> StageChange.UNNEST
         hasNested && nestedFiles.map { it.nameWithoutExtension.lowercase() }.contains("data") -> StageChange.UNNEST
+        stagedFiles.size == 1 && stagedFiles.first().extension == "dll" -> StageChange.NEST_IN_WIN64
         stagedFiles.any { it.name.lowercase() == "enabled.txt" } -> StageChange.ADD_TOP_FOLDER
         hasNested && stagedFiles.size == 1 && nestedFiles.map { it.extension }.any { dataTopLevelExtensions.contains(it) || nestableExtensions.contains(it) } -> StageChange.REMOVE_TOP_FOLDER
         hasNested && stagedFiles.size == 1 && nestedFiles.map { it.nameWithoutExtension.lowercase() }
@@ -126,10 +127,6 @@ private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
     }
 }
 
-private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, gameMode.deployedModPath, stageFolder, stagedFiles)
-private fun nestInWin64(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, win64, stageFolder, stagedFiles)
-private fun nestInPAK(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, paks, stageFolder, stagedFiles)
-private fun nestInUE4SS(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, ue4ss, stageFolder, stagedFiles)
 fun nestInPrefix(modName: String, prefix: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Nesting files in $prefix for $modName")
     try {
@@ -143,7 +140,6 @@ fun nestInPrefix(modName: String, prefix: String, stageFolder: File, stagedFiles
         verbose(e.stackTraceToString())
     }
 }
-
 
 private fun nest(stageFolderPath: String, file: File, dataPath: String) {
     val newPath = Path(file.path.replace(stageFolderPath, dataPath))
