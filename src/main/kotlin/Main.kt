@@ -1,6 +1,8 @@
 import commands.CommandType
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 
 lateinit var toolData: Data
@@ -44,10 +46,29 @@ private fun checkForUpgrade() {
         jsonMapper.decodeFromString<JsonObject>(it.readText())
     }?.let { legacyConfig ->
         if (legacyConfig.containsKey("gamePath") || legacyConfig.containsKey("categories")) {
-            //We should auto upgrade if possible
-            throw IllegalStateException("Config file setup has changed. Please see https://manapart.github.io/starfield-mod-manager-site/setup.html#Upgrade to upgrade your config to the new format")
+            if (canUpgradeConfig(legacyConfig)) upgradeConfig(legacyConfig) else {
+                throw IllegalStateException("Config file setup has changed. Please see https://manapart.github.io/starfield-mod-manager-site/setup.html#Upgrade to upgrade your config to the new format")
+            }
         }
     }
+}
+
+private fun canUpgradeConfig(legacyConfig: JsonObject): Boolean {
+    return listOf("gamePath", "appDataPath", "apiKey")
+        .all { legacyConfig.containsKey(it) }
+}
+
+private fun upgradeConfig(legacyConfig: JsonObject) {
+    toolConfig = jsonMapper.decodeFromJsonElement<MainConfig>(legacyConfig)
+    gameConfig = jsonMapper.decodeFromJsonElement<GameConfig>(legacyConfig)
+    gameConfig[GamePath.GAME] = legacyConfig["gamePath"]!!.jsonPrimitive.content
+    gameConfig[GamePath.COMPAT_DATA] = legacyConfig["appDataPath"]!!.jsonPrimitive.content.let { it.substring(0, it.indexOf("/pfx")) }
+
+    toolData = (File("data.json").takeIf { it.exists()} ?: File(gameMode.dataJsonPath).takeIf { it.exists() })?.let {
+        jsonMapper.decodeFromString(it.readText())
+    } ?: Data()
+    save()
+    println("Upgraded config and settings")
 }
 
 fun loadData() {
