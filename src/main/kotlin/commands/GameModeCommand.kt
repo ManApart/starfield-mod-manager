@@ -2,6 +2,7 @@ package commands
 
 import GameMode
 import gameMode
+import initialCommand
 import loadData
 import saveMainConfigOnly
 import toolConfig
@@ -34,7 +35,7 @@ private fun setGameToStarfield() {
         toolConfig.mode = gameMode
         saveMainConfigOnly()
         loadData()
-        CommandType.LIST.apply("ls", listOf())
+        initialCommand()
     }
 }
 
@@ -44,6 +45,6 @@ private fun setGameToOblivionRemastered() {
         toolConfig.mode = gameMode
         saveMainConfigOnly()
         loadData()
-        CommandType.LIST.apply("ls", listOf())
+        initialCommand()
     }
 }

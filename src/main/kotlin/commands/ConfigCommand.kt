@@ -96,8 +96,5 @@ private fun updateFlag(args: List<String>, flag: KMutableProperty0<Boolean>) {
 }
 
 private fun describePaths() {
-    GamePath.entries.forEach { path ->
-        println(cyan(path.name) + ": ${path.discription}")
-        println("\t" + path.examples.joinToString("\n\t"))
-    }
+    GamePath.entries.forEach { it.describe() }
 }

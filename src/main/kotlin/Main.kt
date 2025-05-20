@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
     loadData()
     println(cyan("\n${gameMode.displayName} Mod Manager"))
     if (args.isEmpty()) {
-        CommandType.LIST.apply("", listOf())
+        initialCommand()
         while (true) {
             readLine(readlnOrNull())
             while (confirmation != null) {
@@ -43,7 +43,7 @@ private fun checkForUpgrade() {
     File(mainConfigPath()).takeIf { it.exists() }?.let {
         jsonMapper.decodeFromString<JsonObject>(it.readText())
     }?.let { legacyConfig ->
-        if (legacyConfig.containsKey("gamePath") || legacyConfig.containsKey("categories")){
+        if (legacyConfig.containsKey("gamePath") || legacyConfig.containsKey("categories")) {
             //We should auto upgrade if possible
             throw IllegalStateException("Config file setup has changed. Please see https://manapart.github.io/starfield-mod-manager-site/setup.html#Upgrade to upgrade your config to the new format")
         }
@@ -79,6 +79,15 @@ fun saveMainConfigOnly() {
     File(mainConfigPath()).writeText(jsonMapper.encodeToString(toolConfig))
 }
 
+fun initialCommand() {
+    val missing = GamePath.entries.filter { !gameConfig.paths.containsKey(it.name) }
+    if (missing.isEmpty()) {
+        CommandType.LIST.apply("ls", listOf())
+    } else {
+        println(yellow("The following paths are missing:"))
+        missing.forEach { it.describe() }
+    }
+}
 
 fun verbose(message: String) {
     if (toolConfig.verbose) println(message)

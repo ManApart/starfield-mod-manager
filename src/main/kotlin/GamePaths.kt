@@ -6,7 +6,12 @@ const val paks = "/Content/Paks/~mods"
 
 enum class GamePath(val discription: String, vararg val examples: String) {
     GAME("The path to the folder under steam containing the Data folder. Note its nesting in Oblivion Remastered","/mnt/c/SteamLibrary/steamapps/common/Starfield", "/mnt/c/SteamLibrary/steamapps/common/Oblivion Remastered/OblivionRemastered/"),
-    COMPAT_DATA("The folder is the steam app id under steam compat data","/mnt/c/SteamLibrary/steamapps/compatdata/2623190")
+    COMPAT_DATA("The folder is the steam app id under steam compat data","/mnt/c/SteamLibrary/steamapps/compatdata/2623190");
+
+    fun describe() {
+        println(cyan(name) + ": $discription")
+        println("\t" + examples.joinToString("\n\t"){"config path $name \"$it\""})
+    }
 }
 
 enum class PathType(val description: String) {
