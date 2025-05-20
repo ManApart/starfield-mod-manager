@@ -36,7 +36,7 @@ fun stageMod(sourceFile: File, stageFolder: File, modName: String): Boolean {
 private fun fixFolderPath(modName: String, stageFolder: File, count: Int = 0) {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
     val action = detectStagingChanges(stageFolder)
-    if (count > 20){
+    if (count > 20) {
         println(yellow("Unable to fix folder path. You should open the staging folder and make sure it was installed correctly."))
         return
     }
@@ -47,18 +47,25 @@ private fun fixFolderPath(modName: String, stageFolder: File, count: Int = 0) {
         StageChange.NEST_IN_DATA -> nestInData(modName, stageFolder, stagedFiles)
         StageChange.NEST_IN_WIN64 -> nestInWin64(modName, stageFolder, stagedFiles)
         StageChange.NEST_IN_PAK -> nestInPAK(modName, stageFolder, stagedFiles)
+        StageChange.NEST_IN_UE4SS -> nestInUE4SS(modName, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
+        StageChange.ADD_TOP_FOLDER -> {
+            nestInPrefix(modName, "/" + stageFolder.name, stageFolder, stagedFiles)
+            fixFolderPath(modName, stageFolder, count + 1)
+        }
+
         StageChange.REMOVE_TOP_FOLDER -> {
             unNestFiles(modName, stageFolder, stagedFiles)
             fixFolderPath(modName, stageFolder, count + 1)
         }
+
         StageChange.FOMOD -> println(yellow("FOMOD detected for $modName.") + " You should open the staging folder and pick options yourself.")
         else -> println(yellow("Unable to guess folder path for $modName.") + " You should open the staging folder and make sure it was installed correctly.")
     }
     properlyCasePaths(stageFolder)
 }
 
-enum class StageChange { NONE, NEST_IN_DATA, NEST_IN_WIN64, NEST_IN_PAK, REMOVE_TOP_FOLDER, UNNEST, FOMOD, CAPITALIZE, NO_FILES, UNKNOWN }
+enum class StageChange { NONE, NEST_IN_DATA, NEST_IN_WIN64, NEST_IN_PAK, NEST_IN_UE4SS, ADD_TOP_FOLDER, REMOVE_TOP_FOLDER, UNNEST, FOMOD, CAPITALIZE, NO_FILES, UNKNOWN }
 
 fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
@@ -83,8 +90,12 @@ fun detectStagingChanges(stageFolder: File): StageChange {
         stagedExtensions.any { "pak" == it } -> StageChange.NEST_IN_PAK
         firstFile?.isDirectory ?: false && firstFile?.nameWithoutExtension?.startsWith("sfse_") ?: false -> StageChange.UNNEST
         hasNested && nestedFiles.map { it.nameWithoutExtension.lowercase() }.contains("data") -> StageChange.UNNEST
+        stagedFiles.any { it.name.lowercase() == "enabled.txt" } -> StageChange.ADD_TOP_FOLDER
         hasNested && stagedFiles.size == 1 && nestedFiles.map { it.extension }.any { dataTopLevelExtensions.contains(it) || nestableExtensions.contains(it) } -> StageChange.REMOVE_TOP_FOLDER
-        hasNested && stagedFiles.size == 1 && nestedFiles.map { it.nameWithoutExtension.lowercase() }.any { validTopLevelFolders.contains(it) || validTopLevelFiles.contains(it) } -> StageChange.REMOVE_TOP_FOLDER
+        hasNested && stagedFiles.size == 1 && nestedFiles.map { it.nameWithoutExtension.lowercase() }
+            .any { validTopLevelFolders.contains(it) || validTopLevelFiles.contains(it) } -> StageChange.REMOVE_TOP_FOLDER
+
+        hasNested && stagedFiles.size == 1 && nestedFiles.any { it.name.lowercase() == "enabled.txt" } -> StageChange.NEST_IN_UE4SS
         stagedNames.contains("fomod") -> StageChange.FOMOD
         else -> StageChange.UNKNOWN
     }
@@ -118,6 +129,7 @@ private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
 private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, gameMode.deployedModPath, stageFolder, stagedFiles)
 private fun nestInWin64(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, win64, stageFolder, stagedFiles)
 private fun nestInPAK(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, paks, stageFolder, stagedFiles)
+private fun nestInUE4SS(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, ue4ss, stageFolder, stagedFiles)
 fun nestInPrefix(modName: String, prefix: String, stageFolder: File, stagedFiles: Array<File>) {
     println("Nesting files in $prefix for $modName")
     try {
