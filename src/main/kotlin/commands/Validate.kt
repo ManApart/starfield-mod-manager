@@ -185,12 +185,13 @@ private fun List<Mod>.detectIncorrectCasing(
 private fun Map<Mod, List<File>>.detectTopLevelFiles(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
-    val excludeList = listOf("sfse_loader.exe")
-    val goodPaths = (gameMode.generatedPaths.values.map { it.suffix } + gameMode.deployedModPath).filter { it.isNotBlank() }.toSet()
+    val excludeList = listOf("sfse_loader.exe", "Engine.ini")
+    val goodPaths = (gameMode.generatedPaths.values.mapNotNull { it.suffix.split("/").getOrNull(1) } + gameMode.deployedModPath).filter { it.isNotBlank() }.toSet()
     filter { (mod, files) ->
+        val parent = files.first().path.split("/").take(2).joinToString("/") + "/"
         !mod.hasTag(Tag.SKIP_VALIDATE) &&
                 files.none { excludeList.contains(it.name) } &&
-                files.any { file -> goodPaths.none { file.path.contains(it) } }
+                files.any { file -> goodPaths.none { file.path.replace(parent, "").startsWith(it) } }
     }.forEach { (mod, _) ->
         errorMap.putIfAbsent(mod.index, mod to mutableListOf())
         errorMap[mod.index]?.second?.add("Has files outside the Data folder")

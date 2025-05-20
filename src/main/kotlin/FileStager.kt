@@ -33,9 +33,13 @@ fun stageMod(sourceFile: File, stageFolder: File, modName: String): Boolean {
     }
 }
 
-private fun fixFolderPath(modName: String, stageFolder: File) {
+private fun fixFolderPath(modName: String, stageFolder: File, count: Int = 0) {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
     val action = detectStagingChanges(stageFolder)
+    if (count > 20){
+        println(yellow("Unable to fix folder path. You should open the staging folder and make sure it was installed correctly."))
+        return
+    }
     when (action) {
         StageChange.NONE -> {}
         StageChange.NO_FILES -> println(yellow("No staged files found for $modName"))
@@ -44,15 +48,17 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
         StageChange.NEST_IN_WIN64 -> nestInWin64(modName, stageFolder, stagedFiles)
         StageChange.NEST_IN_PAK -> nestInPAK(modName, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
-        StageChange.REMOVE_TOP_FOLDER -> unNestFiles(modName, stageFolder, stagedFiles)
-        StageChange.REPLACE_TOP_FOLDER_WITH_DATA -> replaceTopFolderWithData(modName, stageFolder, stagedFiles)
+        StageChange.REMOVE_TOP_FOLDER -> {
+            unNestFiles(modName, stageFolder, stagedFiles)
+            fixFolderPath(modName, stageFolder, count + 1)
+        }
         StageChange.FOMOD -> println(yellow("FOMOD detected for $modName.") + " You should open the staging folder and pick options yourself.")
         else -> println(yellow("Unable to guess folder path for $modName.") + " You should open the staging folder and make sure it was installed correctly.")
     }
     properlyCasePaths(stageFolder)
 }
 
-enum class StageChange { NONE, NEST_IN_DATA, NEST_IN_WIN64, NEST_IN_PAK, REPLACE_TOP_FOLDER_WITH_DATA, REMOVE_TOP_FOLDER, UNNEST, FOMOD, CAPITALIZE, NO_FILES, UNKNOWN }
+enum class StageChange { NONE, NEST_IN_DATA, NEST_IN_WIN64, NEST_IN_PAK, REMOVE_TOP_FOLDER, UNNEST, FOMOD, CAPITALIZE, NO_FILES, UNKNOWN }
 
 fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedFiles = stageFolder.listFiles() ?: arrayOf()
@@ -60,12 +66,15 @@ fun detectStagingChanges(stageFolder: File): StageChange {
     val stagedExtensions = stagedFiles.map { it.extension }
     val dataTopLevelNames = listOf("textures", "music", "sound", "meshes", "video", "sfse_readme", "sfse")
     val dataTopLevelExtensions = listOf("esp", "esm", "ba2")
+    val nestableExtensions = listOf("pak")
+    val validTopLevelFiles = listOf("engine")
     val validTopLevelFolders = listOf("data", "content", "binaries")
     val firstFile = stagedFiles.firstOrNull()
     val hasNested = firstFile != null && firstFile.isDirectory
     val nestedFiles = if (hasNested) firstFile?.listFiles() ?: arrayOf() else arrayOf()
     return when {
         stagedFiles.isEmpty() -> StageChange.NO_FILES
+        stagedNames.any { validTopLevelFiles.contains(it) } -> StageChange.NONE
         stagedFiles.any { it.nameWithoutExtension == "data" } -> StageChange.CAPITALIZE
         stagedNames.contains("ue4ss") -> StageChange.NEST_IN_WIN64
         stagedNames.any { dataTopLevelNames.contains(it) } -> StageChange.NEST_IN_DATA
@@ -74,8 +83,8 @@ fun detectStagingChanges(stageFolder: File): StageChange {
         stagedExtensions.any { "pak" == it } -> StageChange.NEST_IN_PAK
         firstFile?.isDirectory ?: false && firstFile?.nameWithoutExtension?.startsWith("sfse_") ?: false -> StageChange.UNNEST
         hasNested && nestedFiles.map { it.nameWithoutExtension.lowercase() }.contains("data") -> StageChange.UNNEST
-        hasNested && stagedFiles.size == 1 && nestedFiles.map { it.extension }.any { dataTopLevelExtensions.contains(it) } -> StageChange.REPLACE_TOP_FOLDER_WITH_DATA
-        hasNested && stagedFiles.size == 1 && nestedFiles.map { it.nameWithoutExtension.lowercase() }.any { validTopLevelFolders.contains(it) } -> StageChange.REMOVE_TOP_FOLDER
+        hasNested && stagedFiles.size == 1 && nestedFiles.map { it.extension }.any { dataTopLevelExtensions.contains(it) || nestableExtensions.contains(it) } -> StageChange.REMOVE_TOP_FOLDER
+        hasNested && stagedFiles.size == 1 && nestedFiles.map { it.nameWithoutExtension.lowercase() }.any { validTopLevelFolders.contains(it) || validTopLevelFiles.contains(it) } -> StageChange.REMOVE_TOP_FOLDER
         stagedNames.contains("fomod") -> StageChange.FOMOD
         else -> StageChange.UNKNOWN
     }
@@ -104,11 +113,6 @@ private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
             unNest(stageFolderPath, moreNested, topPath)
         }
     }
-}
-
-private fun replaceTopFolderWithData(stageFolderPath: String, file: File, stagedFiles: Array<File>) {
-    unNestFiles(stageFolderPath, file, stagedFiles)
-    nestInData(stageFolderPath, file, file.listFiles()!!)
 }
 
 private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, gameMode.deployedModPath, stageFolder, stagedFiles)
