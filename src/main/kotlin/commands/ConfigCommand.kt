@@ -49,7 +49,7 @@ fun config(command: String, args: List<String>) {
         args.size == 1 && args.last() == "paths" -> describePaths()
 
         args.size == 3 && args[0] == "path" && path != null -> {
-            val newPath = lastFullInput.replace("config path ${path.name}", "", true).let { if (it.endsWith("/")) it.substring(0, it.length-1) else it }.replace("\"", "").trim()
+            val newPath = lastFullInput.replace("config path ${path.name}", "", true).replace("\"", "").trim().let { if (it.endsWith("/")) it.substring(0, it.length-1) else it }
             gameConfig[path] = newPath
             println("Updated $path to ${gameConfig[path]}")
             save()
