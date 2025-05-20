@@ -44,7 +44,7 @@ private fun fixFolderPath(modName: String, stageFolder: File) {
         StageChange.NEST_IN_WIN64 -> nestInWin64(modName, stageFolder, stagedFiles)
         StageChange.NEST_IN_PAK -> nestInPAK(modName, stageFolder, stagedFiles)
         StageChange.UNNEST -> unNestFiles(modName, stageFolder, stagedFiles)
-        StageChange.REMOVE_TOP_FOLDER -> unNest(modName.replace(" ", "-"), stageFolder.listFiles().first(), stagedFiles.first().nameWithoutExtension)
+        StageChange.REMOVE_TOP_FOLDER -> unNestFiles(modName, stageFolder, stagedFiles)
         StageChange.REPLACE_TOP_FOLDER_WITH_DATA -> replaceTopFolderWithData(modName, stageFolder, stagedFiles)
         StageChange.FOMOD -> println(yellow("FOMOD detected for $modName.") + " You should open the staging folder and pick options yourself.")
         else -> println(yellow("Unable to guess folder path for $modName.") + " You should open the staging folder and make sure it was installed correctly.")
@@ -106,6 +106,11 @@ private fun unNest(stageFolderPath: String, nested: File, topPath: String) {
     }
 }
 
+private fun replaceTopFolderWithData(stageFolderPath: String, file: File, stagedFiles: Array<File>) {
+    unNestFiles(stageFolderPath, file, stagedFiles)
+    nestInData(stageFolderPath, file, file.listFiles()!!)
+}
+
 private fun nestInData(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, gameMode.deployedModPath, stageFolder, stagedFiles)
 private fun nestInWin64(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, win64, stageFolder, stagedFiles)
 private fun nestInPAK(modName: String, stageFolder: File, stagedFiles: Array<File>) = nestInPrefix(modName, paks, stageFolder, stagedFiles)
@@ -151,12 +156,4 @@ private fun case(folder: File) {
     } else folder
     if (!next.canExecute()) next.setExecutable(true, false)
     next.listFiles()?.filter { it.isDirectory }?.forEach { case(it) }
-}
-
-private fun removeTopFolder(stageFolderPath: String, file: File, stagedFiles: Array<File>) {
-
-}
-
-private fun replaceTopFolderWithData(stageFolderPath: String, file: File, stagedFiles: Array<File>) {
-
 }
