@@ -5,6 +5,7 @@ import cyan
 import gameConfig
 import jsonMapper
 import kotlinx.serialization.encodeToString
+import lastFullInput
 import nexus.getGameInfo
 import save
 import toolConfig
@@ -48,7 +49,8 @@ fun config(command: String, args: List<String>) {
         args.size == 1 && args.last() == "paths" -> describePaths()
 
         args.size == 3 && args[0] == "path" && path != null -> {
-            gameConfig[path] = args.last()
+            val newPath = lastFullInput.replace("config path ${path.name}", "", true).let { if (it.endsWith("/")) it.substring(0, it.length-1) else it }.replace("\"", "").trim()
+            gameConfig[path] = newPath
             println("Updated $path to ${gameConfig[path]}")
             save()
         }
