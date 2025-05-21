@@ -63,7 +63,8 @@ fun List<Mod>.validate() {
     detectStagingIssues(errorMap)
     detectDupePlugins()
     detectIncorrectCasing(errorMap)
-    modsWithFiles.detectTopLevelFiles(errorMap)
+    modsWithFiles.checkHasFiles(errorMap)
+    modsWithFiles.filter { it.value.isNotEmpty() }.detectTopLevelFiles(errorMap)
     checkPlugins(errorMap, helpMessages)
 
     if (gameMode == GameMode.STARFIELD) {
@@ -179,6 +180,15 @@ private fun List<Mod>.detectIncorrectCasing(
                 errorMap[mod.index]?.second?.add("\t${it}")
             }
         }
+    }
+}
+
+private fun Map<Mod, List<File>>.checkHasFiles(
+    errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
+) {
+    filter { it.value.isEmpty() }.forEach { (mod, _) ->
+        errorMap.putIfAbsent(mod.index, mod to mutableListOf())
+        errorMap[mod.index]?.second?.add("Has no files")
     }
 }
 
