@@ -186,7 +186,7 @@ private fun List<Mod>.detectIncorrectCasing(
 private fun Map<Mod, List<File>>.checkHasFiles(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
-    filter { it.value.isEmpty() }.forEach { (mod, _) ->
+    filter { File(it.key.filePath).exists() && it.value.isEmpty() }.forEach { (mod, _) ->
         errorMap.putIfAbsent(mod.index, mod to mutableListOf())
         errorMap[mod.index]?.second?.add("Has no files")
     }
