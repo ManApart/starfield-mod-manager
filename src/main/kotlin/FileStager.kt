@@ -85,6 +85,7 @@ fun detectStagingChanges(stageFolder: File): StageChange {
         stagedFiles.any { it.nameWithoutExtension == "data" } -> StageChange.CAPITALIZE
         stagedNames.contains("ue4ss") -> StageChange.NEST_IN_WIN64
         stagedNames.any { dataTopLevelNames.contains(it) } -> StageChange.NEST_IN_DATA
+        stagedNames.any { it.startsWith("obse64") } -> StageChange.NEST_IN_WIN64
         stagedNames.any { validTopLevelFolders.contains(it) } -> StageChange.NONE
         stagedExtensions.any { dataTopLevelExtensions.contains(it) } -> StageChange.NEST_IN_DATA
         stagedExtensions.any { "pak" == it } -> StageChange.NEST_IN_PAK
