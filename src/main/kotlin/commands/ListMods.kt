@@ -74,7 +74,7 @@ fun display(mods: List<Pair<Mod, Boolean>>) {
                 else -> "  ?"
             }
             val staged = if (File(filePath).exists()) FOLDER else "  "
-            val category = category() ?: "?"
+            val category = category()?.take(19) ?: "?"
             mapOf(
                 "Index" to mod.index,
                 "Status" to "$staged $enabledCheck $endorsedCheck",
