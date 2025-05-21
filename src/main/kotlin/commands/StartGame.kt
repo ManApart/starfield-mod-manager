@@ -13,5 +13,5 @@ val startGameUsage = """
 """.trimIndent()
 
 fun startGame(command: String, args: List<String>) {
-    File(".").runCommand("steam steam://rungameid/${gameMode.steamId}")
+    File(".").runCommand("steam steam://rungameid/${gameMode.steamId}", true)
 }

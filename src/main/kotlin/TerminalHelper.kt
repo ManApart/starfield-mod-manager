@@ -18,9 +18,9 @@ fun cyan(text: String) = "\u001B[36m$text$ANSI_RESET"
 fun white(text: String) = "\u001B[37m$text$ANSI_RESET"
 fun grayBG(text: String) = "\u001B[100m$text$ANSI_RESET"
 
-fun File.runCommand(command: String): String? {
+fun File.runCommand(command: String, silent: Boolean = false, echo: Boolean = false): String? {
     val parts = command.split("\\s".toRegex())
-    return runCommand(parts)
+    return runCommand(parts, silent, echo)
 }
 
 fun File.runCommand(parts: List<String>, silent: Boolean = false, echo: Boolean = false): String? {
