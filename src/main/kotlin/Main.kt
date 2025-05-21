@@ -46,7 +46,14 @@ private fun checkForUpgrade() {
         jsonMapper.decodeFromString<JsonObject>(it.readText())
     }?.let { legacyConfig ->
         if (legacyConfig.containsKey("gamePath") || legacyConfig.containsKey("categories")) {
-            if (canUpgradeConfig(legacyConfig)) upgradeConfig(legacyConfig) else {
+            if (canUpgradeConfig(legacyConfig)) {
+                try {
+                    upgradeConfig(legacyConfig)
+                } catch (e: Exception) {
+                    println(red(e.toString()))
+                    throw IllegalStateException("Failed to upgrade config. Please see https://manapart.github.io/starfield-mod-manager-site/setup.html#Upgrade to upgrade your config to the new format")
+                }
+            } else {
                 throw IllegalStateException("Config file setup has changed. Please see https://manapart.github.io/starfield-mod-manager-site/setup.html#Upgrade to upgrade your config to the new format")
             }
         }
@@ -64,7 +71,7 @@ private fun upgradeConfig(legacyConfig: JsonObject) {
     gameConfig[GamePath.GAME] = legacyConfig["gamePath"]!!.jsonPrimitive.content
     gameConfig[GamePath.COMPAT_DATA] = legacyConfig["appDataPath"]!!.jsonPrimitive.content.let { it.substring(0, it.indexOf("/pfx")) }
 
-    toolData = (File("data.json").takeIf { it.exists()} ?: File(gameMode.dataJsonPath).takeIf { it.exists() })?.let {
+    toolData = (File("data.json").takeIf { it.exists() } ?: File(gameMode.dataJsonPath).takeIf { it.exists() })?.let {
         jsonMapper.decodeFromString(it.readText())
     } ?: Data()
     save()
