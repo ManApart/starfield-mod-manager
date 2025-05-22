@@ -1,6 +1,10 @@
 package commands
 
+import Column
 import Mod
+import Table
+import jsonMapper
+import kotlinx.serialization.encodeToString
 import toolData
 
 val detailDescription = """
@@ -21,5 +25,14 @@ fun detailMod(command: String, args: List<String>) {
 }
 
 private fun viewDetail(mod: Mod) {
-    println(mod)
+    val columns = listOf(
+        Column("Field", 20),
+        Column("Value", 60),
+    )
+    val data = mod.toString().drop(4).dropLast(1).split(", ").map { l ->
+        val parts = l.split("=")
+        mapOf("Field" to parts[0].capitalize(), "Value" to parts[1])
+    } + listOf(mapOf("Field" to "Category Name", "Value" to (mod.category() ?: "")))
+    println(mod.name)
+    Table(columns, data.sortedBy { it["Field"] }).print()
 }
