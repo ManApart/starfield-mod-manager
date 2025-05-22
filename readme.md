@@ -1,4 +1,4 @@
-# Starfield Mod Manager
+# Manapart Mod Manager
 
 [![Build and Test](https://github.com/ManApart/starfield-mod-manager/actions/workflows/runTests.yml/badge.svg)](https://github.com/ManApart/starfield-mod-manager/actions/workflows/runTests.yml)
 

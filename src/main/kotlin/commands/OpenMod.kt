@@ -1,6 +1,5 @@
 package commands
 
-import GameMode
 import Mod
 import gameMode
 import runCommand
@@ -10,25 +9,41 @@ import java.awt.Desktop
 import java.io.File
 import java.net.URI
 
-val openDescription = """
-    Open various folders and filepaths
-    You can open a mod locally or on the nexus, or open the various config paths
+val openCliDescription = """
+    Open various folders and filepaths as well as mods
+    Use paths command to see paths you can open
+    See also: local, open, and paths commands
+""".trimIndent()
+
+val openLocalDescription = """
+    Open various folders and filepaths as well as mods
     If you pass 'cli' it will open in terminal instead of local folder
+    Use paths command to see paths you can open
+    See also: open, cli, and paths commands
+""".trimIndent()
+
+val openDescription = """
+    Open a mod on nexus or visit several other sites
+    See also: local, cli, and paths commands
 """.trimIndent() +
-        OpenType.entries.sortedBy { it.aliases.first() }.joinToString("\n") { it.aliases.first() + " - " + it.description } + "\n" +
-        GameMode.entries.asSequence().flatMap { mode -> mode.generatedPaths.values.map { mode to it } }.groupBy { it.second.aliases.first() + it.second.type.description }.map { (_, paths) ->
-            val modes = paths.map { it.first }.joinToString{it.abbreviation}
-            val first = paths.first().second
-            first.aliases.first() +" ($modes) - " + first.type.description
-        }.sorted().joinToString("\n")
+        OpenType.entries.sortedBy { it.aliases.first() }.joinToString("\n") { it.aliases.first() + " - " + it.description }
 
 val openUsage = """
-    open <index>, 
-""".trimIndent() +
-        OpenType.entries.sortedBy { it.aliases.first() }.joinToString(", ") { it.aliases.first() } + ", " +
-        GameMode.entries.asSequence().flatMap { it.generatedPaths.values }.map { it.aliases.first() }.toSet().sorted().joinToString(", ")
+    open <index>
+""".trimIndent() + "\n" +
+        OpenType.entries.sortedBy { it.aliases.first() }.joinToString("\n") { it.aliases.first() }
 
-val openAliases = (listOf("paths", "path", "o") + OpenType.entries.flatMap { it.aliases } + GameMode.entries.flatMap { mode -> mode.generatedPaths.values.flatMap { it.aliases } }).toSet().toTypedArray()
+val cliUsage = """
+    cli <index> 
+    cli <path>
+""".trimIndent()
+
+val localUsage = """
+    local <index> *cli
+    local <path>
+""".trimIndent()
+
+val openAliases = (listOf("o") + OpenType.entries.flatMap { it.aliases }).toTypedArray()
 
 enum class OpenType(
     val aliases: List<String>,
@@ -42,19 +57,20 @@ enum class OpenType(
 }
 
 fun open(command: String, args: List<String>) {
+    val commandType = CommandType.entries.firstOrNull { it.name.lowercase() == command || it.aliases.contains(command) } ?: CommandType.OPEN
+    val openInWeb = commandType == CommandType.OPEN
+    val cli = commandType == CommandType.CLI || args.contains("cli")
+
     val openType = OpenType.entries.firstOrNull { it.aliases.contains(command) }
-    val gamePath = gameMode.generatedPaths.values.firstOrNull { it.aliases.contains(command) }
+    val gamePath = gameMode.generatedPaths.values.firstOrNull { it.aliases.contains(command) || (args.size == 1 && it.aliases.contains(args.first())) }
     if (openType != null) {
         openType.invoke(args)
     } else if (gamePath != null) {
-        open(gamePath.path(), gamePath.type.name, args.contains("cli"))
+        open(gamePath.path(), gamePath.type.name, cli)
     } else {
-        openMod(true, args)
+        openMod(openInWeb, command, args)
     }
 }
-
-fun local(command: String, args: List<String>) = openMod(false, args)
-fun cli(command: String, args: List<String>) = openMod(false, args.toMutableList().also { it.add("cli") })
 
 private fun openNexus(args: List<String>) {
     if (args.size != 2 || args[1].toIntOrNull() != null) {
@@ -69,10 +85,11 @@ private fun openNexus(args: List<String>) {
     openInWeb("https://www.nexusmods.com/starfield/mods/${modId}")
 }
 
-private fun openMod(web: Boolean = true, args: List<String>) {
-    if (args.isEmpty()) {
-        println(CommandType.OPEN.description + "\n")
-        println(CommandType.OPEN.usage)
+private fun openMod(web: Boolean = true, command: String, args: List<String>) {
+    if (args.isEmpty() || (args.size == 1 && args.first() == "cli")) {
+        val commandType = CommandType.entries.firstOrNull {it.name.lowercase() == command} ?: CommandType.OPEN
+        println(commandType.description + "\n")
+        println(commandType.usage)
         return
     }
     val cli = args.contains("cli")
