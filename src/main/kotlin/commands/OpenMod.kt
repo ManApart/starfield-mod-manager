@@ -51,7 +51,7 @@ enum class OpenType(
     val invoke: (List<String>) -> Unit
 ) {
     MANUAL(listOf("manual", "man"), "Online Manual of commands", { openInWeb("https://manapart.github.io/starfield-mod-manager-site/manual.html") }),
-    SITE(listOf("site", "man"), "Open manager's main site", { openInWeb("https://manapart.github.io/starfield-mod-manager-site/index.html") }),
+    SITE(listOf("site"), "Open manager's main site", { openInWeb("https://manapart.github.io/starfield-mod-manager-site/index.html") }),
     SOURCE(listOf("git", "github", "source"), "Open source for mod manager", { openInWeb("https://github.com/ManApart/starfield-mod-manager") }),
     NEXUS(listOf("nexus"), "Open the mod on nexus mods", ::openNexus),
 }
