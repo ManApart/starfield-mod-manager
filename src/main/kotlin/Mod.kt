@@ -1,5 +1,5 @@
-import commands.Tag
-import commands.espTypes
+import commands.edit.Tag
+import commands.deploy.espTypes
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.io.File

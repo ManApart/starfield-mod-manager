@@ -1,6 +1,7 @@
 package commands
 
 import Mod
+import commands.deploy.setModOrder
 import org.junit.jupiter.api.BeforeAll
 import testingMode
 import kotlin.test.Test

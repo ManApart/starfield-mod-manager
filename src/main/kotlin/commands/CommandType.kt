@@ -1,5 +1,13 @@
 package commands
 
+import commands.add.*
+import commands.config.*
+import commands.deploy.*
+import commands.edit.*
+import commands.open.*
+import commands.update.*
+import commands.view.*
+
 enum class Category { ADD, DEPLOY, VIEW, EDIT, OPEN, UPDATE, CONFIG }
 
 enum class CommandType(
