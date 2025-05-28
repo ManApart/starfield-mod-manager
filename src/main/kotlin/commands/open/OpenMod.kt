@@ -124,8 +124,9 @@ fun openLocal(mod: Mod, cli: Boolean) = open(mod.filePath, mod.name, cli)
 fun open(path: String, name: String, cli: Boolean) {
     try {
         if (cli) {
-            val command = toolConfig.openInTerminalCommand?.replace("{pwd}", path) ?: "gnome-terminal"
-            File(path).runCommand(command)
+            val cleanPath = if (path.endsWith(".txt")) File(path).parent else path
+            val command = toolConfig.openInTerminalCommand?.replace("{pwd}", cleanPath) ?: "gnome-terminal"
+            File(cleanPath).runCommand(command)
         } else {
             Desktop.getDesktop().open(File(path))
         }

@@ -75,14 +75,16 @@ fun detectStagingChanges(stageFolder: File): StageChange {
     val dataTopLevelExtensions = listOf("esp", "esm", "ba2")
     val nestableExtensions = listOf("pak")
     val validTopLevelFiles = listOf("engine")
-    val validTopLevelFolders = listOf("data", "content", "binaries")
+    val validTopLevelFoldersSF = listOf("data")
+    val validTopLevelFoldersOR = listOf("content", "binaries")
+    val validTopLevelFolders = if (gameMode == GameMode.STARFIELD) validTopLevelFoldersSF else validTopLevelFoldersOR
     val firstFile = stagedFiles.firstOrNull()
     val hasNested = firstFile != null && firstFile.isDirectory
     val nestedFiles = if (hasNested) firstFile?.listFiles() ?: arrayOf() else arrayOf()
     return when {
         stagedFiles.isEmpty() -> StageChange.NO_FILES
         stagedNames.any { validTopLevelFiles.contains(it) } -> StageChange.NONE
-        stagedFiles.any { it.nameWithoutExtension == "data" } -> StageChange.CAPITALIZE
+        stagedFiles.any { validTopLevelFolders.contains(it.nameWithoutExtension) } -> StageChange.CAPITALIZE
         stagedNames.contains("ue4ss") -> StageChange.NEST_IN_WIN64
         stagedNames.any { dataTopLevelNames.contains(it) } -> StageChange.NEST_IN_DATA
         stagedNames.any { it.startsWith("obse64") } -> StageChange.NEST_IN_WIN64
