@@ -24,6 +24,7 @@ enum class PathType(val description: String) {
     UNREAL_INI("Ini files for unreal engine"),
     PLUGINS("The plugins file that activates esps"),
     WIN64("Where the unreal engine binary lives"),
+    WINGDK("Folder that UE4SS mods are deployed to for game pass (not used)"),
     UE4SS_Mods("Folder that UE4SS mods are deployed to"),
     PAKS("Where the unreal engine mods live"),
     SAVES("Where your save files are located"),
@@ -64,6 +65,7 @@ fun oblivionRemasteredPaths(): Map<PathType, GeneratedPath> {
         GeneratedPath(PLUGINS, listOf("plugins", "plugin"), GamePath.GAME, "/Plugins.txt"),
         GeneratedPath(WIN64, listOf("win64"), GamePath.GAME, win64),
         GeneratedPath(UE4SS_Mods, listOf("ue4ss"), GamePath.GAME, ue4ss),
+        GeneratedPath(WINGDK, listOf("wingdk"), GamePath.GAME, "/Binaries/wingdk/ue4ss/Mods"),
         GeneratedPath(PAKS, listOf("paks", "unreal-mods"), GamePath.GAME, paks),
         GeneratedPath(SAVES, listOf("saves"), GamePath.COMPAT_DATA, "/pfx/drive_c/users/steamuser/Documents/My Games/Oblivion Remastered/Saved/SaveGames"),
     ).associateBy { it.type }

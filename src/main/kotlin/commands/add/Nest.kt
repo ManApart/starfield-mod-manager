@@ -11,6 +11,7 @@ import java.io.File
 val nestDescription = """
     Nests all mod files under the given path and then opens the folder locally
     Used to make fixing mod installs to unrecognized paths
+    Paths: ${PathType.entries}
 """.trimIndent()
 
 val nestUsage = """

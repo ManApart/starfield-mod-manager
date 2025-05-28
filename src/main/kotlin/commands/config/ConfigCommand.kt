@@ -3,6 +3,7 @@ package commands.config
 import GamePath
 import commands.update.viewAppVersion
 import gameConfig
+import gameMode
 import jsonMapper
 import kotlinx.serialization.encodeToString
 import lastFullInput
@@ -41,7 +42,7 @@ fun config(command: String, args: List<String>) {
     val path = args.getOrNull(1)?.lowercase()?.let { a -> GamePath.entries.firstOrNull { it.name.lowercase() == a } }
     when {
         args.isEmpty() -> {
-            println("Running in ${File(".").absolutePath}")
+            println("Running ${gameMode.name} in ${File(".").absolutePath}")
             println("Main Config:\n" + jsonMapper.encodeToString(toolConfig))
             println("Game Config:\n" + jsonMapper.encodeToString(gameConfig))
         }

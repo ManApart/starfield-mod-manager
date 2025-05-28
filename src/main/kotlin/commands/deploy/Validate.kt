@@ -88,7 +88,7 @@ fun List<Mod>.validate() {
         helpMessages.forEach { println(it) }
         println()
     }
-    println(cyan("Validated $size mods, ${errorMap.keys.size} mods failed validation"))
+    println(cyan("Validated $size mods, ${filteredErrors.keys.size + nonModErrors.size} mods failed validation"))
 }
 
 private fun List<Mod>.addDupeIds(
@@ -199,7 +199,7 @@ private fun Map<Mod, List<File>>.detectTopLevelFiles(
     errorMap: MutableMap<Int, Pair<Mod, MutableList<String>>>
 ) {
     val excludeList = listOf("sfse_loader.exe", "Engine.ini")
-    val goodPaths = (gameMode.generatedPaths.values.mapNotNull { it.suffix.split("/").getOrNull(1) } + gameMode.deployedModPath).filter { it.isNotBlank() }.toSet()
+    val goodPaths = (gameMode.generatedPaths.values.mapNotNull { it.suffix.split("/").getOrNull(1) } + gameMode.deployedModPath.drop(1)).filter { it.isNotBlank() }.toSet()
     filter { (mod, files) ->
         val parent = files.first().path.split("/").take(2).joinToString("/") + "/"
         !mod.hasTag(Tag.SKIP_VALIDATE) &&
